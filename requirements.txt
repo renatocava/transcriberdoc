@@ -1,0 +1,6 @@
+streamlit>=1.40
+streamlit-mic-recorder
+openai>=1.60
+anthropic>=0.40
+pydantic>=2.0
+python-dotenv
