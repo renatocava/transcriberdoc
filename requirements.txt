@@ -1,6 +1,9 @@
-streamlit>=1.40
-streamlit-mic-recorder
-openai>=1.60
-anthropic>=0.40
-pydantic>=2.0
-python-dotenv
+# Versiones fijas: son exactamente las que se probaron de punta a punta
+# contra las APIs reales. Para una demo en vivo conviene que Streamlit Cloud
+# instale lo mismo que se validó, no lo último que haya salido esa semana.
+streamlit==1.63.0
+streamlit-mic-recorder==0.0.8
+openai==3.8.0
+anthropic==1.4.0
+pydantic==2.13.5
+python-dotenv==1.2.3
