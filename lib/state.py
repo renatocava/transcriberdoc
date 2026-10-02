@@ -9,6 +9,8 @@ from typing import Any
 
 import streamlit as st
 
+from lib.hablantes import AUTO
+
 IDLE = "idle"
 PROCESSING = "processing"
 REVIEW = "review"
@@ -22,6 +24,8 @@ CLAVES_CORE = (
     "transcription",
     "speaker_mapping",
     "historia",
+    "fuentes",
+    "foco",
     "error",
     "last_audio_id",
 )
@@ -47,14 +51,26 @@ _DEFECTOS: dict[str, Any] = {
     "transcription": None,
     "speaker_mapping": {"A": "Doctor", "B": "Paciente"},
     "historia": None,
+    "fuentes": {},  # ruta -> {"ids", "valor"}; ver lib/fuentes.py
+    "foco": [],  # intervenciones resaltadas en la transcripción
     "error": None,
     "last_audio_id": None,
 }
 
 
+#: Modo de hablantes elegido antes de grabar. Vive fuera de `_DEFECTOS` para
+#: que se mantenga entre una consulta y la siguiente.
+CLAVE_MODO = "modo_hablantes"
+
+
 def init_state() -> None:
     for clave, valor in _DEFECTOS.items():
         st.session_state.setdefault(clave, copy.deepcopy(valor))
+    st.session_state.setdefault(CLAVE_MODO, AUTO)
+
+
+def modo_hablantes() -> str:
+    return st.session_state.get(CLAVE_MODO, AUTO)
 
 
 def stage() -> str:
@@ -76,12 +92,6 @@ def reset() -> None:
             del st.session_state[clave]
     for clave, valor in _DEFECTOS.items():
         st.session_state[clave] = copy.deepcopy(valor)
-
-
-def mapping_desde(rol_a: str) -> dict[str, str]:
-    """Construye el mapeo completo a partir del rol del Speaker A."""
-    otro = "Paciente" if rol_a == "Doctor" else "Doctor"
-    return {"A": rol_a, "B": otro}
 
 
 def nuevo_uid() -> str:
@@ -107,9 +117,9 @@ def ensure_uids(historia: dict[str, Any]) -> dict[str, Any]:
 
 
 def strip_uids(obj: Any) -> Any:
-    """Copia la estructura sin los ids internos, lista para exportar."""
+    """Copia la estructura sin las claves internas (`_uid`, `_fuentes`), lista para exportar."""
     if isinstance(obj, dict):
-        return {k: strip_uids(v) for k, v in obj.items() if k != "_uid"}
+        return {k: strip_uids(v) for k, v in obj.items() if not str(k).startswith("_")}
     if isinstance(obj, list):
         return [strip_uids(item) for item in obj]
     return obj

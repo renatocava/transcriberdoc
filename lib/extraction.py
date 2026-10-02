@@ -5,12 +5,14 @@ from __future__ import annotations
 from typing import Any
 
 from lib.config import api_key, usar_mock
-from lib.mock_data import historia_mock
+from lib.fuentes import esquema_fuentes, vincular
+from lib.hablantes import es_dictado, etiqueta
+from lib.mock_data import fuentes_mock, historia_mock
 from lib.schema import historia_input_schema, normalizar_historia
 
 MODELO = "claude-sonnet-4-6"
 TOOL_NAME = "llenar_historia_clinica"
-MAX_TOKENS = 4096
+MAX_TOKENS = 8192  # el formulario más las fuentes de cada dato
 
 SYSTEM_PROMPT = (
     "Eres un asistente médico experto. Analiza la siguiente transcripción de una consulta "
@@ -19,7 +21,16 @@ SYSTEM_PROMPT = (
     "conversación, déjalo vacío, null, o array vacío según corresponda. (2) NUNCA inventes "
     "datos clínicos, medicamentos, dosis, ni diagnósticos. (3) Usa exactamente los términos "
     "que menciona el doctor o el paciente. (4) Para signos vitales, si el doctor dice "
-    "'presión bien' sin dar cifra, escribe eso literal."
+    "'presión bien' sin dar cifra, escribe eso literal. (5) Si participa un acompañante, "
+    "lo que cuenta sobre el paciente es válido para la historia, pero los datos de "
+    "identificación (nombre, edad, sexo) son siempre los del paciente. (6) Cada intervención "
+    "lleva un número [n]. En `fuentes` registra, para CADA dato que llenes, los números de "
+    "las intervenciones de donde sale; si un dato no tiene respaldo en ninguna, no lo llenes."
+)
+
+CONTEXTO_DICTADO = (
+    "Modalidad: dictado. Solo habla el médico, que describe la consulta y al paciente "
+    "en tercera persona."
 )
 
 
@@ -29,32 +40,55 @@ def _cliente():
     return anthropic.Anthropic(api_key=api_key("ANTHROPIC_API_KEY"))
 
 
-def formatear_dialogo(utterances: list[dict[str, Any]], mapping: dict[str, str]) -> str:
-    """Convierte las intervenciones en un diálogo etiquetado por rol."""
+def formatear_dialogo(
+    utterances: list[dict[str, Any]], mapping: dict[str, str], numerar: bool = False
+) -> str:
+    """Convierte las intervenciones en un diálogo etiquetado por rol.
+
+    Con `numerar`, cada línea lleva `[n]` (índice + 1) para que el modelo pueda
+    citar de dónde sale cada dato.
+    """
     lineas = []
-    for u in utterances:
-        rol = mapping.get(u.get("speaker", ""), u.get("speaker", "Hablante"))
+    for i, u in enumerate(utterances, start=1):
+        rol = etiqueta(u.get("speaker", ""), mapping)
         texto = (u.get("text") or "").strip()
         if texto:
-            lineas.append(f"{rol}: {texto}")
+            lineas.append(f"[{i}] {rol}: {texto}" if numerar else f"{rol}: {texto}")
     return "\n".join(lineas)
+
+
+def _con_fuentes(
+    datos: dict[str, Any], n_utterances: int
+) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    datos = dict(datos or {})
+    fuentes = datos.pop("fuentes", None) or []
+    historia = normalizar_historia(datos)
+    return historia, vincular(historia, fuentes, n_utterances)
 
 
 def extraer_historia_clinica(
     utterances: list[dict[str, Any]], mapping: dict[str, str]
-) -> dict[str, Any]:
-    """Devuelve la historia clínica estructurada a partir del transcript."""
+) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    """Devuelve la historia clínica estructurada y el mapa de fuentes de cada dato."""
     if usar_mock():
-        return normalizar_historia(historia_mock())
+        return _con_fuentes({**historia_mock(), "fuentes": fuentes_mock()}, len(utterances))
 
-    dialogo = formatear_dialogo(utterances, mapping)
+    dialogo = formatear_dialogo(utterances, mapping, numerar=True)
     if not dialogo.strip():
         raise ValueError("La transcripción está vacía, no hay nada que extraer.")
+
+    contenido = f"Transcripción de la consulta:\n\n{dialogo}"
+    if es_dictado(mapping):
+        contenido = f"{CONTEXTO_DICTADO}\n\n{contenido}"
+
+    esquema = historia_input_schema()
+    esquema["properties"]["fuentes"] = esquema_fuentes()
+    esquema["required"] = [*esquema.get("required", []), "fuentes"]
 
     tool = {
         "name": TOOL_NAME,
         "description": "Registra la información clínica de la consulta en la historia clínica estructurada.",
-        "input_schema": historia_input_schema(),
+        "input_schema": esquema,
     }
 
     respuesta = _cliente().messages.create(
@@ -66,13 +100,13 @@ def extraer_historia_clinica(
         messages=[
             {
                 "role": "user",
-                "content": f"Transcripción de la consulta:\n\n{dialogo}",
+                "content": contenido,
             }
         ],
     )
 
     for bloque in respuesta.content:
         if getattr(bloque, "type", None) == "tool_use" and bloque.name == TOOL_NAME:
-            return normalizar_historia(bloque.input)
+            return _con_fuentes(bloque.input, len(utterances))
 
     raise RuntimeError("El modelo no devolvió el formulario estructurado. Intenta de nuevo.")

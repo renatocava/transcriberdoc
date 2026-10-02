@@ -5,6 +5,7 @@ from __future__ import annotations
 import streamlit as st
 
 from lib import state
+from lib.hablantes import hablantes, mapping_inicial
 from lib.extraction import extraer_historia_clinica
 from lib.transcription import transcribir_audio
 
@@ -36,24 +37,26 @@ def render_processing() -> None:
             )
 
             status.update(label="Identificando participantes...")
-            st.write("Identificando participantes...")
-            mapping = state.mapping_desde("Doctor")
+            mapping = mapping_inicial(transcripcion["utterances"], state.modo_hablantes())
+            n = len(hablantes(transcripcion["utterances"]))
+            st.write(f"Identificando participantes... {n} {'voz' if n == 1 else 'voces'}")
 
             status.update(label="Estructurando información clínica...")
             st.write("Estructurando información clínica...")
-            historia = extraer_historia_clinica(transcripcion["utterances"], mapping)
+            historia, fuentes = extraer_historia_clinica(transcripcion["utterances"], mapping)
 
-            resultado = (transcripcion, mapping, historia)
+            resultado = (transcripcion, mapping, historia, fuentes)
             status.update(label="Historia clínica lista", state="complete", expanded=False)
         except Exception as exc:  # la demo nunca debe crashear en vivo
             st.session_state["error"] = f"{type(exc).__name__}: {exc}"
             status.update(label="No se pudo procesar la consulta", state="error")
 
     if resultado is not None:
-        transcripcion, mapping, historia = resultado
+        transcripcion, mapping, historia, fuentes = resultado
         st.session_state["transcription"] = transcripcion
         st.session_state["speaker_mapping"] = mapping
         st.session_state["historia"] = state.ensure_uids(historia)
+        st.session_state["fuentes"] = fuentes
         state.set_stage(state.REVIEW)
 
     st.rerun()

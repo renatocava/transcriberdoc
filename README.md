@@ -39,13 +39,24 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
 
 ## Uso en la demo
 
-1. **Grabar** — botón "Iniciar grabación" / "Detener grabación". Al detener,
-   arranca el procesamiento automáticamente.
+1. **Grabar** — antes de empezar, elige **Participantes**: *Automático* (detecta
+   cuántas voces hay), *Solo el médico* (dictado), *Médico y paciente* o *Con
+   acompañante*. La elección se recuerda entre consultas. Luego "Iniciar
+   grabación" / "Detener grabación"; al detener, arranca el procesamiento.
 2. **Procesar** — 15-40 s para una consulta de 2-3 minutos.
 3. **Revisar** — transcripción a la izquierda, historia clínica editable a la
    derecha. Arriba de la transcripción queda un reproductor con el audio de la
-   consulta, para escuchar lo que se grabó mientras se revisa el formulario. Si el sistema confundió quién es quién, cambia "Speaker A es:" y
-   confirma para re-extraer (ojo: se pierden las ediciones manuales).
+   consulta, para escuchar lo que se grabó mientras se revisa el formulario.
+   - **Roles:** cada voz detectada tiene su rol (Doctor, Paciente, Acompañante,
+     Otro). Si el sistema confundió quién es quién, corrígelo y confirma para
+     re-extraer (ojo: se pierden las ediciones manuales). Si las voces no cuadran
+     con el modo elegido, aparece un aviso.
+   - **Fuentes:** cada dato lleva un 📎. Al pasar el mouse muestra la cita textual
+     y el minuto; al hacer clic resalta la intervención en la transcripción y
+     reproduce solo ese trozo de audio. ✏️ marca datos editados a mano y ⚠️ los
+     que no tienen respaldo en la transcripción. Cada intervención indica qué
+     datos salieron de ella, y su ▶ la reproduce.
+     En modo simulado los minutos son aproximados (no salen del audio real).
 4. **Guardar** — pantalla de confirmación y "Nueva consulta" para volver a empezar.
 
 **Plan B si falla el micrófono de la clínica:** en la pantalla inicial, expander

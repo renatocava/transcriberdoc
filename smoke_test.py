@@ -19,6 +19,8 @@ def main() -> int:
     os.environ["USE_MOCK"] = "false" if real else "true"
 
     from lib.extraction import extraer_historia_clinica, formatear_dialogo
+    from lib.fuentes import vincular
+    from lib.hablantes import AUTO, DOS, UNO, es_dictado, mapping_inicial
     from lib.mock_data import transcripcion_mock
     from lib.schema import historia_input_schema, normalizar_historia
     from lib.transcription import transcribir_audio
@@ -26,20 +28,46 @@ def main() -> int:
     esquema = historia_input_schema()
     assert "$defs" not in json.dumps(esquema), "quedaron $defs sin aplanar"
     assert "$ref" not in json.dumps(esquema), "quedaron $ref sin aplanar"
-    print(f"[1/3] Schema aplanado OK — required: {esquema['required']}")
+    print(f"[1/5] Schema aplanado OK — required: {esquema['required']}")
+
+    voces = lambda *s: [{"speaker": x, "text": "t"} for x in s]  # noqa: E731
+    assert es_dictado(mapping_inicial(voces("A"), AUTO))
+    assert es_dictado(mapping_inicial(voces("A", "B"), UNO))
+    assert mapping_inicial(voces("A", "B", "C"), AUTO)["C"] == "Acompañante"
+    assert mapping_inicial(voces("A", "B", "C"), DOS)["C"] == "Otro"
+    print("[2/5] Asignación de roles por modo OK")
+
+    h = {"paciente": {"nombre": "Ana"}, "diagnosticos": [{"descripcion": "X", "tipo": "presuntivo"}],
+         "antecedentes": {"alergias": ["Penicilina"]}}
+    mapa = vincular(h, [
+        {"campo": "paciente.nombre", "fragmentos": [2]},
+        {"campo": "diagnosticos[0]", "fragmentos": [3, 99]},  # 99 fuera de rango
+        {"campo": "antecedentes.alergias[0]", "fragmentos": [1]},
+        {"campo": "plan.inventado", "fragmentos": [1]},  # ruta inexistente
+        {"campo": "paciente.edad", "fragmentos": [0]},  # número inválido
+    ], n_utterances=5)
+    assert mapa["paciente.nombre"]["ids"] == [1]
+    assert h["diagnosticos"][0]["_fuentes"]["ids"] == [2]
+    assert mapa["antecedentes.alergias::Penicilina"]["ids"] == [0]
+    assert set(mapa) == {"paciente.nombre", "antecedentes.alergias::Penicilina"}
+    print("[3/5] Validación de fuentes OK")
+
 
     if audio:
         with open(audio, "rb") as fh:
             transcripcion = transcribir_audio(fh.read(), os.path.basename(audio))
     else:
         transcripcion = transcripcion_mock()
-    print(f"[2/3] Transcripción OK — {len(transcripcion['utterances'])} intervenciones")
+    print(f"[4/5] Transcripción OK — {len(transcripcion['utterances'])} intervenciones")
     print(formatear_dialogo(transcripcion["utterances"][:4], {"A": "Doctor", "B": "Paciente"}))
 
-    historia = extraer_historia_clinica(transcripcion["utterances"], {"A": "Doctor", "B": "Paciente"})
+    mapping = mapping_inicial(transcripcion["utterances"], AUTO)
+    historia, fuentes = extraer_historia_clinica(transcripcion["utterances"], mapping)
     historia = normalizar_historia(historia)
-    print("[3/3] Extracción OK")
+    print(f"[5/5] Extracción OK — {len(fuentes)} campos con fuente")
     print(json.dumps(historia, indent=2, ensure_ascii=False))
+    for ruta, f in fuentes.items():
+        print(f"  {ruta:<55} <- {', '.join(f'#{i + 1}' for i in f['ids'])}")
     return 0
 
 

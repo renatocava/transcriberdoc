@@ -112,3 +112,35 @@ def historia_mock() -> dict[str, Any]:
             "proxima_cita": "Control en una semana con resultados de exámenes",
         },
     }
+
+
+def fuentes_mock() -> list[dict[str, Any]]:
+    """Fuentes de `historia_mock`, numeradas como `_DIALOGO` ([1] = primera línea)."""
+    pares = [
+        ("paciente.nombre", [2]),
+        ("paciente.edad", [3, 4]),
+        ("paciente.sexo", [3]),
+        ("motivo_consulta", [6]),
+        ("enfermedad_actual", [6, 8, 10]),
+        ("antecedentes.personales[0]", [11, 12]),
+        ("antecedentes.alergias[0]", [12, 13]),
+        ("antecedentes.medicamentos_actuales[0]", [14]),
+        ("antecedentes.medicamentos_actuales[1]", [14]),
+        ("examen_fisico.signos_vitales.presion_arterial", [16]),
+        ("examen_fisico.signos_vitales.frecuencia_cardiaca", [16]),
+        ("examen_fisico.signos_vitales.temperatura", [16]),
+        ("examen_fisico.signos_vitales.saturacion_oxigeno", [16]),
+        ("examen_fisico.hallazgos", [15]),
+        ("diagnosticos[0]", [18]),
+        ("plan.medicamentos[0]", [19, 12]),
+        ("plan.medicamentos[1]", [19]),
+        ("plan.examenes_solicitados[0]", [18]),
+        ("plan.examenes_solicitados[1]", [18]),
+        ("plan.indicaciones[0]", [21]),
+        ("plan.indicaciones[1]", [21]),
+        ("plan.indicaciones[2]", [21]),
+        ("plan.indicaciones[3]", [21]),
+        ("plan.indicaciones[4]", [21]),
+        ("plan.proxima_cita", [22]),
+    ]
+    return [{"campo": c, "fragmentos": f} for c, f in pares]

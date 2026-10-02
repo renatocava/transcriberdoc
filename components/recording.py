@@ -7,6 +7,7 @@ from pathlib import Path
 import streamlit as st
 
 from lib import state
+from lib.hablantes import AYUDA_MODOS, MODOS
 
 AUDIO_DEMO = Path(__file__).resolve().parent.parent / "assets" / "demo-consulta.mp3"
 
@@ -18,6 +19,26 @@ def _arrancar(audio_bytes: bytes, filename: str, audio_id: str | None = None) ->
     st.session_state["error"] = None
     state.set_stage(state.PROCESSING)
     st.rerun()
+
+
+def _guardar_modo() -> None:
+    st.session_state[state.CLAVE_MODO] = st.session_state["w_modo"]
+
+
+def _selector_modo() -> None:
+    # El widget se copia a una clave propia porque Streamlit olvida el valor de
+    # los widgets que no se dibujan, y este solo existe en la pantalla inicial.
+    st.session_state["w_modo"] = state.modo_hablantes()
+    modo = st.segmented_control(
+        "Participantes",
+        options=list(MODOS),
+        format_func=MODOS.get,
+        key="w_modo",
+        required=True,
+        on_change=_guardar_modo,
+        width="stretch",
+    )
+    st.caption(AYUDA_MODOS[modo])
 
 
 def _grabador() -> None:
@@ -54,6 +75,7 @@ def render_idle() -> None:
             "Presiona el micrófono para grabar la consulta médica.</p></div>",
             unsafe_allow_html=True,
         )
+        _selector_modo()
         _grabador()
         st.markdown(
             "<p style='text-align:center; color:#64748B; font-size:0.85rem; margin-top:1rem;'>"
