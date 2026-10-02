@@ -57,6 +57,11 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
      que no tienen respaldo en la transcripción. Cada intervención indica qué
      datos salieron de ella, y su ▶ la reproduce.
      En modo simulado los minutos son aproximados (no salen del audio real).
+   - **CIE-10:** Claude propone un código por diagnóstico y hasta 3 alternativas;
+     la app solo acepta los que existen y están vigentes en el catálogo oficial
+     del MINSA (ver abajo). Si propuso uno inexistente o dado de baja, se
+     descarta con un aviso. El médico confirma o cambia el código con el buscador
+     (por código o por palabras) junto a cada diagnóstico.
 4. **Guardar** — pantalla de confirmación y "Nueva consulta" para volver a empezar.
 
 **Plan B si falla el micrófono de la clínica:** en la pantalla inicial, expander

@@ -84,7 +84,12 @@ def historia_mock() -> dict[str, Any]:
             ),
         },
         "diagnosticos": [
-            {"descripcion": "Faringoamigdalitis aguda, probablemente bacteriana", "tipo": "presuntivo"},
+            {
+                "descripcion": "Faringoamigdalitis aguda, probablemente bacteriana",
+                "tipo": "presuntivo",
+                "cie10": "J03.9",
+                "cie10_alternativas": ["J03.0", "J02.9", "J06.81"],
+            },
         ],
         "plan": {
             "medicamentos": [

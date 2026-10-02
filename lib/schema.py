@@ -39,6 +39,17 @@ class ExamenFisico(BaseModel):
 class Diagnostico(BaseModel):
     descripcion: str
     tipo: Literal["presuntivo", "definitivo", "diferencial"]
+    cie10: str = Field(
+        "",
+        description=(
+            "Código CIE-10 más específico que respalde la consulta, con punto (J03.9). "
+            "Vacío si no estás seguro."
+        ),
+    )
+    cie10_alternativas: list[str] = Field(
+        [],
+        description="Hasta 3 códigos CIE-10 alternativos razonables, por si el principal no es el adecuado.",
+    )
 
 
 class Medicamento(BaseModel):

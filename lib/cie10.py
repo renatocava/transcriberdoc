@@ -66,6 +66,21 @@ def es_valido(codigo: str) -> bool:
     return bool(fila and fila["vigente"])
 
 
+def validar(codigo: str) -> tuple[str, str | None]:
+    """Código propuesto -> (código oficial formateado o "", aviso para el médico)."""
+    if not str(codigo or "").strip():
+        return "", None
+    fila = obtener(codigo)
+    if fila is None:
+        return "", f"Se propuso «{codigo}», que no existe en el catálogo CIE-10 del MINSA."
+    if not fila["vigente"]:
+        return "", (
+            f"Se propuso {fila['codigo']} ({fila['descripcion'].lower()}), "
+            "dado de baja por la RM 447-2024-MINSA."
+        )
+    return fila["codigo"], None
+
+
 def buscar(texto: str, limite: int = 20, solo_vigentes: bool = True) -> list[dict[str, Any]]:
     """Busca por código (`J03`, `J03.9`) o por palabras (`amigdalitis aguda`).
 

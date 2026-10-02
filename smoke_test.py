@@ -59,6 +59,15 @@ def main() -> int:
         assert not cie10.es_valido("I84.9")  # cese de uso, RM 447-2024
         assert cie10.obtener("Z99.99") is None
         assert cie10.buscar("amígdalitis estreptocócica")[0]["codigo"] == "J03.0"
+        from lib.extraction import _validar_cie10
+        h = {"diagnosticos": [
+            {"descripcion": "a", "cie10": "j03.9", "cie10_alternativas": ["J99.99", "J03.0"]},
+            {"descripcion": "b", "cie10": "I84.9"},  # cesado
+        ]}
+        _validar_cie10(h)
+        assert h["diagnosticos"][0]["cie10"] == "J03.9"
+        assert h["diagnosticos"][0]["_cie10_sugeridos"] == ["J03.9", "J03.0"]
+        assert h["diagnosticos"][1]["cie10"] == "" and "RM 447-2024" in h["diagnosticos"][1]["_cie10_aviso"]
         meta = cie10.procedencia()
         print(f"      Catálogo CIE-10 OK — {meta['codigos_vigentes']} códigos, sha256 {meta['sha256'][:12]}…")
     else:

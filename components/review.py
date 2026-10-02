@@ -7,7 +7,7 @@ from typing import Any
 
 import streamlit as st
 
-from lib import state
+from lib import cie10, state
 from lib.extraction import extraer_historia_clinica
 from lib.fuentes import SEP, de_texto, editado
 from lib.hablantes import ROLES, aviso, etiqueta, hablantes
@@ -140,7 +140,8 @@ def _indice_inverso(historia: dict[str, Any]) -> dict[int, list[str]]:
             anotar(fuente["ids"], ETIQUETAS.get(ruta, ruta))
     for dx in historia.get("diagnosticos", []):
         if dx.get("_fuentes"):
-            anotar(dx["_fuentes"]["ids"], f"Diagnóstico: {dx.get('descripcion', '')}")
+            codigo = f" ({dx['cie10']})" if dx.get("cie10") else ""
+            anotar(dx["_fuentes"]["ids"], f"Diagnóstico: {dx.get('descripcion', '')}{codigo}")
     for med in historia.get("plan", {}).get("medicamentos", []):
         if med.get("_fuentes"):
             anotar(med["_fuentes"]["ids"], f"Medicamento: {med.get('nombre', '')}")
@@ -438,12 +439,47 @@ def _seccion_diagnosticos(historia: dict) -> None:
             )
             _boton_fuente(c_src, dx.get("_fuentes"), dx if dx.get("descripcion") else None, f"f_dx_src_{uid}")
             c_del.button("×", key=f"f_dx_del_{uid}", help="Eliminar", on_click=_quitar_uid, args=(diags, uid))
+            _selector_cie10(dx, uid)
         st.button(
             "＋ Agregar diagnóstico",
             key="f_dx_add",
             on_click=_agregar_registro,
-            args=(diags, {"descripcion": "", "tipo": "presuntivo"}),
+            args=(diags, {"descripcion": "", "tipo": "presuntivo", "cie10": ""}),
         )
+
+
+def _selector_cie10(dx: dict, uid: str) -> None:
+    """Código CIE-10 del diagnóstico: propuesta validada, alternativas o búsqueda en el catálogo."""
+    if not cie10.disponible():
+        st.caption("Catálogo CIE-10 no disponible (scripts/construir_cie10.py).")
+        return
+    c_cod, c_bus = st.columns([7, 4], vertical_alignment="center")
+    consulta = c_bus.text_input(
+        "Buscar CIE-10",
+        key=f"f_dx_bus_{uid}",
+        placeholder="🔍 Buscar CIE-10: código o palabras",
+        label_visibility="collapsed",
+    )
+    actual = dx.get("cie10") or ""
+    if consulta.strip():
+        candidatos = [c["codigo"] for c in cie10.buscar(consulta, limite=25)]
+    else:
+        candidatos = list(dx.get("_cie10_sugeridos") or [])
+    opciones = list(dict.fromkeys(["", actual, *candidatos])) if actual else ["", *candidatos]
+    descripciones = {c: (cie10.obtener(c) or {}).get("descripcion", "") for c in opciones if c}
+    dx["cie10"] = c_cod.selectbox(
+        "CIE-10",
+        opciones,
+        index=opciones.index(actual),
+        format_func=lambda c: f"{c} · {descripciones[c]}" if c else "— sin código CIE-10 —",
+        key=f"f_dx_cie_{uid}",
+        label_visibility="collapsed",
+        help="Catálogo CIE-10 oficial del MINSA (incluye la RM 447-2024).",
+    )
+    if consulta.strip() and not candidatos:
+        st.caption("Sin resultados en el catálogo para esa búsqueda.")
+    if not dx["cie10"] and dx.get("_cie10_aviso"):
+        st.caption(f"⚠️ {dx['_cie10_aviso']}")
 
 
 def _seccion_plan(historia: dict) -> None:

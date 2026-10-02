@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from lib import cie10
 from lib.config import api_key, usar_mock
 from lib.fuentes import esquema_fuentes, vincular
 from lib.hablantes import es_dictado, etiqueta
@@ -25,7 +26,9 @@ SYSTEM_PROMPT = (
     "lo que cuenta sobre el paciente es válido para la historia, pero los datos de "
     "identificación (nombre, edad, sexo) son siempre los del paciente. (6) Cada intervención "
     "lleva un número [n]. En `fuentes` registra, para CADA dato que llenes, los números de "
-    "las intervenciones de donde sale; si un dato no tiene respaldo en ninguna, no lo llenes."
+    "las intervenciones de donde sale; si un dato no tiene respaldo en ninguna, no lo llenes. "
+    "(7) Para cada diagnóstico propone el código CIE-10 más específico que permita lo que se "
+    "dijo y hasta 3 alternativas; si no estás seguro, deja `cie10` vacío: el médico lo elegirá."
 )
 
 CONTEXTO_DICTADO = (
@@ -63,7 +66,26 @@ def _con_fuentes(
     datos = dict(datos or {})
     fuentes = datos.pop("fuentes", None) or []
     historia = normalizar_historia(datos)
+    _validar_cie10(historia)
     return historia, vincular(historia, fuentes, n_utterances)
+
+
+def _validar_cie10(historia: dict[str, Any]) -> None:
+    """Deja solo códigos del catálogo oficial; lo descartado queda como aviso.
+
+    La propuesta y las alternativas válidas quedan en `_cie10_sugeridos`
+    (interno, no se exporta) para ofrecerlas siempre en el selector.
+    """
+    for dx in historia.get("diagnosticos", []):
+        alternativas = dx.pop("cie10_alternativas", None) or []
+        if not cie10.disponible():
+            continue
+        codigo, aviso = cie10.validar(dx.get("cie10", ""))
+        dx["cie10"] = codigo
+        if aviso:
+            dx["_cie10_aviso"] = aviso
+        validas = [cie10.validar(a)[0] for a in alternativas]
+        dx["_cie10_sugeridos"] = list(dict.fromkeys(c for c in [codigo, *validas[:3]] if c))
 
 
 def extraer_historia_clinica(
