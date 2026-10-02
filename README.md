@@ -41,8 +41,16 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
 
 1. **Grabar** — antes de empezar, elige **Participantes**: *Automático* (detecta
    cuántas voces hay), *Solo el médico* (dictado), *Médico y paciente* o *Con
-   acompañante*. La elección se recuerda entre consultas. Luego "Iniciar
-   grabación" / "Detener grabación"; al detener, arranca el procesamiento.
+   acompañante*. Si hay voces registradas, elige también **Médico(s) en la
+   consulta** (hasta 4). Ambas elecciones se recuerdan entre consultas. Luego
+   "Iniciar grabación" / "Detener grabación"; al detener, arranca el procesamiento.
+
+   **Voces de médicos:** en el expander del mismo nombre se graba (o sube en WAV)
+   una muestra de 5–10 s de cada médico, con su consentimiento. La diarización lo
+   reconoce y sus intervenciones aparecen como "Doctor (Dr. Hurtado)", con el rol
+   asignado solo. Las muestras se guardan en `voces/` (fuera de git; la voz es un
+   dato biométrico). En Streamlit Cloud el disco se borra al reiniciar, así que
+   allí las voces no persisten.
 2. **Procesar** — 15-40 s para una consulta de 2-3 minutos.
 3. **Revisar** — transcripción a la izquierda, historia clínica editable a la
    derecha. Arriba de la transcripción queda un reproductor con el audio de la

@@ -67,10 +67,20 @@ def init_state() -> None:
     for clave, valor in _DEFECTOS.items():
         st.session_state.setdefault(clave, copy.deepcopy(valor))
     st.session_state.setdefault(CLAVE_MODO, AUTO)
+    st.session_state.setdefault(CLAVE_MEDICOS, [])
 
 
 def modo_hablantes() -> str:
     return st.session_state.get(CLAVE_MODO, AUTO)
+
+
+#: Ids de los médicos (voces registradas) presentes en la consulta. Como el
+#: modo, se mantiene entre consultas.
+CLAVE_MEDICOS = "medicos_consulta"
+
+
+def medicos_consulta() -> list[str]:
+    return list(st.session_state.get(CLAVE_MEDICOS, []))
 
 
 def stage() -> str:

@@ -35,7 +35,37 @@ def main() -> int:
     assert es_dictado(mapping_inicial(voces("A", "B"), UNO))
     assert mapping_inicial(voces("A", "B", "C"), AUTO)["C"] == "Acompañante"
     assert mapping_inicial(voces("A", "B", "C"), DOS)["C"] == "Otro"
-    print("[2/5] Asignación de roles por modo OK")
+    # Con un médico reconocido por su voz, él es el Doctor aunque no hable primero.
+    m = mapping_inicial(voces("A", "Dr. Hurtado", "B"), AUTO, ["Dr. Hurtado"])
+    assert m == {"Dr. Hurtado": "Doctor", "A": "Paciente", "B": "Acompañante"}
+    from lib.hablantes import etiqueta
+    assert etiqueta("Dr. Hurtado", m) == "Doctor (Dr. Hurtado)" and etiqueta("A", m) == "Paciente"
+
+    import io, tempfile, wave
+    from pathlib import Path
+    from lib import voces as registro_voces
+
+    def wav(segundos: float) -> bytes:
+        buf = io.BytesIO()
+        with wave.open(buf, "wb") as w:
+            w.setnchannels(1); w.setsampwidth(2); w.setframerate(16000)
+            w.writeframes(b"\0\0" * int(16000 * segundos))
+        return buf.getvalue()
+
+    assert registro_voces.preparar_wav(wav(14))[1] == registro_voces.MAX_SEGUNDOS  # recorta a 10 s
+    try:
+        registro_voces.preparar_wav(wav(1.5))
+        raise AssertionError("debió rechazar una muestra de 1,5 s")
+    except ValueError:
+        pass
+    with tempfile.TemporaryDirectory() as tmp:
+        registro_voces.CARPETA, registro_voces.INDICE = Path(tmp), Path(tmp) / "medicos.json"
+        medico = registro_voces.registrar("Dr. Prueba", wav(5))
+        nombres, muestras = registro_voces.referencias([medico["id"]])
+        assert nombres == ["Dr. Prueba"] and muestras[0].startswith("data:audio/wav;base64,")
+        registro_voces.eliminar(medico["id"])
+        assert registro_voces.listar() == []
+    print("[2/5] Asignación de roles y voces de médicos OK")
 
     h = {"paciente": {"nombre": "Ana"}, "diagnosticos": [{"descripcion": "X", "tipo": "presuntivo"}],
          "antecedentes": {"alergias": ["Penicilina"]}}

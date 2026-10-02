@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import streamlit as st
 
-from lib import state
+from lib import state, voces
 from lib.hablantes import hablantes, mapping_inicial
 from lib.extraction import extraer_historia_clinica
 from lib.transcription import transcribir_audio
@@ -31,13 +31,15 @@ def render_processing() -> None:
         try:
             status.update(label="Transcribiendo audio con IA...")
             st.write("Transcribiendo audio con IA...")
+            conocidos = voces.referencias(state.medicos_consulta())
             transcripcion = transcribir_audio(
                 st.session_state.get("audio_bytes"),
                 st.session_state.get("audio_filename", "consulta.webm"),
+                conocidos=conocidos,
             )
 
             status.update(label="Identificando participantes...")
-            mapping = mapping_inicial(transcripcion["utterances"], state.modo_hablantes())
+            mapping = mapping_inicial(transcripcion["utterances"], state.modo_hablantes(), conocidos[0])
             n = len(hablantes(transcripcion["utterances"]))
             st.write(f"Identificando participantes... {n} {'voz' if n == 1 else 'voces'}")
 

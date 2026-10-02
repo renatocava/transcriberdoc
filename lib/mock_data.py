@@ -42,10 +42,13 @@ _DIALOGO = [
 ]
 
 
-def transcripcion_mock() -> dict[str, Any]:
+def transcripcion_mock(medico: str | None = None) -> dict[str, Any]:
+    """Consulta simulada; con `medico`, la voz del doctor llega con ese nombre (como con voces registradas)."""
     utterances = []
     t = 0.0
     for speaker, texto in _DIALOGO:
+        if medico and speaker == "A":
+            speaker = medico
         dur = max(2.0, len(texto) / 14)
         utterances.append(
             {"speaker": speaker, "text": texto, "start": round(t, 2), "end": round(t + dur, 2)}

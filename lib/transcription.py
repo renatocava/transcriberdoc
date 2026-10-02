@@ -31,8 +31,10 @@ def _a_dict(obj: Any) -> Any:
     return obj
 
 
-def _letra_para(speaker_id: str, cache: dict[str, str]) -> str:
-    """Mapea `speaker_1` -> "A", `speaker_2` -> "B", etc."""
+def _letra_para(speaker_id: str, cache: dict[str, str], conocidos: set[str] = frozenset()) -> str:
+    """Mapea `speaker_1` -> "A", `speaker_2` -> "B", etc.; los médicos conocidos conservan su nombre."""
+    if speaker_id in conocidos:
+        return speaker_id
     if speaker_id in cache:
         return cache[speaker_id]
     match = re.search(r"(\d+)\s*$", str(speaker_id))
@@ -56,15 +58,25 @@ def _fusionar(utterances: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return fusionadas
 
 
-def transcribir_audio(audio_bytes: bytes, filename: str = "consulta.webm") -> dict[str, Any]:
+def transcribir_audio(
+    audio_bytes: bytes,
+    filename: str = "consulta.webm",
+    conocidos: tuple[list[str], list[str]] | None = None,
+) -> dict[str, Any]:
     """Transcribe el audio y devuelve el transcript con sus intervenciones.
+
+    Args:
+        conocidos: (nombres, muestras como data URL) de médicos registrados
+            (`lib.voces.referencias`). Sus intervenciones llegan con el nombre
+            como hablante en lugar de una letra.
 
     Returns:
         {"transcript_completo": str,
-         "utterances": [{"speaker": "A"|"B", "text": str, "start": float, "end": float}]}
+         "utterances": [{"speaker": "A"|"B"|nombre, "text": str, "start": float, "end": float}]}
     """
+    nombres, muestras = conocidos or ([], [])
     if usar_mock():
-        return transcripcion_mock()
+        return transcripcion_mock(medico=nombres[0] if nombres else None)
 
     if not audio_bytes:
         raise ValueError("No se recibió audio para transcribir.")
@@ -78,6 +90,7 @@ def transcribir_audio(audio_bytes: bytes, filename: str = "consulta.webm") -> di
         language="es",
         response_format="diarized_json",
         chunking_strategy="auto",
+        **({"known_speaker_names": nombres, "known_speaker_references": muestras} if nombres else {}),
     )
 
     datos = _a_dict(respuesta)
@@ -97,7 +110,7 @@ def transcribir_audio(audio_bytes: bytes, filename: str = "consulta.webm") -> di
             continue
         utterances.append(
             {
-                "speaker": _letra_para(seg.get("speaker") or "speaker_1", cache),
+                "speaker": _letra_para(seg.get("speaker") or "speaker_1", cache, set(nombres)),
                 "text": texto,
                 "start": float(seg.get("start") or 0.0),
                 "end": float(seg.get("end") or 0.0),

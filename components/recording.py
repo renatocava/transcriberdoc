@@ -6,6 +6,7 @@ from pathlib import Path
 
 import streamlit as st
 
+from components.medicos import gestion_voces, selector_medicos
 from lib import state
 from lib.hablantes import AYUDA_MODOS, MODOS
 
@@ -76,6 +77,7 @@ def render_idle() -> None:
             unsafe_allow_html=True,
         )
         _selector_modo()
+        selector_medicos()
         _grabador()
         st.markdown(
             "<p style='text-align:center; color:#64748B; font-size:0.85rem; margin-top:1rem;'>"
@@ -83,6 +85,8 @@ def render_idle() -> None:
             "</p>",
             unsafe_allow_html=True,
         )
+
+        gestion_voces()
 
         with st.expander("Opciones de demo"):
             if AUDIO_DEMO.exists():

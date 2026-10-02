@@ -7,7 +7,8 @@ detectó el modelo. Sin dependencias de Streamlit: lo usan también las pruebas.
 
 from __future__ import annotations
 
-from typing import Any
+import re
+from typing import Any, Iterable
 
 AUTO = "auto"
 UNO = "1"
@@ -42,22 +43,34 @@ def hablantes(utterances: list[dict[str, Any]]) -> list[str]:
     return vistos
 
 
-def mapping_inicial(utterances: list[dict[str, Any]], modo: str) -> dict[str, str]:
+def es_nombre(speaker: str) -> bool:
+    """True si la voz llegó con el nombre de un médico registrado (no una letra)."""
+    return not re.fullmatch(r"[A-Z]?", speaker or "")
+
+
+def mapping_inicial(
+    utterances: list[dict[str, Any]], modo: str, medicos: Iterable[str] = ()
+) -> dict[str, str]:
     """Rol por defecto de cada voz según el modo elegido.
 
-    El primero en hablar se toma como el médico, que es quien suele abrir la
-    consulta; el resto se corrige en la pantalla de revisión.
+    Los médicos reconocidos por su voz son «Doctor». Si no hay ninguno, el
+    primero en hablar se toma como el médico, que es quien suele abrir la
+    consulta. El resto se corrige en la pantalla de revisión.
     """
     voces = hablantes(utterances) or ["A"]
     if modo == UNO or len(voces) == 1:
         return {v: "Doctor" for v in voces}
 
-    mapping = {voces[0]: "Doctor", voces[1]: "Paciente"}
-    # Con "médico y paciente" una tercera voz suele ser un error de diarización:
+    reconocidos = [v for v in voces if v in set(medicos)]
+    otros = [v for v in voces if v not in reconocidos]
+    if not reconocidos:
+        reconocidos, otros = otros[:1], otros[1:]
+    mapping = {v: "Doctor" for v in reconocidos}
+    # Con "médico y paciente" una voz de más suele ser un error de diarización:
     # se marca como "Otro" para que salte a la vista en la revisión.
     resto = "Otro" if modo == DOS else "Acompañante"
-    for v in voces[2:]:
-        mapping[v] = resto
+    for i, v in enumerate(otros):
+        mapping[v] = "Paciente" if i == 0 else resto
     return mapping
 
 
@@ -66,8 +79,11 @@ def es_dictado(mapping: dict[str, str]) -> bool:
 
 
 def etiqueta(speaker: str, mapping: dict[str, str]) -> str:
-    """Rol visible de una voz; si dos voces comparten rol se distinguen por letra."""
+    """Rol visible de una voz: «Doctor (Dr. Hurtado)» si se reconoció por su voz;
+    si dos voces sin nombre comparten rol, se distinguen por letra."""
     rol = mapping.get(speaker, speaker or "Hablante")
+    if es_nombre(speaker):
+        return f"{rol} ({speaker})"
     if es_dictado(mapping):
         return rol
     if sum(1 for r in mapping.values() if r == rol) > 1:
