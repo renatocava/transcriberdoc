@@ -83,6 +83,39 @@ Requiere `ffmpeg` y `piper` con dos voces en `~/.local/share/piper-voices`:
 `es_MX-ald-medium` (doctor) y `es_MX-claude-high` (paciente), descargables de
 [rhasspy/piper-voices](https://huggingface.co/rhasspy/piper-voices).
 
+## Catálogo CIE-10
+
+`data/cie10.sqlite` (1,9 MB) es el catálogo CIE-10 **oficial del MINSA**: el Excel
+`CIE10_MINSA_OFICIAL.xlsx` (hoja "VOLUMEN VIGENTE") enlazado desde
+[REUNIS](https://www.minsa.gob.pe/reunis/?op=3&niv=1). Trae 15 037 códigos
+vigentes, incluidas las extensiones peruanas de 5–6 caracteres del HIS, y ya
+incorpora la RM 447-2024-MINSA (los 361 códigos del Anexo 1 están; los 20 del
+Anexo 2 se guardan con `vigente = 0`). La procedencia, con la huella sha256 del
+Excel, queda guardada en la tabla `meta`.
+
+```python
+from lib import cie10
+cie10.buscar("amigdalitis aguda")   # por palabras, sin importar tildes
+cie10.buscar("J03")                 # por código o prefijo
+cie10.obtener("J03.9")              # {'codigo': 'J03.9', 'descripcion': ..., 'vigente': True}
+cie10.es_valido("I84.9")            # False: cese de uso por la RM 447-2024
+```
+
+```bash
+sqlite3 data/cie10.sqlite "SELECT c.codigo, c.descripcion FROM codigos_fts f
+  JOIN codigos c ON c.id = f.rowid WHERE codigos_fts MATCH 'neumonia* bacteriana*'"
+```
+
+Para regenerarlo cuando el MINSA publique una versión nueva (descárgalo a mano
+desde REUNIS; el servidor bloquea descargas automáticas):
+
+```bash
+python scripts/construir_cie10.py CIE10_MINSA_OFICIAL.xlsx --anexo1 "ANEXO 01.pdf"
+```
+
+El script no genera nada si algo no cuadra (capítulos, duplicados, líneas sin
+interpretar, códigos cesados presentes).
+
 ## Pruebas sin interfaz
 
 ```bash

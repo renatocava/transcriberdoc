@@ -52,6 +52,17 @@ def main() -> int:
     assert set(mapa) == {"paciente.nombre", "antecedentes.alergias::Penicilina"}
     print("[3/5] Validación de fuentes OK")
 
+    from lib import cie10
+    if cie10.disponible():
+        assert cie10.obtener("j03.9")["descripcion"] == "AMIGDALITIS AGUDA, NO ESPECIFICADA"
+        assert cie10.obtener("I10X")["codigo"] == "I10X"
+        assert not cie10.es_valido("I84.9")  # cese de uso, RM 447-2024
+        assert cie10.obtener("Z99.99") is None
+        assert cie10.buscar("amígdalitis estreptocócica")[0]["codigo"] == "J03.0"
+        meta = cie10.procedencia()
+        print(f"      Catálogo CIE-10 OK — {meta['codigos_vigentes']} códigos, sha256 {meta['sha256'][:12]}…")
+    else:
+        print("      Catálogo CIE-10 no generado (scripts/construir_cie10.py)")
 
     if audio:
         with open(audio, "rb") as fh:
