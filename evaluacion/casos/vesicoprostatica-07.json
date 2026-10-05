@@ -1,0 +1,93 @@
+{
+  "id": "vesicoprostatica-07",
+  "formato": "vesicoprostatica",
+  "escenario": "omisiones",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Faustino Arotinco Huallpa."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Quién lo manda, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Doctor Edilberto Saavedra Ñaupari, de urología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, próstata. Aumentada de tamaño. Parénquima heterogéneo. Con algunas calcificaciones pequeñas intraparenquimales, la mayor de 4 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Longitudinal 4.8 centímetros. Anteroposterior 39."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Y el transverso, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Después lo vemos, sigue nomás."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional trescientos diez cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, eso por ahora, que vaya a orinar."
+    }
+  ],
+  "paciente": {
+    "nombre": "Faustino Arotinco Huallpa",
+    "edad": null
+  },
+  "medico_solicitante": "Edilberto Saavedra Ñaupari",
+  "secciones": [
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 39,
+          "unidad": "mm"
+        },
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de parénquima heterogéneo con pequeñas calcificaciones intraparenquimales, la mayor de 4 mm."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 310,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Vejiga no mencionada en absoluto; en próstata faltan el diámetro transverso y el volumen (no deben calcularse); la longitud se dicta en cm (4.8 cm = 48 mm) y el AP sin unidad; solo se dicta el volumen premiccional en palabras, sin postmiccional ni RPM; sin edad ni conclusión.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2907,
+    "output_tokens": 1724
+  }
+}

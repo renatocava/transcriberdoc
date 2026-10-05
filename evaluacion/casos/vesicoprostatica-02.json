@@ -1,0 +1,108 @@
+{
+  "id": "vesicoprostatica-02",
+  "formato": "vesicoprostatica",
+  "escenario": "hallazgo_simple",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Wenceslao Huamanchumo Sandoval, 67 años."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ecografía vésico prostática."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga a mediana repleción, paredes delgadas, contenido anecoico, sin cálculos ni masas. Normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional 350 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata aumentada de tamaño, contornos regulares, ecogenicidad homogénea, sin calcificaciones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Longitudinal 5.2 centímetros, anteroposterior 48 milímetros, transverso 50 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen aproximado sesenta y cinco cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Post miccional 28 cc. Residuo 8 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión: prostatomegalia, volumen 65 cc. Vejiga con RPM de 8 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Wenceslao Huamanchumo Sandoval",
+    "edad": 67
+  },
+  "medico_solicitante": "",
+  "secciones": [
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        },
+        {
+          "valor": 65,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de contornos regulares, ecogenicidad homogénea y sin calcificaciones, con volumen aproximado de 65 cc (prostatomegalia)."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 350,
+          "unidad": "cc"
+        },
+        {
+          "valor": 28,
+          "unidad": "cc"
+        },
+        {
+          "valor": 8,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Prostatomegalia, volumen 65 cc.",
+    "Vejiga con RPM de 8 %."
+  ],
+  "dificultad": "Orden de dictado alterado (vejiga y volumen premiccional antes de la próstata); medida longitudinal dictada en centímetros (5.2 cm → 52 mm); volumen prostático dictado en palabras; porcentaje dictado como «por ciento».",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2906,
+    "output_tokens": 1493
+  }
+}

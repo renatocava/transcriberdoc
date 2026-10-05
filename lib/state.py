@@ -9,7 +9,8 @@ from typing import Any
 
 import streamlit as st
 
-from lib.hablantes import AUTO
+from lib.ecografias import FORMATO_INICIAL
+from lib.hablantes import UNO
 
 IDLE = "idle"
 PROCESSING = "processing"
@@ -50,6 +51,7 @@ _DEFECTOS: dict[str, Any] = {
     "audio_filename": "consulta.webm",
     "transcription": None,
     "speaker_mapping": {"A": "Doctor", "B": "Paciente"},
+    # Historia clínica o, si lleva la clave "plantilla", informe ecográfico.
     "historia": None,
     "fuentes": {},  # ruta -> {"ids", "valor"}; ver lib/fuentes.py
     "foco": [],  # intervenciones resaltadas en la transcripción
@@ -66,12 +68,13 @@ CLAVE_MODO = "modo_hablantes"
 def init_state() -> None:
     for clave, valor in _DEFECTOS.items():
         st.session_state.setdefault(clave, copy.deepcopy(valor))
-    st.session_state.setdefault(CLAVE_MODO, AUTO)
+    st.session_state.setdefault(CLAVE_MODO, UNO)
     st.session_state.setdefault(CLAVE_MEDICOS, [])
+    st.session_state.setdefault(CLAVE_FORMATO, FORMATO_INICIAL)
 
 
 def modo_hablantes() -> str:
-    return st.session_state.get(CLAVE_MODO, AUTO)
+    return st.session_state.get(CLAVE_MODO, UNO)
 
 
 #: Ids de los médicos (voces registradas) presentes en la consulta. Como el
@@ -81,6 +84,15 @@ CLAVE_MEDICOS = "medicos_consulta"
 
 def medicos_consulta() -> list[str]:
     return list(st.session_state.get(CLAVE_MEDICOS, []))
+
+
+#: Formato de salida elegido antes de grabar: historia clínica o una de las
+#: plantillas de ecografía (lib/ecografias.py). Se mantiene entre consultas.
+CLAVE_FORMATO = "formato_salida"
+
+
+def formato() -> str:
+    return st.session_state.get(CLAVE_FORMATO, FORMATO_INICIAL)
 
 
 def stage() -> str:

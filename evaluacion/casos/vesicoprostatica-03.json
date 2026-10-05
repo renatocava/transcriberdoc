@@ -1,0 +1,144 @@
+{
+  "id": "vesicoprostatica-03",
+  "formato": "vesicoprostatica",
+  "escenario": "asistente",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Doctor, el paciente es Aurelio Condori Paucar."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. ¿Edad?"
+    },
+    {
+      "rol": "asistente",
+      "texto": "68 años. Lo manda el doctor Wilfredo Salas Benavides, de urología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Bien. Empezamos. Vejiga a mediana repleción. Paredes delgadas. Contenido anecoico. Sin cálculos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional 320 cc."
+    },
+    {
+      "rol": "asistente",
+      "texto": "320 premiccional."
+    },
+    {
+      "rol": "medico",
+      "texto": "Correcto. Ahora próstata."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata aumentada de tamaño. Ecogenicidad heterogénea. Mide longitudinal 52, anteroposterior 48, transverso 45 milímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "52 por 48 por 45."
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí. Volumen aproximado 58 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Lóbulo medio protruye hacia la luz vesical 1.1 centímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿1.1 centímetros, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Uno punto uno, sí. Sin calcificaciones."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ya orinó el paciente."
+    },
+    {
+      "rol": "medico",
+      "texto": "Postmiccional cuarenta y cinco cc. Residuo 14 por ciento."
+    },
+    {
+      "rol": "asistente",
+      "texto": "45 post, 14 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusiones. Uno, prostatomegalia con protrusión del lóbulo medio. Dos, vejiga con residuo postmiccional de 14 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Aurelio Condori Paucar",
+    "edad": 68
+  },
+  "medico_solicitante": "Wilfredo Salas Benavides",
+  "secciones": [
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "mm"
+        },
+        {
+          "valor": 58,
+          "unidad": "cc"
+        },
+        {
+          "valor": 11,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de ecogenicidad heterogénea, con lóbulo medio que protruye 11 mm hacia la luz vesical, sin calcificaciones."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 320,
+          "unidad": "cc"
+        },
+        {
+          "valor": 45,
+          "unidad": "cc"
+        },
+        {
+          "valor": 14,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Prostatomegalia con protrusión del lóbulo medio.",
+    "Vejiga con residuo postmiccional de 14 %."
+  ],
+  "dificultad": "Media: conversación con asistente que repite medidas (no deben duplicarse), conversión de 1.1 cm a 11 mm, cifra postmiccional dictada en palabras, y la vejiga dictada antes que la próstata.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2082,
+    "output_tokens": 1738
+  }
+}

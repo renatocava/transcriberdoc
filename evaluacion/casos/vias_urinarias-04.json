@@ -1,0 +1,192 @@
+{
+  "id": "vias_urinarias-04",
+  "formato": "vias_urinarias",
+  "escenario": "medidas_cm",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, ecografía de vías urinarias. Paciente Marcelino Ccahuana Villanueva, 67 años."
+    },
+    {
+      "rol": "medico",
+      "texto": "Lo manda el doctor Raúl Espinoza Tello, urología."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo doctor, ya está registrado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal. Mide 10.5 por 4.8 centímetros. Cortical uno punto cuatro."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Uno punto cuatro centímetros?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí, 1.4 cm de cortical."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo. 10.2 por 5.1 cm. Cortical 13 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "En polo superior imagen quística cortical, anecoica, paredes finas, sin septos. Mide 1.8 cm. Quiste simple."
+    },
+    {
+      "rol": "medico",
+      "texto": "Resto del riñón izquierdo sin alteraciones, no hidronefrosis."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata aumentada de tamaño, heterogénea, con calcificaciones gruesas en zona central."
+    },
+    {
+      "rol": "medico",
+      "texto": "Longitudinal 4.9, anteroposterior 3.8, transverso 5.2 centímetros. Volumen 52 ml."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga bien distendida. Paredes engrosadas, trabeculadas, de 6 milímetros. Contenido anecoico, sin cálculos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional 380 ml."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ya orinó, doctor. Está listo para el post."
+    },
+    {
+      "rol": "medico",
+      "texto": "Postmiccional 95 ml. Residuo 25 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusiones. Uno, quiste simple cortical en riñón izquierdo, Bosniak 1."
+    },
+    {
+      "rol": "medico",
+      "texto": "Dos, prostatomegalia con calcificaciones, volumen 52 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Tres, vejiga de esfuerzo. Residuo postmiccional significativo de 25 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Marcelino Ccahuana Villanueva",
+    "edad": 67
+  },
+  "medico_solicitante": "Raúl Espinoza Tello",
+  "secciones": [
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        },
+        {
+          "valor": 13,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste simple cortical en polo superior, anecoico, de paredes finas y sin septos, de 18 mm."
+    },
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 49,
+          "unidad": "mm"
+        },
+        {
+          "valor": 38,
+          "unidad": "mm"
+        },
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 52,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de ecogenicidad heterogénea con calcificaciones gruesas en zona central."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 6,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Paredes vesicales engrosadas y trabeculadas de 6 mm, contenido anecoico sin cálculos."
+    },
+    {
+      "clave": "volumenes",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 380,
+          "unidad": "cc"
+        },
+        {
+          "valor": 95,
+          "unidad": "cc"
+        },
+        {
+          "valor": 25,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": "Residuo postmiccional significativo de 25%."
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple cortical en riñón izquierdo, Bosniak 1.",
+    "Prostatomegalia con calcificaciones, volumen 52 cc.",
+    "Vejiga de esfuerzo. Residuo postmiccional significativo de 25%."
+  ],
+  "dificultad": "Medidas renales y prostáticas dictadas en centímetros (una en palabras: 'uno punto cuatro') y volúmenes en ml que deben convertirse a mm y cc; cortical izquierda dictada en mm mezclada con cm; hallazgos en tres secciones con medida adicional del quiste y del grosor parietal.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2556,
+    "output_tokens": 2338
+  }
+}

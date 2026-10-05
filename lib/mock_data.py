@@ -42,11 +42,52 @@ _DIALOGO = [
 ]
 
 
-def transcripcion_mock(medico: str | None = None) -> dict[str, Any]:
-    """Consulta simulada; con `medico`, la voz del doctor llega con ese nombre (como con voces registradas)."""
+#: Dictado de una ecografía de abdomen: el médico (A) y su asistente (B).
+_DICTADO_ABDOMEN = [
+    ("A", "Ya, empezamos. Paciente Carlos Mendoza Huamán, cincuenta y dos años, viene particular."),
+    ("B", "Carlos Mendoza Huamán, cincuenta y dos. ¿Abdomen completo, doctor?"),
+    ("A", "Sí, abdomen completo. Hígado normal, el lóbulo derecho mide ciento cuarenta y dos "
+          "milímetros."),
+    ("A", "Vesícula: setenta y ocho por treinta y dos milímetros, pared de dos milímetros, y "
+          "adentro hay un cálculo de doce milímetros con sombra acústica posterior."),
+    ("B", "¿Doce milímetros el cálculo?"),
+    ("A", "Doce, sí. Colédoco cuatro milímetros, porta once."),
+    ("A", "Bazo noventa y ocho milímetros, normal. Páncreas sin alteraciones, la cabeza mide "
+          "veintidós."),
+    ("A", "Riñón derecho ciento cuatro por cuarenta y ocho, riñón izquierdo ciento siete por "
+          "cincuenta, los dos normales."),
+    ("A", "Vejiga vacía. Lo demás normal, no hay líquido libre."),
+    ("A", "Conclusión: litiasis vesicular única, el resto del abdomen dentro de límites normales."),
+]
+
+
+def _dictado_normal(formato: str) -> list[tuple[str, str]]:
+    """Dictado mínimo de un estudio normal, para los formatos sin dictado propio."""
+    from lib.ecografias import PLANTILLAS
+
+    nombre = "Jorge Salas Ríos" if formato in ("vesicoprostatica", "vias_urinarias") else "Rosa Flores Vega"
+    return [
+        ("A", f"Paciente {nombre}, cuarenta y cinco años. {PLANTILLAS[formato].nombre}."),
+        ("B", f"{nombre}, cuarenta y cinco años."),
+        ("A", "Todo de aspecto normal, sin hallazgos patológicos. Conclusión: estudio normal."),
+    ]
+
+
+def _dialogo(formato: str | None) -> list[tuple[str, str]]:
+    if formato == "abdomen":
+        return _DICTADO_ABDOMEN
+    from lib.ecografias import es_ecografia
+
+    return _dictado_normal(formato) if es_ecografia(formato) else _DIALOGO
+
+
+def transcripcion_mock(medico: str | None = None, formato: str | None = None) -> dict[str, Any]:
+    """Consulta (o dictado del formato de ecografía) simulada; con `medico`, la voz
+    del doctor llega con ese nombre (como con voces registradas)."""
+    dialogo = _dialogo(formato)
     utterances = []
     t = 0.0
-    for speaker, texto in _DIALOGO:
+    for speaker, texto in dialogo:
         if medico and speaker == "A":
             speaker = medico
         dur = max(2.0, len(texto) / 14)
@@ -55,7 +96,7 @@ def transcripcion_mock(medico: str | None = None) -> dict[str, Any]:
         )
         t += dur + 0.4
     return {
-        "transcript_completo": " ".join(t for _, t in _DIALOGO),
+        "transcript_completo": " ".join(t for _, t in dialogo),
         "utterances": utterances,
     }
 
@@ -152,3 +193,71 @@ def fuentes_mock() -> list[dict[str, Any]]:
         ("plan.proxima_cita", [22]),
     ]
     return [{"campo": c, "fragmentos": f} for c, f in pares]
+
+
+def informe_mock(formato: str) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Informe que devolvería Claude para el dictado simulado del formato, con sus fuentes."""
+    from lib.ecografias import PLANTILLAS
+
+    if formato != "abdomen":
+        plantilla = PLANTILLAS[formato]
+        nombre = _dictado_normal(formato)[1][1].split(",")[0]
+        datos = {
+            "paciente": {"nombre": nombre, "edad": 45},
+            "secciones": {s.clave: s.normal for s in plantilla.secciones},
+            "conclusion": list(plantilla.conclusion),
+        }
+        fuentes = [("paciente.nombre", [1, 2]), ("paciente.edad", [1, 2])]
+        fuentes += [(f"secciones.{s.clave}", [3]) for s in plantilla.secciones]
+        fuentes += [(f"conclusion[{i}]", [3]) for i in range(len(plantilla.conclusion))]
+        return datos, [{"campo": c, "fragmentos": f} for c, f in fuentes]
+
+    datos = {
+        "paciente": {"nombre": "Carlos Mendoza Huamán", "edad": 52},
+        "medico": "",
+        "secciones": {
+            "higado": (
+                "PARÉNQUIMA HOMOGENEA DE ECOGENICIDAD CONSERVADA Y EN FORMA DIFUSA, DE BORDES "
+                "LOBULADOS. NO SE APRECIA DILATACIÓN DE LAS VÍAS BILIARES INTRAHEPÁTICAS.\n"
+                "MIDE: LHD: 142 mm"
+            ),
+            "vesicula": (
+                "MIDE: 78 x 32 mm, DE PAREDES DELGADAS DE 2 mm, CON IMAGEN LITIÁSICA DE 12 mm CON "
+                "SOMBRA ACÚSTICA POSTERIOR EN SU INTERIOR."
+            ),
+            "coledoco": "PERMEABLE DE 4 mm.",
+            "porta": "NO DILATADA DE 11 mm",
+            "bazo": "98 mm DE ECOESTRUCTURA NORMAL.",
+            "pancreas": (
+                "DE MORFOLOGÍA Y ECOGENICIDAD CONSERVADA, SIN LESIÓN FOCAL CIRCUNSCRITA NI "
+                "PROCESOS INFLAMATORIOS, MIDE: 22 mm EN SU PORCION CEFALICA."
+            ),
+            "rinon_der": PLANTILLAS["abdomen"].secciones[6].lineas[0] + "\nSUS DIMENSIONES SON: 104 x 48 mm.",
+            "rinon_izq": PLANTILLAS["abdomen"].secciones[7].lineas[0] + "\nSUS DIMENSIONES SON: 107 x 50 mm.",
+            "vejiga": "VACUA, PAREDES DELGADAS, SIN IMÁGENES SOLIDAS NI QUISTICAS EN SU INTERIOR.",
+            "genitales": "DE CARACTERES MORFOLOGICOS NORMALES PARA LA EDAD.",
+            "douglas": "LIBRE",
+            "cavidad": "NO LIQUIDO LIBRE NO MASAS",
+        },
+        "conclusion": ["LITIASIS VESICULAR ÚNICA.", "RESTO DE ECOGRAFÍA ABDOMINAL DENTRO DE LÍMITES NORMALES."],
+    }
+    pares = [
+        ("paciente.nombre", [1, 2]),
+        ("paciente.edad", [1, 2]),
+        ("secciones.higado", [3]),
+        ("secciones.vesicula", [4, 5, 6]),
+        ("secciones.coledoco", [6]),
+        ("secciones.porta", [6]),
+        ("secciones.bazo", [7]),
+        ("secciones.pancreas", [7]),
+        ("secciones.rinon_der", [8]),
+        ("secciones.rinon_izq", [8]),
+        ("secciones.vejiga", [9]),
+        # «Lo demás normal» respalda genitales y Douglas; el líquido libre se dijo explícito.
+        ("secciones.genitales", [9]),
+        ("secciones.douglas", [9]),
+        ("secciones.cavidad", [9]),
+        ("conclusion[0]", [10]),
+        ("conclusion[1]", [10]),
+    ]
+    return datos, [{"campo": c, "fragmentos": f} for c, f in pares]

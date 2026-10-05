@@ -1,0 +1,134 @@
+{
+  "id": "vesicoprostatica-08",
+  "formato": "vesicoprostatica",
+  "escenario": "multiples_hallazgos",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Hipólito Mendoza Chumpitaz, 71 años."
+    },
+    {
+      "rol": "medico",
+      "texto": "Lo envía el doctor Raúl Benavides, de urología."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo doctor, ya está registrado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata aumentada de tamaño. Ecogenicidad heterogénea."
+    },
+    {
+      "rol": "medico",
+      "texto": "Calcificaciones groseras centrales, la mayor de 6 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Longitudinal 52, AP 48, transverso cincuenta y cinco."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen aproximado 71 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga. Paredes engrosadas, trabeculadas, 7 mm en pared posterior."
+    },
+    {
+      "rol": "medico",
+      "texto": "Contenido anecoico, sin cálculos ni masas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Premiccional 340 cc."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ya orinó, doctor."
+    },
+    {
+      "rol": "medico",
+      "texto": "Postmiccional 110. Residuo 32 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, hipertrofia prostática de 71 cc con calcificaciones. Dos, vejiga de esfuerzo. Tres, residuo postmiccional significativo de 32 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Hipólito Mendoza Chumpitaz",
+    "edad": 71
+  },
+  "medico_solicitante": "Raúl Benavides",
+  "secciones": [
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 55,
+          "unidad": "mm"
+        },
+        {
+          "valor": 71,
+          "unidad": "cc"
+        },
+        {
+          "valor": 6,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de ecogenicidad heterogénea, con calcificaciones groseras centrales, la mayor de 6 mm."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 7,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Paredes vesicales engrosadas y trabeculadas, de 7 mm en la pared posterior, con contenido anecoico sin cálculos ni masas."
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 340,
+          "unidad": "cc"
+        },
+        {
+          "valor": 110,
+          "unidad": "cc"
+        },
+        {
+          "valor": 32,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Hipertrofia prostática de 71 cc con calcificaciones.",
+    "Vejiga de esfuerzo.",
+    "Residuo postmiccional significativo de 32 %."
+  ],
+  "dificultad": "Media: hallazgos en próstata y vejiga, una medida en palabras (cincuenta y cinco), medida de la calcificación que debe ir en la sección próstata, intervenciones del asistente que no aportan datos y conclusión numerada que reemplaza a la normal de la plantilla.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2140,
+    "output_tokens": 2125
+  }
+}

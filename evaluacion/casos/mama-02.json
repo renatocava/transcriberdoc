@@ -1,0 +1,91 @@
+{
+  "id": "mama-02",
+  "formato": "mama",
+  "escenario": "hallazgo_simple",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ecografía de mamas. Paciente Roxana Elizabeth Quispe Huarachi, 29 años."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama derecha. Parénquima homogéneo, ecoestructura conservada. No lesiones focales sólidas ni quísticas. No distorsión."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conductos galactóforos normales, miden dos milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Axila derecha libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama izquierda. En cuadrante superoexterno, hora 2, a 3 cm del pezón, nódulo sólido hipoecoico, ovalado, bordes circunscritos, paralelo a la piel."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mide 1.4 por 0.9 cm. Sin sombra acústica. Doppler sin vascularidad interna significativa."
+    },
+    {
+      "rol": "medico",
+      "texto": "Resto del parénquima izquierdo conservado. Conductos 2 mm. Axila izquierda sin adenopatías."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Nódulo sólido en mama izquierda, cuadrante superoexterno, de aspecto benigno, probable fibroadenoma. BI-RADS 3. Control ecográfico en 6 meses."
+    }
+  ],
+  "paciente": {
+    "nombre": "Roxana Elizabeth Quispe Huarachi",
+    "edad": 29
+  },
+  "medico_solicitante": "",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        },
+        {
+          "valor": 9,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Nódulo sólido hipoecoico ovalado de bordes circunscritos, paralelo a la piel, en cuadrante superoexterno (hora 2, a 30 mm del pezón), de 14 x 9 mm, sin sombra acústica ni vascularidad interna significativa."
+    }
+  ],
+  "conclusion_dictada": [
+    "Nódulo sólido en mama izquierda, cuadrante superoexterno, de aspecto benigno, probable fibroadenoma.",
+    "BI-RADS 3.",
+    "Control ecográfico en 6 meses."
+  ],
+  "dificultad": "Medidas del nódulo dictadas en cm (1.4 x 0.9 cm y distancia al pezón de 3 cm) que deben convertirse a mm; medida ductal derecha dictada en palabras; el hallazgo convive con descripción normal del resto de la mama izquierda.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3027,
+    "output_tokens": 1274
+  }
+}

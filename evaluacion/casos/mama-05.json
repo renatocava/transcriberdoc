@@ -1,0 +1,82 @@
+{
+  "id": "mama-05",
+  "formato": "mama",
+  "escenario": "resto_normal",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ecografía de mamas. Paciente Gabriela Antonieta Vásquez Saavedra, 36 años."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Quién la manda, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Doctora Pilar Aguirre Salcedo, ginecología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama derecha. Parénquima fibroglandular homogéneo."
+    },
+    {
+      "rol": "medico",
+      "texto": "En cuadrante superior externo, hora 10, a 4 cm del pezón, nódulo sólido hipoecoico, ovalado, bordes circunscritos, paralelo a la piel."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mide 1.4 por 0.9 cm. Sin sombra acústica. Doppler sin vascularidad interna."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conductos galactóforos normales, mide dos milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Axila derecha libre, sin adenopatías."
+    },
+    {
+      "rol": "medico",
+      "texto": "El resto del estudio, todo normal."
+    }
+  ],
+  "paciente": {
+    "nombre": "Gabriela Antonieta Vásquez Saavedra",
+    "edad": 36
+  },
+  "medico_solicitante": "Pilar Aguirre Salcedo",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 2,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        },
+        {
+          "valor": 9,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Nódulo sólido hipoecoico ovalado de bordes circunscritos, paralelo a la piel, en cuadrante superior externo (hora 10, a 4 cm del pezón), de 14 x 9 mm, sin sombra acústica ni vascularidad interna al Doppler."
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Media: conversión de cm a mm del nódulo (1.4 x 0.9 cm), medida del conducto dictada en palabras, la distancia al pezón (4 cm) es localización y no medida a reportar, y la mama izquierda queda cubierta solo por la frase general «el resto del estudio, todo normal», sin medida de conductos.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3041,
+    "output_tokens": 1178
+  }
+}

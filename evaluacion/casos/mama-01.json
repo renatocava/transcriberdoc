@@ -1,0 +1,71 @@
+{
+  "id": "mama-01",
+  "formato": "mama",
+  "escenario": "normal_completo",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Jesica Marleny Huamán Cutipa, 34 años. Solicita doctor Raúl Espinoza Tello."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama derecha. Parénquima homogéneo, ecoestructura conservada. No lesión focal sólida ni quística. No distorsión arquitectural."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conductos galactóforos de calibre normal, mide 1.8 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Axila derecha libre, sin adenopatías."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama izquierda. Igual, parénquima homogéneo, sin lesiones focales, sin distorsión."
+    },
+    {
+      "rol": "medico",
+      "texto": "Galactóforos normales, miden dos milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Axila izquierda sin adenopatías."
+    }
+  ],
+  "paciente": {
+    "nombre": "Jesica Marleny Huamán Cutipa",
+    "edad": 34
+  },
+  "medico_solicitante": "Raúl Espinoza Tello",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 1.8,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Caso normal completo: una medida de galactóforos con decimal (1.8 mm) y otra dictada en palabras (dos milímetros); no se dicta conclusión.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3009,
+    "output_tokens": 568
+  }
+}

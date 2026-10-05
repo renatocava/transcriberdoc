@@ -1,0 +1,220 @@
+{
+  "id": "abdomen-03",
+  "formato": "abdomen",
+  "escenario": "asistente",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Doctor, ya está echada la paciente. Carmen Rosa Ticona Mamani, 47 años. La manda el doctor Julio Paredes Villanueva."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Empezamos por hígado. Homogéneo, ecogenicidad conservada. Vías biliares intrahepáticas no dilatadas. Lóbulo derecho 138."
+    },
+    {
+      "rol": "asistente",
+      "texto": "138 milímetros el lóbulo derecho."
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí. Vesícula 82 por 34."
+    },
+    {
+      "rol": "asistente",
+      "texto": "82 por 34."
+    },
+    {
+      "rol": "medico",
+      "texto": "Pared 2.5. En su interior imagen ecogénica con sombra acústica posterior. Se moviliza con el cambio de posición. Mide 14 milímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Cálculo de 14, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "14, sí. Uno solo, único."
+    },
+    {
+      "rol": "medico",
+      "texto": "Colédoco 4. Porta 10."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Colédoco 4, porta 11."
+    },
+    {
+      "rol": "medico",
+      "texto": "No, porta 10. Diez. Bazo 96, normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Páncreas conservado, cabeza 22."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho 104 por 46, normal. Izquierdo ciento ocho por cincuenta, normal también."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ciento ocho por cincuenta el izquierdo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Correcto. Vejiga vacía. Útero y anexos sin alteraciones para la edad. Douglas libre. No líquido libre en cavidad, no masas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, litiasis vesicular única. Dos, resto del estudio sin alteraciones."
+    }
+  ],
+  "paciente": {
+    "nombre": "Carmen Rosa Ticona Mamani",
+    "edad": 47
+  },
+  "medico_solicitante": "Julio Paredes Villanueva",
+  "secciones": [
+    {
+      "clave": "higado",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 138,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vesicula",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 82,
+          "unidad": "mm"
+        },
+        {
+          "valor": 34,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2.5,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "En su interior se observa imagen ecogénica única, móvil, con sombra acústica posterior, de 14 mm, compatible con litiasis."
+    },
+    {
+      "clave": "coledoco",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "porta",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 10,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "bazo",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 96,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "pancreas",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 22,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 104,
+          "unidad": "mm"
+        },
+        {
+          "valor": 46,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "genitales",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cavidad",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Litiasis vesicular única.",
+    "Resto del estudio sin alteraciones."
+  ],
+  "dificultad": "La asistente repite mal la porta (11) y el médico corrige a 10: debe quedar 10 mm. Las repeticiones de la asistente no deben duplicar medidas. El riñón izquierdo se dicta en palabras (ciento ocho por cincuenta). La medida del cálculo (14 mm) debe ir en vesícula junto a sus dimensiones y la pared. 'Vejiga vacía' equivale al texto normal 'vacua'.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2880,
+    "output_tokens": 2600
+  }
+}

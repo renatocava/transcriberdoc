@@ -1,0 +1,203 @@
+{
+  "id": "abdomen-02",
+  "formato": "abdomen",
+  "escenario": "hallazgo_simple",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Norma Isabel Sánchez Huillca, 46 años. Ecografía abdominal completa."
+    },
+    {
+      "rol": "medico",
+      "texto": "Hígado de ecogenicidad conservada, homogéneo, sin dilatación de vías biliares intrahepáticas. Lóbulo hepático derecho 136 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vesícula 78 por 32 milímetros, pared delgada de 2.5 milímetros. En su interior imagen hiperecogénica con sombra acústica posterior, móvil con los cambios de posición, de 14 milímetros. Compatible con litiasis."
+    },
+    {
+      "rol": "medico",
+      "texto": "Colédoco permeable de cuatro milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Porta 10 milímetros, no dilatada."
+    },
+    {
+      "rol": "medico",
+      "texto": "Bazo 98 milímetros, ecoestructura normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Páncreas conservado, cabeza 21 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal, 104 por 47 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo también normal, 10.8 por 5 centímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga vacía. Genitales internos normales para la edad."
+    },
+    {
+      "rol": "medico",
+      "texto": "No líquido libre en cavidad ni en Douglas. No masas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión: colelitiasis."
+    }
+  ],
+  "paciente": {
+    "nombre": "Norma Isabel Sánchez Huillca",
+    "edad": 46
+  },
+  "medico_solicitante": "",
+  "secciones": [
+    {
+      "clave": "higado",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 136,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vesicula",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 32,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2.5,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "En su interior imagen hiperecogénica móvil con sombra acústica posterior de 14 mm, compatible con litiasis vesicular."
+    },
+    {
+      "clave": "coledoco",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "porta",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 10,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "bazo",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 98,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "pancreas",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 21,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 104,
+          "unidad": "mm"
+        },
+        {
+          "valor": 47,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "genitales",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cavidad",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Colelitiasis."
+  ],
+  "dificultad": "Baja-media: un único hallazgo (litiasis vesicular) cuya medida debe sumarse a las de la vesícula; colédoco dictado en palabras; riñón izquierdo en centímetros que hay que convertir a mm (10.8 x 5 cm → 108 y 50 mm); una sola frase cubre Douglas y cavidad abdominal; 'vejiga vacía' equivale al texto normal 'vacua'.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3680,
+    "output_tokens": 1954
+  }
+}

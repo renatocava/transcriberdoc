@@ -1,0 +1,124 @@
+{
+  "id": "transvaginal-05",
+  "formato": "transvaginal",
+  "escenario": "resto_normal",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Doctor, la siguiente es transvaginal. Katherine Milagros Aguilar Shupingahua, 34 años, la manda el doctor Renzo Gamarra."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Transvaginal. Paciente Katherine Aguilar Shupingahua, 34 años."
+    },
+    {
+      "rol": "medico",
+      "texto": "Útero en AVF. Mide 78 por 42 por 51 milímetros. Miometrio homogéneo, sin lesiones focales."
+    },
+    {
+      "rol": "medico",
+      "texto": "Endometrio homogéneo, 9 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario derecho de 34 por 27 mm. En su interior imagen quística anecoica, pared fina, de 2.2 por 1.9 cm, sin septos ni vegetaciones. Sugiere quiste folicular."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Y lo demás, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "El resto de estructuras, normales. Cérvix, ovario izquierdo y Douglas sin alteraciones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, imprime."
+    }
+  ],
+  "paciente": {
+    "nombre": "Katherine Milagros Aguilar Shupingahua",
+    "edad": 34
+  },
+  "medico_solicitante": "Renzo Gamarra",
+  "secciones": [
+    {
+      "clave": "utero",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 42,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cervix",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "endometrio",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 9,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_der",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 34,
+          "unidad": "mm"
+        },
+        {
+          "valor": 27,
+          "unidad": "mm"
+        },
+        {
+          "valor": 22,
+          "unidad": "mm"
+        },
+        {
+          "valor": 19,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen quística anecoica de pared fina, sin septos ni vegetaciones, de 22 x 19 mm, sugestiva de quiste folicular."
+    },
+    {
+      "clave": "ovario_izq",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Frase general «el resto de estructuras, normales» que cubre cérvix, ovario izquierdo y Douglas (normales y sin medidas); el quiste se dicta en cm y debe convertirse a mm (22 y 19 mm); el útero no menciona lateralización pero se considera normal; no se dicta conclusión.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3111,
+    "output_tokens": 1451
+  }
+}

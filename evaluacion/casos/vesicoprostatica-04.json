@@ -1,0 +1,118 @@
+{
+  "id": "vesicoprostatica-04",
+  "formato": "vesicoprostatica",
+  "escenario": "medidas_cm",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Doctor, el siguiente es el señor Eusebio Tintaya Llerena, 68 años, lo manda el doctor Wilfredo Salazar Ñaupari de urología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Ecografía vésico prostática. Empezamos por vejiga, que está bien llena."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga a buena repleción. Paredes engrosadas, irregulares, de aspecto trabeculado. Grosor de pared 0.6 cm. Contenido anecoico, sin cálculos ni masas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional 320 ml."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata aumentada de tamaño. Ecogenicidad homogénea, sin calcificaciones. Mide longitudinal 4.8 cm, anteroposterior 4.2, transverso 5.1 cm. Volumen aproximado 54 ml."
+    },
+    {
+      "rol": "medico",
+      "texto": "Lóbulo medio que protruye hacia la luz vesical, aproximadamente 1.2 cm."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ya orinó, doctor."
+    },
+    {
+      "rol": "medico",
+      "texto": "Postmiccional 85 ml. Residuo 26 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, hipertrofia prostática con volumen de 54 cc y protrusión de lóbulo medio. Dos, vejiga de esfuerzo. Tres, residuo postmiccional significativo de 26 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Eusebio Tintaya Llerena",
+    "edad": 68
+  },
+  "medico_solicitante": "Wilfredo Salazar Ñaupari",
+  "secciones": [
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 42,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        },
+        {
+          "valor": 54,
+          "unidad": "cc"
+        },
+        {
+          "valor": 12,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, homogénea y sin calcificaciones, con lóbulo medio que protruye 12 mm hacia la luz vesical."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 6,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Vejiga a buena repleción con paredes engrosadas (6 mm), irregulares y trabeculadas; contenido anecoico sin cálculos ni masas."
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 320,
+          "unidad": "cc"
+        },
+        {
+          "valor": 85,
+          "unidad": "cc"
+        },
+        {
+          "valor": 26,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Hipertrofia prostática con volumen de 54 cc y protrusión de lóbulo medio.",
+    "Vejiga de esfuerzo.",
+    "Residuo postmiccional significativo de 26 %."
+  ],
+  "dificultad": "Medidas dictadas en cm y ml que deben convertirse a mm y cc (4.8, 4.2, 5.1 y 0.6 cm; 1.2 cm del lóbulo medio; volúmenes en ml); la medida del lóbulo medio va en la sección próstata aunque describa protrusión vesical; el orden del dictado no sigue la plantilla (vejiga antes que próstata, volúmenes repartidos); el RPM se toma tal como lo dice el médico sin recalcularlo.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2104,
+    "output_tokens": 1891
+  }
+}

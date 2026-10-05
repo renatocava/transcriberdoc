@@ -1,0 +1,126 @@
+{
+  "id": "transvaginal-01",
+  "formato": "transvaginal",
+  "escenario": "normal_completo",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Kelly Vanessa Oblitas Chumbe, 34 años. Solicita doctor Raúl Espinoza Lazo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Transvaginal. Útero en anteversoflexión, lateralizado a la izquierda. Mide 76 por 41 por 48 milímetros. Miometrio homogéneo, sin lesiones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Cérvix canal no dilatado, 28 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Endometrio homogéneo de ocho milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario derecho 31 por 19 milímetros, conservado, anexo sin lesiones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario izquierdo 2.9 por 1.8 centímetros, morfología normal, anexo libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Douglas libre."
+    }
+  ],
+  "paciente": {
+    "nombre": "Kelly Vanessa Oblitas Chumbe",
+    "edad": 34
+  },
+  "medico_solicitante": "Raúl Espinoza Lazo",
+  "secciones": [
+    {
+      "clave": "utero",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 76,
+          "unidad": "mm"
+        },
+        {
+          "valor": 41,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cervix",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 28,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "endometrio",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 8,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 31,
+          "unidad": "mm"
+        },
+        {
+          "valor": 19,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 29,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Endometrio dictado en palabras (ocho) y ovario izquierdo dictado en centímetros con decimales que deben convertirse a mm (29 y 18). Útero con tres medidas L, AP y T en orden.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3074,
+    "output_tokens": 854
+  }
+}

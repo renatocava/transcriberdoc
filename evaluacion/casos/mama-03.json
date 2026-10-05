@@ -1,0 +1,110 @@
+{
+  "id": "mama-03",
+  "formato": "mama",
+  "escenario": "asistente",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Doctor, ¿le tomo los datos? ¿Nombre de la paciente?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Lucía Mercedes Paredes Ticona."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Edad?"
+    },
+    {
+      "rol": "medico",
+      "texto": "38 años."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Quién la manda?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Doctor Julio César Mamani Flores, ginecología."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo, cuando guste."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ecografía de mamas. Empezamos por la derecha. Parénquima homogéneo, sin lesiones focales. Sin distorsión. Conductos normales, miden 2 milímetros. Axila derecha libre."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Conductos derechos 2 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Correcto. Pasamos a la izquierda. Parénquima homogéneo. En radio de las 2, a 3 centímetros del pezón, imagen anecoica, ovalada, bordes lisos, con refuerzo acústico posterior. Mide 1.2 por 0.8 centímetros. Sin vascularidad al doppler."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Doce por ocho milímetros, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí, doce por ocho. Conductos izquierdos de dos punto cinco milímetros. Axila izquierda sin adenopatías."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Conductos izquierdos 2.5. ¿Conclusión?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, quiste simple en mama izquierda, radio de las 2. Dos, BIRADS 2."
+    }
+  ],
+  "paciente": {
+    "nombre": "Lucía Mercedes Paredes Ticona",
+    "edad": 38
+  },
+  "medico_solicitante": "Dr. Julio César Mamani Flores",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 12,
+          "unidad": "mm"
+        },
+        {
+          "valor": 8,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2.5,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen anecoica ovalada de bordes lisos con refuerzo acústico posterior, sin vascularidad al Doppler, en radio de las 2 a 3 cm del pezón, de 12 x 8 mm, compatible con quiste simple."
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple en mama izquierda, radio de las 2.",
+    "BIRADS 2."
+  ],
+  "dificultad": "media: el asistente repite las medidas (riesgo de duplicarlas), el quiste se dicta en cm y se confirma en mm, y la distancia al pezón (3 cm) es una ubicación, no una medida de la plantilla",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2234,
+    "output_tokens": 1418
+  }
+}

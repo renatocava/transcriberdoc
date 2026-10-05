@@ -1,0 +1,113 @@
+{
+  "id": "vesicoprostatica-05",
+  "formato": "vesicoprostatica",
+  "escenario": "resto_normal",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Doctor, paciente Néstor Raúl Huayhua Quispe, 67 años, lo envía el doctor Óscar Lizárraga Pumacayo de urología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Ecografía vésico prostática. Empezamos con próstata."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata aumentada de tamaño. Ecogenicidad heterogénea."
+    },
+    {
+      "rol": "medico",
+      "texto": "Calcificación de 5 mm en zona de transición, lado derecho."
+    },
+    {
+      "rol": "medico",
+      "texto": "Medidas. Longitudinal 4.8 centímetros. Anteroposterior 39 mm. Transverso 46 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen aproximado cuarenta y cinco cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volúmenes vesicales. Premiccional 350 cc."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ya orinó, doctor, está listo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Postmiccional 70 cc. Residuo 20 %."
+    },
+    {
+      "rol": "medico",
+      "texto": "El resto del estudio sin alteraciones, normal."
+    }
+  ],
+  "paciente": {
+    "nombre": "Néstor Raúl Huayhua Quispe",
+    "edad": 67
+  },
+  "medico_solicitante": "Óscar Lizárraga Pumacayo",
+  "secciones": [
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 39,
+          "unidad": "mm"
+        },
+        {
+          "valor": 46,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "cc"
+        },
+        {
+          "valor": 5,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de ecogenicidad heterogénea, con calcificación de 5 mm en la zona de transición derecha."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 350,
+          "unidad": "cc"
+        },
+        {
+          "valor": 70,
+          "unidad": "cc"
+        },
+        {
+          "valor": 20,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Escenario resto_normal: la vejiga queda cubierta por la frase general «el resto del estudio sin alteraciones». La longitud prostática se dicta en centímetros (4.8 cm → 48 mm) y el volumen prostático en palabras. La medida de la calcificación debe incluirse en la sección próstata. No se dicta conclusión.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2922,
+    "output_tokens": 1656
+  }
+}

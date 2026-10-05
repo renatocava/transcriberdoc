@@ -1,0 +1,149 @@
+{
+  "id": "transvaginal-04",
+  "formato": "transvaginal",
+  "escenario": "medidas_cm",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Yolanda Huarcaya Paucar, 34 años. Solicita el doctor Ernesto Valdivia Salas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Transvaginal. Útero en AVF, lateralizado a la izquierda. Mide 7.8 por 4.1 por 5.2 centímetros. Miometrio homogéneo, sin lesiones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Cérvix canal no dilatado, 2.8 cm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Endometrio homogéneo, cero punto nueve centímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿El endometrio queda en 9 milímetros, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí, 9 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario derecho 4.6 por 3.8 cm. En su interior imagen quística anecoica, paredes finas, sin septos ni papilas, de 3.5 por 3.1 centímetros. Sin vascularidad interna."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario izquierdo 2.9 por 1.8 cm, de aspecto normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Douglas libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Quiste simple de ovario derecho. Control en 6 a 8 semanas."
+    }
+  ],
+  "paciente": {
+    "nombre": "Yolanda Huarcaya Paucar",
+    "edad": 34
+  },
+  "medico_solicitante": "Ernesto Valdivia Salas",
+  "secciones": [
+    {
+      "clave": "utero",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 41,
+          "unidad": "mm"
+        },
+        {
+          "valor": 52,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cervix",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 28,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "endometrio",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 9,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_der",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 46,
+          "unidad": "mm"
+        },
+        {
+          "valor": 38,
+          "unidad": "mm"
+        },
+        {
+          "valor": 35,
+          "unidad": "mm"
+        },
+        {
+          "valor": 31,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Ovario derecho aumentado de tamaño con imagen quística anecoica de paredes finas, sin septos ni papilas ni vascularidad interna, de 35 x 31 mm, compatible con quiste simple."
+    },
+    {
+      "clave": "ovario_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 29,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple de ovario derecho.",
+    "Control en 6 a 8 semanas."
+  ],
+  "dificultad": "Casi todas las medidas se dictan en centímetros con decimales (7.8, 4.1, 5.2, 2.8, 4.6, 3.8, 3.5, 3.1, 2.9, 1.8 cm) y deben convertirse a mm; el endometrio se dicta en palabras ('cero punto nueve centímetros') y luego se confirma en milímetros en un intercambio con la asistente, por lo que no debe duplicarse; el ovario derecho combina medidas del ovario y del quiste en la misma sección.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2309,
+    "output_tokens": 2092
+  }
+}

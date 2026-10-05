@@ -1,0 +1,112 @@
+{
+  "id": "transvaginal-02",
+  "formato": "transvaginal",
+  "escenario": "hallazgo_simple",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Brenda Lizbeth Saldaña Inuma, 41 años. Transvaginal. Útero en AVF, lateralizado a la izquierda. Mide 82 por 45 por 52 mm. En pared posterior, intramural, imagen nodular hipoecoica, bien delimitada, de 1.8 por 1.5 cm. Resto del miometrio homogéneo. Cérvix canal no dilatado, 28 mm. Endometrio homogéneo, ocho milímetros. Ovario derecho 30 por 18 mm, conservado, anexo sin lesiones. Ovario izquierdo 27 por 16 mm, igual, normal. Douglas libre. Conclusión: mioma uterino intramural posterior."
+    }
+  ],
+  "paciente": {
+    "nombre": "Brenda Lizbeth Saldaña Inuma",
+    "edad": 41
+  },
+  "medico_solicitante": "",
+  "secciones": [
+    {
+      "clave": "utero",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 82,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "mm"
+        },
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen nodular hipoecoica bien delimitada, intramural en pared posterior, de 18 x 15 mm, compatible con mioma; resto del miometrio homogéneo."
+    },
+    {
+      "clave": "cervix",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 28,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "endometrio",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 8,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 27,
+          "unidad": "mm"
+        },
+        {
+          "valor": 16,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Mioma uterino intramural posterior."
+  ],
+  "dificultad": "Medida del mioma dictada en cm (1.8 x 1.5 cm) que debe convertirse a mm; endometrio dictado en palabras; ovario izquierdo descrito con frase abreviada («igual, normal»); ovarios con dos medidas aunque la plantilla tiene un solo espacio.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3100,
+    "output_tokens": 1295
+  }
+}

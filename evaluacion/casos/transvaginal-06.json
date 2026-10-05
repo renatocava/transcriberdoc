@@ -1,0 +1,153 @@
+{
+  "id": "transvaginal-06",
+  "formato": "transvaginal",
+  "escenario": "correccion",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Fiorela Janet Ticona Apaza, 34 años. La manda el doctor Raúl Salazar Meza."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Transvaginal, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí, transvaginal. Útero en AVF, lateralizado a la izquierda. Longitudinal 78. AP 38. No, perdón, AP 42. Transverso 51 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Miometrio homogéneo, sin lesiones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Cérvix canal no dilatado, 28 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Endometrio homogéneo de 9 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario derecho 30 por 18, conservado, anexo libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario izquierdo 35 por 24. Tiene una imagen quística anecoica, pared fina, sin septos, de 28 por 18. No, perdón, 22 por 18 milímetros. Sin flujo al doppler."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Douglas libre?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No, escaso líquido libre en Douglas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, quiste simple de ovario izquierdo. Dos, escaso líquido libre en fondo de saco de Douglas."
+    }
+  ],
+  "paciente": {
+    "nombre": "Fiorela Janet Ticona Apaza",
+    "edad": 34
+  },
+  "medico_solicitante": "Raúl Salazar Meza",
+  "secciones": [
+    {
+      "clave": "utero",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 42,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cervix",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 28,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "endometrio",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 9,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 35,
+          "unidad": "mm"
+        },
+        {
+          "valor": 24,
+          "unidad": "mm"
+        },
+        {
+          "valor": 22,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen quística anecoica de pared fina, sin septos ni flujo al doppler, de 22 x 18 mm en ovario izquierdo."
+    },
+    {
+      "clave": "douglas",
+      "estado": "hallazgo",
+      "medidas": [],
+      "hallazgo": "Escaso líquido libre en fondo de saco de Douglas."
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple de ovario izquierdo.",
+    "Escaso líquido libre en fondo de saco de Douglas."
+  ],
+  "dificultad": "Dos autocorrecciones de medidas: AP uterino de 38 corregido a 42 mm y quiste ovárico de 28 corregido a 22 mm; además el asistente sugiere Douglas libre y el médico lo niega, debe quedar como hallazgo.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2329,
+    "output_tokens": 1690
+  }
+}

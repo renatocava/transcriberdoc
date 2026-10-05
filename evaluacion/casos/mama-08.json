@@ -1,0 +1,99 @@
+{
+  "id": "mama-08",
+  "formato": "mama",
+  "escenario": "multiples_hallazgos",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ecografía de mamas. Paciente Rocío Esperanza Llerena Condori, 41 años. La manda el doctor Fernando Gamarra Pinto."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ya doctor, ¿empezamos por la derecha?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí. Mama derecha. Parénquima homogéneo. En cuadrante superoexterno, radio 10, a 3 cm del pezón, imagen anecoica, bordes finos, refuerzo posterior. Mide 12 por 9 mm. Quiste simple. No otras lesiones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conductos galactóforos normales, 2 mm. Axila derecha libre."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo. Pasamos a la izquierda."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama izquierda. Radio 2, cuadrante superointerno, nódulo sólido hipoecoico, ovalado, circunscrito, paralelo a la piel. Mide 1.5 por 0.8 cm. Sin vascularidad al Doppler. Sin sombra posterior."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conductos de dos punto cinco milímetros. Axila izquierda sin adenopatías."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, quiste simple en mama derecha, BI-RADS 2. Dos, nódulo sólido en mama izquierda, probable fibroadenoma, BI-RADS 3. Tres, sugiero control ecográfico en 6 meses."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Anotado doctor."
+    }
+  ],
+  "paciente": {
+    "nombre": "Rocío Esperanza Llerena Condori",
+    "edad": 41
+  },
+  "medico_solicitante": "Fernando Gamarra Pinto",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 12,
+          "unidad": "mm"
+        },
+        {
+          "valor": 9,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste simple anecoico de 12 x 9 mm en cuadrante superoexterno, radio 10, a 3 cm del pezón, con bordes finos y refuerzo posterior."
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 15,
+          "unidad": "mm"
+        },
+        {
+          "valor": 8,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2.5,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Nódulo sólido hipoecoico ovalado, circunscrito, paralelo a la piel, de 15 x 8 mm en cuadrante superointerno, radio 2, sin vascularidad al Doppler ni sombra posterior."
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple en mama derecha, BI-RADS 2.",
+    "Nódulo sólido en mama izquierda, probable fibroadenoma, BI-RADS 3.",
+    "Se sugiere control ecográfico en 6 meses."
+  ],
+  "dificultad": "Hallazgos en ambas mamas. El nódulo izquierdo se dicta en cm (1.5 x 0.8 cm) y debe convertirse a 15 y 8 mm. El diámetro de los conductos izquierdos se dicta en palabras (dos punto cinco milímetros), y la distancia al pezón (3 cm) es ubicación, no medida a registrar. Hay que distinguir la medida de los conductos de las de las lesiones.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2304,
+    "output_tokens": 1773
+  }
+}

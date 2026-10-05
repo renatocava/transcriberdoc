@@ -1,0 +1,128 @@
+{
+  "id": "transvaginal-07",
+  "formato": "transvaginal",
+  "escenario": "omisiones",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, paciente Mónica Elena Purizaca Chiroque. Transvaginal. La manda la doctora Giuliana Zevallos."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo doctor, ya está el nombre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Útero en AVF, lateralizado a la izquierda. Longitudinal 78. AP 41."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Y el transverso?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No, ese déjalo, no sale bien el corte. Sigue."
+    },
+    {
+      "rol": "medico",
+      "texto": "Miometrio con imagen nodular hipoecoica en pared posterior, intramural, de 18 por 15 milímetros. Bordes bien definidos. Resto homogéneo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Endometrio homogéneo, nueve milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario derecho conservado, sin lesiones, anexo derecho libre. No le pongas medida."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ok, ovario derecho normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario izquierdo con imagen quística anecoica, paredes finas, sin septos, de 2.4 centímetros. Quiste simple."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, con eso. Imprime."
+    }
+  ],
+  "paciente": {
+    "nombre": "Mónica Elena Purizaca Chiroque",
+    "edad": null
+  },
+  "medico_solicitante": "Giuliana Zevallos",
+  "secciones": [
+    {
+      "clave": "utero",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 41,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen nodular hipoecoica intramural de bordes bien definidos en pared posterior del miometrio de 18 x 15 mm, sugestiva de mioma."
+    },
+    {
+      "clave": "cervix",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "endometrio",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 9,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_der",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 24,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen quística anecoica de paredes finas, sin septos, de 24 mm en ovario izquierdo, compatible con quiste simple."
+    },
+    {
+      "clave": "douglas",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Omisiones: no menciona cérvix ni fondo de saco de Douglas; omite medida transversa del útero y la medida del ovario derecho (lo describe normal sin medir); medida del quiste dictada en cm (2.4 cm → 24 mm); endometrio dictado en palabras; sin edad ni conclusión.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3100,
+    "output_tokens": 1734
+  }
+}

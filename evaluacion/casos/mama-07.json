@@ -1,0 +1,82 @@
+{
+  "id": "mama-07",
+  "formato": "mama",
+  "escenario": "omisiones",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, ecografía de mamas. Paciente Ana Lucía Ruiz Pinedo."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Quién la manda, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Doctor Raúl Medina Saldaña, ginecología. Viene por nódulo palpable en mama derecha."
+    },
+    {
+      "rol": "medico",
+      "texto": "Empezamos mama derecha. Cuadrante superoexterno, hora 10, a 2 cm del pezón, nódulo sólido hipoecoico, ovalado, bordes circunscritos, paralelo a la piel."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mide 14 por 9 mm. Sin sombra acústica posterior. Doppler sin vascularidad interna."
+    },
+    {
+      "rol": "medico",
+      "texto": "Resto del parénquima homogéneo. Conductos de calibre normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Axila derecha sin adenopatías."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ya, anotado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Bueno, eso es todo por ahora, guarda las imágenes."
+    }
+  ],
+  "paciente": {
+    "nombre": "Ana Lucía Ruiz Pinedo",
+    "edad": null
+  },
+  "medico_solicitante": "Raúl Medina Saldaña",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 20,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        },
+        {
+          "valor": 9,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Nódulo sólido hipoecoico, ovalado, de bordes circunscritos, paralelo a la piel, en cuadrante superoexterno (hora 10) a 20 mm del pezón, de 14 x 9 mm, sin sombra acústica posterior ni vascularidad interna al Doppler."
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Solo se describe la mama derecha; la izquierda no se menciona en absoluto. Se omite la medida del diámetro de los conductos galactóforos (dice 'calibre normal' sin cifra). Hay que incluir la distancia al pezón convertida de 2 cm a 20 mm. No se dicta edad ni conclusión.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3030,
+    "output_tokens": 1171
+  }
+}

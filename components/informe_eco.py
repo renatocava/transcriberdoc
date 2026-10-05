@@ -1,0 +1,195 @@
+"""Revisión del informe ecográfico: el informe editable; transcripción y audio, a pedido."""
+
+from __future__ import annotations
+
+import datetime as dt
+import json
+from typing import Any
+
+import streamlit as st
+
+from components.review import (
+    _ayuda,
+    _boton_fuente,
+    _enfocar,
+    _fila_fuentes,
+    _fuente,
+    _numeros,
+    _valor,
+    seccion_transcripcion,
+    selector_formato,
+)
+from lib import state
+from lib.ecografias import PENDIENTE, PLANTILLAS, Plantilla, Seccion, calculos, es_normal, pendientes
+from lib.fuentes import de_texto, editado
+from lib.informe_docx import generar_docx, nombre_archivo
+
+ETIQUETAS_PACIENTE = {
+    "paciente.nombre": "Nombre",
+    "paciente.edad": "Edad",
+    "medico": "Médico solicitante",
+}
+
+
+def _etiquetas(plantilla: Plantilla) -> dict[str, str]:
+    return {**ETIQUETAS_PACIENTE, **{f"secciones.{s.clave}": s.etiqueta for s in plantilla.secciones}}
+
+
+def _seccion_paciente(informe: dict) -> None:
+    pac = informe.setdefault("paciente", {})
+    with st.container(border=True):
+        _fila_fuentes(
+            [
+                ("paciente.nombre", _valor("f_eco_nombre", pac.get("nombre"))),
+                ("paciente.edad", _valor("f_eco_edad", pac.get("edad"))),
+                ("medico", _valor("f_eco_medico", informe.get("medico"))),
+            ],
+            "f_eco_src_pac",
+            ETIQUETAS_PACIENTE,
+        )
+        c1, c2 = st.columns([3, 1])
+        pac["nombre"] = c1.text_input(
+            "Nombres", value=pac.get("nombre") or "", key="f_eco_nombre",
+            help=_ayuda(_fuente("paciente.nombre"), _valor("f_eco_nombre", pac.get("nombre"))),
+        )
+        pac["edad"] = c2.number_input(
+            "Edad (años)", min_value=0, max_value=120, step=1, value=pac.get("edad"), key="f_eco_edad",
+            help=_ayuda(_fuente("paciente.edad"), _valor("f_eco_edad", pac.get("edad"))),
+        )
+        c3, c4 = st.columns([3, 1])
+        informe["medico"] = c3.text_input(
+            "Médico solicitante", value=informe.get("medico") or "", key="f_eco_medico",
+            placeholder="PARTICULAR",
+            help=_ayuda(_fuente("medico"), _valor("f_eco_medico", informe.get("medico"))),
+        )
+        fecha = c4.date_input(
+            "Fecha", value=dt.date.fromisoformat(informe["fecha"]), key="f_eco_fecha", format="DD/MM/YYYY",
+        )
+        informe["fecha"] = fecha.isoformat()
+
+
+def _estado(fuente: dict[str, Any] | None, texto: str, seccion: Seccion) -> str:
+    """Rótulo corto de cómo se llenó la sección."""
+    normal = es_normal(seccion, texto)
+    if not fuente:
+        if texto.strip() == seccion.normal:
+            return ":orange[no se mencionó · texto normal de la plantilla]"
+        return ":orange[⚠️ sin respaldo en la transcripción]"
+    marca = " ✏️" if editado(fuente, texto) else ""
+    return f":gray[{'normal' if normal else 'con hallazgos'} · dictado {_numeros(fuente)}{marca}]"
+
+
+def _secciones(informe: dict, plantilla: Plantilla) -> None:
+    secciones = informe.setdefault("secciones", {})
+    for s in plantilla.secciones:
+        ruta = f"secciones.{s.clave}"
+        key = f"f_eco_sec_{s.clave}"
+        texto = _valor(key, secciones.get(s.clave, s.normal))
+        fuente = _fuente(ruta)
+        with st.container(border=True):
+            c_tit, c_src = st.columns([12, 1], vertical_alignment="center")
+            c_tit.markdown(f"**{s.titulo or s.etiqueta}** &nbsp; {_estado(fuente, texto, s)}")
+            _boton_fuente(c_src, fuente, texto, f"f_eco_src_{s.clave}")
+            # Sin `value=`: el botón de restaurar escribe en la key del widget.
+            st.session_state.setdefault(key, secciones.get(s.clave, s.normal))
+            secciones[s.clave] = st.text_area(
+                s.etiqueta,
+                height=max(68, 26 * (len(texto) // 70 + texto.count("\n") + 1)),
+                key=key,
+                label_visibility="collapsed",
+                help=_ayuda(fuente, texto),
+            )
+            texto = secciones[s.clave]
+            notas = []
+            if texto.count(PENDIENTE):
+                notas.append(f"✏️ {texto.count(PENDIENTE)} medida(s) sin dictar ({PENDIENTE})")
+            notas += calculos(texto)
+            if notas:
+                st.caption(" · ".join(notas))
+            if not es_normal(s, texto):
+                st.button(
+                    "↺ Restaurar texto normal", key=f"f_eco_rst_{s.clave}", type="tertiary",
+                    on_click=st.session_state.update, kwargs={key: s.normal},
+                )
+
+
+def _conclusion(informe: dict) -> None:
+    with st.container(border=True):
+        st.markdown("**CONCLUSIÓN**")
+        fuentes = st.session_state.get("fuentes", {})
+        actuales = informe.get("conclusion") or []
+        con_fuente = [(t, de_texto(fuentes, "conclusion", t)) for t in actuales]
+        if any(f for _, f in con_fuente):
+            with st.container(horizontal=True, gap="small"):
+                for i, (t, f) in enumerate(con_fuente):
+                    if f:
+                        st.button(
+                            f"📎 Ítem {i + 1} · {_numeros(f)}", key=f"f_eco_src_conc_{i}", type="tertiary",
+                            help=_ayuda(f, t), on_click=_enfocar, args=(f["ids"],),
+                        )
+        sin_fuente = [i + 1 for i, (_, f) in enumerate(con_fuente) if not f]
+        texto = st.text_area(
+            "Conclusión", value="\n".join(actuales), key="f_eco_conc", label_visibility="collapsed",
+            height=max(68, 30 * (len(actuales) + 1)),
+            help="Un ítem por línea; cada uno sale con su viñeta en el informe.",
+        )
+        informe["conclusion"] = [l.strip() for l in texto.split("\n") if l.strip()]
+        if sin_fuente:
+            st.caption(
+                f"⚠️ Ítem {', '.join(map(str, sin_fuente))}: propuesto sin que el médico lo dictara o "
+                "editado a mano. Verifícalo."
+            )
+
+
+def boton_descarga(informe: dict, key: str, primario: bool = False) -> None:
+    try:
+        datos = generar_docx(informe)
+    except Exception as exc:  # una plantilla dañada no debe tumbar la revisión
+        st.error(f"No se pudo generar el Word: {exc}")
+        return
+    st.download_button(
+        "⬇️ Descargar informe (.docx)",
+        data=datos,
+        file_name=nombre_archivo(informe),
+        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        key=key,
+        type="primary" if primario else "secondary",
+        use_container_width=True,
+    )
+
+
+def _guardar(informe: dict) -> None:
+    print("\n===== INFORME ECOGRÁFICO GUARDADO =====")
+    print(json.dumps(state.strip_uids(informe), indent=2, ensure_ascii=False))
+    print("=======================================\n", flush=True)
+    state.set_stage(state.SAVED)
+
+
+def _render_formulario(informe: dict, plantilla: Plantilla) -> None:
+    st.subheader(plantilla.nombre)
+    selector_formato()
+    seccion_transcripcion(informe, _etiquetas(plantilla), {"conclusion": "Conclusión"})
+    st.caption(
+        "Cada órgano parte del texto normal de la plantilla. 📎 muestra de dónde sale lo dictado; "
+        f"{PENDIENTE} marca una medida que falta."
+    )
+    _seccion_paciente(informe)
+    _secciones(informe, plantilla)
+    _conclusion(informe)
+
+    faltan = pendientes(informe)
+    if faltan:
+        st.warning(f"Quedan medidas sin dictar ({PENDIENTE}) en: {', '.join(faltan)}.")
+    st.write("")
+    boton_descarga(informe, "f_eco_descargar")
+    c_ok, c_no = st.columns(2)
+    if c_ok.button("Guardar informe", type="primary", use_container_width=True):
+        _guardar(informe)
+        st.rerun()
+    if c_no.button("Descartar", use_container_width=True):
+        state.reset()
+        st.rerun()
+
+
+def render_informe(informe: dict) -> None:
+    _render_formulario(informe, PLANTILLAS[informe["plantilla"]])

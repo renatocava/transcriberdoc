@@ -1,0 +1,113 @@
+{
+  "id": "vias_urinarias-05",
+  "formato": "vias_urinarias",
+  "escenario": "resto_normal",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ecografía de vías urinarias. Paciente Anselmo Quiroz Ñaupari, 67 años. Lo manda el doctor Raúl Sifuentes Ugarte."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo doctor, anotado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho. Morfología y tamaño conservados. Mide 104 por 47 mm. Cortical 14 mm. En polo superior quiste simple, anecoico, de paredes finas, de 13 mm. Sin ectasia, sin litiasis."
+    },
+    {
+      "rol": "medico",
+      "texto": "Pasamos a próstata. Aumentada de tamaño. Ecogenicidad heterogénea, con calcificaciones groseras en zona central. Longitudinal 52, anteroposterior 41, transverso 4.8 centímetros. Volumen aproximado 53 cc."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Transverso 48 milímetros, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí, 48. Protruye levemente hacia el piso vesical."
+    },
+    {
+      "rol": "medico",
+      "texto": "Lo demás, todo normal. Riñón izquierdo, vejiga y volúmenes sin alteraciones. Eso es todo."
+    }
+  ],
+  "paciente": {
+    "nombre": "Anselmo Quiroz Ñaupari",
+    "edad": 67
+  },
+  "medico_solicitante": "Raúl Sifuentes Ugarte",
+  "secciones": [
+    {
+      "clave": "rinon_der",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 104,
+          "unidad": "mm"
+        },
+        {
+          "valor": 47,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        },
+        {
+          "valor": 13,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste simple cortical de 13 mm en polo superior del riñón derecho."
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 41,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 53,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de ecogenicidad heterogénea con calcificaciones groseras en zona central y leve protrusión hacia el piso vesical."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Medida transversa de próstata dictada en centímetros (4.8 cm → 48 mm) con confirmación del asistente; quiste renal cuya medida pertenece al hallazgo; frase general final que cubre explícitamente riñón izquierdo, vejiga y volúmenes, que deben quedar normales y sin medidas; no se dicta conclusión.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3367,
+    "output_tokens": 1672
+  }
+}

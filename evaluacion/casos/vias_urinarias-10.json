@@ -1,0 +1,164 @@
+{
+  "id": "vias_urinarias-10",
+  "formato": "vias_urinarias",
+  "escenario": "coloquial",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, a ver, empezamos. Paciente Cirilo Yupanqui Ventura, 67 años. Lo manda la doctora Milagros Cárdenas Soto, de urología."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo doctor, ya está registrado. ¿Empezamos por los riñones?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No, no, primero la vejiga que está llenita, ya, aprovechemos. Este... vejiga distendida, contenido anecoico, sin cálculos. Pero paredes engrosadas, eh, mide 6 milímetros, se ve trabeculada, ¿ya? Pon eso."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional, a ver... 420 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, que vaya a orinar el señor, por favor."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mientras tanto, próstata. Eh... aumentada de tamaño, ecogenicidad heterogénea, con unas calcificaciones pequeñitas ahí centrales. Mide longitudinal 52, anteroposterior 48, transverso 50. Volumen aproximado sesenta y cinco cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, riñón izquierdo ahora. Morfología conservada, buena diferenciación, sin litiasis ni hidronefrosis. Mide 108 por 50 milímetros, cortical 15. Ah, y tiene un quistito en el polo superior, cortical, simple, de 1.8 centímetros, anecoico, pared fina."
+    },
+    {
+      "rol": "medico",
+      "texto": "Derecho, normal, todo normal ahí. Mide 105 por 48, cortical 14."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Doctor, ya regresó el paciente."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, a ver... postmiccional 95 cc. Residuo, eh, 23 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusiones, pon: uno, hipertrofia prostática, volumen aproximado 65 cc. Dos, vejiga de esfuerzo con residuo postmiccional significativo, 23 por ciento. Tres, quiste cortical simple en riñón izquierdo. Ya, eso es todo."
+    }
+  ],
+  "paciente": {
+    "nombre": "Cirilo Yupanqui Ventura",
+    "edad": 67
+  },
+  "medico_solicitante": "Dra. Milagros Cárdenas Soto",
+  "secciones": [
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste cortical simple, anecoico y de pared fina, en el polo superior de 18 mm."
+    },
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        },
+        {
+          "valor": 65,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de ecogenicidad heterogénea con pequeñas calcificaciones centrales."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 6,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Paredes engrosadas y trabeculadas de 6 mm de espesor."
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 420,
+          "unidad": "cc"
+        },
+        {
+          "valor": 95,
+          "unidad": "cc"
+        },
+        {
+          "valor": 23,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Hipertrofia prostática, volumen aproximado 65 cc.",
+    "Vejiga de esfuerzo con residuo postmiccional significativo de 23 %.",
+    "Quiste cortical simple en riñón izquierdo."
+  ],
+  "dificultad": "Dictado coloquial con muletillas y orden alterado (vejiga y volúmenes intercalados con próstata y riñones, riñón izquierdo antes que el derecho); volumen prostático en palabras; quiste dictado en centímetros que debe convertirse a mm; volúmenes pre y postmiccional separados por otras secciones; riñón derecho cubierto con frase general «todo normal».",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2631,
+    "output_tokens": 2511
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "id": "vias_urinarias-06",
+  "formato": "vias_urinarias",
+  "escenario": "correccion",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, ecografía de vías urinarias. Paciente Rosendo Paucar Inga, 67 años. Lo manda la doctora Milagros Tello Saavedra, urología."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo doctor, adelante."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal. Mide 102 por 48. Cortical 15."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo. Mide 108 por 51. Cortical 14, no, perdón, 16."
+    },
+    {
+      "rol": "medico",
+      "texto": "En polo superior izquierdo quiste cortical simple, anecoico, pared fina, de 18 por 15 milímetros. Sin ectasia, sin litiasis."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Cortical izquierda dieciséis, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Dieciséis, sí."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata. Ecogenicidad homogénea, sin calcificaciones. Aumentada de tamaño. Longitudinal 46, AP 42, transverso 44. Volumen 48 cc, no, perdón, 44 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Lóbulo medio protruye hacia la vejiga, unos 8 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga bien distendida, paredes delgadas, contenido anecoico, sin cálculos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Premiccional 320 cc. Post miccional 65. Residuo veinte por ciento, significativo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusiones. Uno, quiste cortical simple en riñón izquierdo, Bosniak uno. Dos, prostatomegalia con volumen de 44 cc y protrusión del lóbulo medio. Tres, residuo postmiccional significativo de 20 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Rosendo Paucar Inga",
+    "edad": 67
+  },
+  "medico_solicitante": "Dra. Milagros Tello Saavedra",
+  "secciones": [
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        },
+        {
+          "valor": 16,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste cortical simple anecoico de pared fina en polo superior de 18 x 15 mm, sin ectasia ni litiasis."
+    },
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 46,
+          "unidad": "mm"
+        },
+        {
+          "valor": 42,
+          "unidad": "mm"
+        },
+        {
+          "valor": 44,
+          "unidad": "mm"
+        },
+        {
+          "valor": 44,
+          "unidad": "cc"
+        },
+        {
+          "valor": 8,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño con protrusión del lóbulo medio hacia la vejiga de 8 mm."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 320,
+          "unidad": "cc"
+        },
+        {
+          "valor": 65,
+          "unidad": "cc"
+        },
+        {
+          "valor": 20,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": "Residuo postmiccional significativo del 20 %."
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste cortical simple en riñón izquierdo, Bosniak I.",
+    "Prostatomegalia con volumen de 44 cc y protrusión del lóbulo medio.",
+    "Residuo postmiccional significativo de 20 %."
+  ],
+  "dificultad": "Dos autocorrecciones de medidas (cortical izquierda 14→16 mm y volumen prostático 48→44 cc) que deben resolverse al valor corregido; medidas del quiste que deben ir en la sección del riñón izquierdo junto a sus dimensiones; protrusión del lóbulo medio asignada a próstata y no a vejiga; RPM dictado en palabras («veinte por ciento») y post miccional sin unidad explícita.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2572,
+    "output_tokens": 2517
+  }
+}

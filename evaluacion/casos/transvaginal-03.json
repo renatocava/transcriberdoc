@@ -1,0 +1,185 @@
+{
+  "id": "transvaginal-03",
+  "formato": "transvaginal",
+  "escenario": "asistente",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Doctor, ya está la paciente. ¿Le tomo los datos?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí, dígame nombre y edad."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Luz Marina Ccahuana Tito, 34 años. La manda el doctor Julio César Paredes Villanueva."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Transvaginal. Empezamos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Útero en anteversoflexión, lateralizado a la izquierda. Longitudinal 78. AP 42. Transverso 51."
+    },
+    {
+      "rol": "asistente",
+      "texto": "78, 42, 51."
+    },
+    {
+      "rol": "medico",
+      "texto": "No, el AP corrijo, 45. Deja que mejore el corte. Sí, 45."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Entonces 78 por 45 por 51."
+    },
+    {
+      "rol": "medico",
+      "texto": "Correcto. Miometrio homogéneo, sin lesiones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Cérvix canal no dilatado, 29."
+    },
+    {
+      "rol": "medico",
+      "texto": "Endometrio homogéneo, cero punto ocho centímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "8 milímetros, ¿no doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Así es, 8."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario derecho 30 por 19. Normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario izquierdo aumentado, 41 por 32. Tiene una imagen quística anecoica, pared fina, sin tabiques ni papilas, de 27 por 24 milímetros. Sin flujo interno al doppler."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Quiste de 27 por 24, ovario de 41 por 32."
+    },
+    {
+      "rol": "medico",
+      "texto": "Exacto."
+    },
+    {
+      "rol": "medico",
+      "texto": "Douglas libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión: quiste simple de ovario izquierdo. Sugiero control ecográfico postmenstrual."
+    }
+  ],
+  "paciente": {
+    "nombre": "Luz Marina Ccahuana Tito",
+    "edad": 34
+  },
+  "medico_solicitante": "Julio César Paredes Villanueva",
+  "secciones": [
+    {
+      "clave": "utero",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cervix",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 29,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "endometrio",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 8,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 19,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 41,
+          "unidad": "mm"
+        },
+        {
+          "valor": 32,
+          "unidad": "mm"
+        },
+        {
+          "valor": 27,
+          "unidad": "mm"
+        },
+        {
+          "valor": 24,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Ovario izquierdo aumentado de tamaño con imagen quística anecoica de pared fina, sin tabiques ni papilas, de 27 x 24 mm, sin flujo interno al Doppler."
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple de ovario izquierdo.",
+    "Se sugiere control ecográfico postmenstrual."
+  ],
+  "dificultad": "El médico corrige el diámetro AP del útero (42 → 45) después de que la asistente lo repite; debe usarse el valor corregido. El endometrio se dicta en centímetros y en palabras (cero punto ocho) y debe convertirse a 8 mm. Las repeticiones de la asistente no deben duplicar medidas. En el ovario izquierdo van tanto las medidas del ovario como las del quiste.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2284,
+    "output_tokens": 1962
+  }
+}

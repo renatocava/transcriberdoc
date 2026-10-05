@@ -1,0 +1,152 @@
+{
+  "id": "abdomen-05",
+  "formato": "abdomen",
+  "escenario": "resto_normal",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Paciente Vilma Gisela Torres Huaynate, 47 años. La manda el doctor Raúl Benavides Ochoa."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Abdomen completo. Empezamos con hígado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Hígado aumentado de ecogenicidad en forma difusa, atenuación posterior leve. Compatible con esteatosis grado uno. No dilatación de vías biliares intrahepáticas. Lóbulo hepático derecho 152 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vesícula. Mide 82 por 34 mm. Pared 3 mm. En su interior imagen hiperecogénica con sombra acústica posterior, móvil, de 1.4 cm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Colédoco 4 mm, permeable."
+    },
+    {
+      "rol": "medico",
+      "texto": "El resto de órganos del estudio sin alteraciones, todo normal."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Pongo conclusión, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Déjalo así nomás, después lo veo."
+    }
+  ],
+  "paciente": {
+    "nombre": "Vilma Gisela Torres Huaynate",
+    "edad": 47
+  },
+  "medico_solicitante": "Raúl Benavides Ochoa",
+  "secciones": [
+    {
+      "clave": "higado",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 152,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Hígado con ecogenicidad aumentada en forma difusa y leve atenuación posterior, compatible con esteatosis hepática grado I."
+    },
+    {
+      "clave": "vesicula",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 82,
+          "unidad": "mm"
+        },
+        {
+          "valor": 34,
+          "unidad": "mm"
+        },
+        {
+          "valor": 3,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen hiperecogénica móvil con sombra acústica posterior de 14 mm en su interior, compatible con litiasis vesicular."
+    },
+    {
+      "clave": "coledoco",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "porta",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "bazo",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "pancreas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "genitales",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cavidad",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Escenario resto_normal: tres secciones dictadas con detalle (hígado y vesícula con hallazgos, colédoco normal con medida) y luego una frase general «el resto de órganos sin alteraciones» que cubre las demás secciones como normales sin medidas. El cálculo se dicta en cm (1.4 cm) y debe convertirse a 14 mm. El médico rechaza explícitamente dictar conclusión, por lo que no debe generarse ninguna ni usarse la conclusión normal.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3689,
+    "output_tokens": 1714
+  }
+}

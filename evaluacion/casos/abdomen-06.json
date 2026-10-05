@@ -1,0 +1,217 @@
+{
+  "id": "abdomen-06",
+  "formato": "abdomen",
+  "escenario": "correccion",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Doctor, paciente Yolanda Beatriz Ccahuana Flores, 52 años, la manda el doctor Julio César Paredes Vílchez."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Abdomen completo. Empezamos con hígado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Hígado aumentado de ecogenicidad en forma difusa, leve. Compatible con esteatosis leve. Bordes regulares. Vía biliar intrahepática no dilatada."
+    },
+    {
+      "rol": "medico",
+      "texto": "Lóbulo hepático derecho 152 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vesícula 78 por 32. Pared 3 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "En su interior imagen hiperecogénica con sombra acústica posterior, móvil, de 12, no, perdón, 14 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Colédoco 4 milímetros. Porta 10."
+    },
+    {
+      "rol": "medico",
+      "texto": "Bazo 9.8 centímetros, homogéneo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Páncreas normal, cabeza 22 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal, mide 112 por 45, no, perdón, 102 por 45."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo 105 por 48. En polo superior quiste cortical simple, anecoico, de 15 milímetros. Resto normal, sin hidronefrosis."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga vacía, paredes delgadas, sin lesiones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Douglas libre. No líquido libre en cavidad, no masas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusiones: uno, esteatosis hepática leve. Dos, litiasis vesicular. Tres, quiste cortical simple en riñón izquierdo."
+    }
+  ],
+  "paciente": {
+    "nombre": "Yolanda Beatriz Ccahuana Flores",
+    "edad": 52
+  },
+  "medico_solicitante": "Julio César Paredes Vílchez",
+  "secciones": [
+    {
+      "clave": "higado",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 152,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Hígado con aumento leve y difuso de la ecogenicidad compatible con esteatosis leve, bordes regulares."
+    },
+    {
+      "clave": "vesicula",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 32,
+          "unidad": "mm"
+        },
+        {
+          "valor": 3,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen hiperecogénica móvil con sombra acústica posterior de 14 mm en su interior (litiasis vesicular)."
+    },
+    {
+      "clave": "coledoco",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "porta",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 10,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "bazo",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 98,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "pancreas",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 22,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste cortical simple anecoico de 15 mm en polo superior."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "genitales",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cavidad",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Esteatosis hepática leve",
+    "Litiasis vesicular",
+    "Quiste cortical simple en riñón izquierdo"
+  ],
+  "dificultad": "Dos correcciones de medidas (cálculo 12→14 mm y riñón derecho 112→102 mm), bazo dictado en cm (9.8 cm → 98 mm), hallazgos en tres secciones y genitales internos no mencionados.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2926,
+    "output_tokens": 2281
+  }
+}

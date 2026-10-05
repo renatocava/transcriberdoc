@@ -1,0 +1,176 @@
+{
+  "id": "vias_urinarias-09",
+  "formato": "vias_urinarias",
+  "escenario": "asistente_trampa",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Gregorio Mendoza Apaza, 67 años. Lo envía el doctor Carlos Salazar Ñaupari, urología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho 10.2 por 4.8 centímetros. Cortical 15."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Cortical 15 o 13, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "15. Resto normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo 105 por 51. Cortical 14. Polo superior quiste cortical simple de 18 milímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Le pongo también ectasia leve en el izquierdo?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No, no hay ectasia. Solo el quiste."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata aumentada de tamaño. 48 por 42 por 51. Volumen cincuenta y cuatro cc."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Pongo calcificaciones en la próstata?"
+    },
+    {
+      "rol": "medico",
+      "texto": "A ver... no, es artefacto. Homogénea."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga paredes engrosadas, 6 milímetros, trabeculada. Sin cálculos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Premiccional 380. Postmiccional 95."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿RPM 25 por ciento?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Déjalo, eso lo reviso después."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Quiste cortical simple en riñón izquierdo. Hipertrofia prostática, volumen 54 cc. Vejiga de esfuerzo con residuo postmiccional significativo."
+    }
+  ],
+  "paciente": {
+    "nombre": "Gregorio Mendoza Apaza",
+    "edad": 67
+  },
+  "medico_solicitante": "Carlos Salazar Ñaupari",
+  "secciones": [
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste cortical simple de 18 mm en polo superior, sin ectasia."
+    },
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 42,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        },
+        {
+          "valor": 54,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, homogénea, sin calcificaciones, volumen 54 cc."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 6,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Paredes vesicales engrosadas de 6 mm y trabeculadas, sin cálculos."
+    },
+    {
+      "clave": "volumenes",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 380,
+          "unidad": "cc"
+        },
+        {
+          "valor": 95,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Residuo postmiccional significativo de 95 cc; RPM en porcentaje no dictado."
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste cortical simple en riñón izquierdo.",
+    "Hipertrofia prostática, volumen 54 cc.",
+    "Vejiga de esfuerzo con residuo postmiccional significativo."
+  ],
+  "dificultad": "Trampas del asistente: cortical derecha confirmada en 15 (no 13); ectasia izquierda negada; calcificaciones prostáticas descartadas como artefacto; RPM 25 % sugerido y no confirmado, por lo que no debe incluirse. Además, conversión de cm a mm en riñón derecho y volumen prostático dictado en palabras.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2628,
+    "output_tokens": 2440
+  }
+}

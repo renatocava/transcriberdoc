@@ -1,0 +1,78 @@
+{
+  "id": "mama-06",
+  "formato": "mama",
+  "escenario": "correccion",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ecografía de mamas. Paciente Flor de María Anccasi Villanueva, 38 años. La solicita el doctor Raúl Benavides Ochoa."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo, doctor."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama derecha. Parénquima homogéneo. Sin lesiones. Conductos galactóforos normales, miden 2.5 mm. No, perdón, 2.1 mm. Axila libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama izquierda. En cuadrante superoexterno, radio de las 2, imagen anecoica, bordes regulares, pared fina, refuerzo posterior. Mide 14 por 9 mm. No, corrijo, 12 por 9 mm. Compatible con quiste simple."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conductos de la izquierda 2.3 mm. Axila izquierda sin adenopatías."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, quiste simple en mama izquierda, BI-RADS 2. Dos, mama derecha sin alteraciones."
+    }
+  ],
+  "paciente": {
+    "nombre": "Flor de María Anccasi Villanueva",
+    "edad": 38
+  },
+  "medico_solicitante": "Raúl Benavides Ochoa",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 2.1,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 12,
+          "unidad": "mm"
+        },
+        {
+          "valor": 9,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2.3,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste simple en cuadrante superoexterno, radio de las 2, anecoico, de bordes regulares, pared fina y refuerzo posterior, de 12 x 9 mm."
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple en mama izquierda, BI-RADS 2.",
+    "Mama derecha sin alteraciones."
+  ],
+  "dificultad": "Dos correcciones de medida: el conducto derecho pasa de 2.5 a 2.1 mm y el quiste izquierdo de 14 x 9 a 12 x 9 mm. Hay que conservar solo los valores corregidos. Además, la medida del conducto izquierdo se dicta después del hallazgo y también pertenece a la sección de la mama izquierda.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2282,
+    "output_tokens": 859
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "id": "abdomen-10",
+  "formato": "abdomen",
+  "escenario": "coloquial",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, a ver. Paciente Teresa Jesús Llanos Palomino, 48 años. Eh, la manda el doctor Julio César Rengifo Paredes."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo, doctor."
+    },
+    {
+      "rol": "medico",
+      "texto": "Empezamos por la vesícula nomás porque ahí está lo interesante. Este, mide 7.8 por 3.2 cm. Pared delgada, 2 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Adentro hay una imagen ecogénica con sombra acústica posterior, móvil, de 12 mm. O sea, un cálculo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Eh, el hígado. Aumentado de ecogenicidad en forma difusa, leve, este, patrón de hígado graso leve. Lóbulo derecho 152 mm. Vías biliares no dilatadas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Colédoco 4 mm. Porta 10 mm, normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, ahora riñones. Derecho normal, mide 102 por 45."
+    },
+    {
+      "rol": "medico",
+      "texto": "El izquierdo, eh, mide 105 por 48, y tiene un quistito cortical simple, anecoico, de 14 mm en polo superior. Lo demás normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Bazo homogéneo, 9.8 cm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Páncreas normal, cabeza 22 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Útero y anexos, este, normales para la edad. No hay líquido libre en cavidad ni en el Douglas."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Conclusiones, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, pon: uno, esteatosis hepática leve. Dos, colelitiasis. Tres, quiste renal simple izquierdo. Eso es todo."
+    }
+  ],
+  "paciente": {
+    "nombre": "Teresa Jesús Llanos Palomino",
+    "edad": 48
+  },
+  "medico_solicitante": "Julio César Rengifo Paredes",
+  "secciones": [
+    {
+      "clave": "higado",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 152,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Parénquima con aumento difuso leve de la ecogenicidad, compatible con esteatosis hepática leve."
+    },
+    {
+      "clave": "vesicula",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 32,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2,
+          "unidad": "mm"
+        },
+        {
+          "valor": 12,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen ecogénica móvil con sombra acústica posterior de 12 mm en su interior, compatible con cálculo."
+    },
+    {
+      "clave": "coledoco",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "porta",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 10,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "bazo",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 98,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "pancreas",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 22,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste cortical simple anecoico de 14 mm en el polo superior."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "genitales",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cavidad",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Esteatosis hepática leve.",
+    "Colelitiasis.",
+    "Quiste renal simple izquierdo."
+  ],
+  "dificultad": "Orden distinto al de la plantilla, muletillas, medidas de vesícula y bazo dictadas en cm que deben convertirse a mm, medida del cálculo y del quiste incluidas en sus secciones, vejiga no mencionada y Douglas/cavidad cubiertos con una sola frase.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3000,
+    "output_tokens": 2364
+  }
+}

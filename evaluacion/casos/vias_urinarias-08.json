@@ -1,0 +1,180 @@
+{
+  "id": "vias_urinarias-08",
+  "formato": "vias_urinarias",
+  "escenario": "multiples_hallazgos",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, paciente Wilfredo Alarcón Ticona, 67 años. Ecografía de vías urinarias."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Quién lo manda, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "La doctora Carmen Rosa Llanos, de urología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho. Mide 105 por 48. Cortical 15."
+    },
+    {
+      "rol": "medico",
+      "texto": "En polo superior imagen anecoica, bordes lisos, pared fina, refuerzo posterior. Mide 2.2 por 1.9 centímetros. Quiste simple cortical."
+    },
+    {
+      "rol": "medico",
+      "texto": "Resto sin ectasia ni litiasis."
+    },
+    {
+      "rol": "medico",
+      "texto": "Pasamos al izquierdo. 108 por 50. Cortical dieciséis."
+    },
+    {
+      "rol": "medico",
+      "texto": "En cáliz inferior imagen hiperecogénica con sombra acústica posterior de 7 milímetros. Litiasis. No hay hidronefrosis."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata. Aumentada de tamaño, ecogenicidad homogénea, sin calcificaciones. Longitudinal 48, AP 45, transverso 52. Volumen 58 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga bien distendida, paredes delgadas, contenido anecoico, sin cálculos. Normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional 320 cc."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ya miccionó, doctor, está de vuelta."
+    },
+    {
+      "rol": "medico",
+      "texto": "Postmiccional 75 cc. RPM 23 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, quiste simple renal derecho. Dos, litiasis renal izquierda no obstructiva. Tres, prostatomegalia de 58 cc. Cuatro, residuo postmiccional significativo de 23 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Wilfredo Alarcón Ticona",
+    "edad": 67
+  },
+  "medico_solicitante": "Dra. Carmen Rosa Llanos",
+  "secciones": [
+    {
+      "clave": "rinon_der",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        },
+        {
+          "valor": 22,
+          "unidad": "mm"
+        },
+        {
+          "valor": 19,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste simple cortical en polo superior de 22 x 19 mm, anecoico, de bordes lisos y pared fina con refuerzo posterior."
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        },
+        {
+          "valor": 16,
+          "unidad": "mm"
+        },
+        {
+          "valor": 7,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Litiasis de 7 mm en cáliz inferior con sombra acústica posterior, sin hidronefrosis."
+    },
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "mm"
+        },
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 58,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño (volumen 58 cc), de ecogenicidad homogénea y sin calcificaciones."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 320,
+          "unidad": "cc"
+        },
+        {
+          "valor": 75,
+          "unidad": "cc"
+        },
+        {
+          "valor": 23,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple renal derecho.",
+    "Litiasis renal izquierda no obstructiva.",
+    "Prostatomegalia de 58 cc.",
+    "Residuo postmiccional significativo de 23 %."
+  ],
+  "dificultad": "Media: quiste dictado en centímetros (2.2 x 1.9 cm) que debe convertirse a mm; cortical izquierda dictada en palabras («dieciséis»); intervenciones de la asistente intercaladas; RPM elevado que se registra como valor en volúmenes pero aparece en la conclusión dictada.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2588,
+    "output_tokens": 2329
+  }
+}

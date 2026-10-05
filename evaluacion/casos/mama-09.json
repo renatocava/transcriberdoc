@@ -1,0 +1,94 @@
+{
+  "id": "mama-09",
+  "formato": "mama",
+  "escenario": "asistente_trampa",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Yesenia Patricia Mendoza Chuquimia, 42 años. Solicita el doctor Raúl Benavides Ormeño."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama derecha. Parénquima de ecoestructura conservada. En radio de las 10, a 3 cm del pezón, imagen anecoica, bordes lisos, paredes finas, refuerzo acústico posterior. Mide 8 por 6 mm."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Doctor, ¿anoto también la imagen de las 2, la de 4 milímetros?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No, eso es lobulillo graso. No la pongas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conductos galactóforos derecha 2.1 mm. Axila derecha libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama izquierda. Parénquima homogéneo, sin lesiones focales. Conductos dos milímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿El ganglio axilar izquierdo de 12 milímetros lo consigno como adenopatía?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No. Es ganglio de aspecto normal, hilio graso conservado. Axila libre, no lo pongas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, quiste simple en mama derecha, BI-RADS 2. Dos, mama izquierda sin alteraciones ecográficas."
+    }
+  ],
+  "paciente": {
+    "nombre": "Yesenia Patricia Mendoza Chuquimia",
+    "edad": 42
+  },
+  "medico_solicitante": "Raúl Benavides Ormeño",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 8,
+          "unidad": "mm"
+        },
+        {
+          "valor": 6,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2.1,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste simple en radio de las 10, a 30 mm del pezón, anecoico, bordes lisos, paredes finas y refuerzo acústico posterior, de 8 x 6 mm."
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple en mama derecha, BI-RADS 2.",
+    "Mama izquierda sin alteraciones ecográficas."
+  ],
+  "dificultad": "El asistente propone una segunda imagen de 4 mm en mama derecha y una adenopatía axilar izquierda de 12 mm; el médico descarta ambas (lobulillo graso y ganglio de aspecto normal), por lo que no deben aparecer. La distancia al pezón se dicta en cm y debe convertirse a mm; un conducto se dicta en palabras.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2345,
+    "output_tokens": 1759
+  }
+}

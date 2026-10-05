@@ -1,0 +1,99 @@
+{
+  "id": "mama-04",
+  "formato": "mama",
+  "escenario": "medidas_cm",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ecografía de mamas. Paciente Milagros Yolanda Huarcaya Ccori, 43 años."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Quién la manda, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Doctor Renato Alvarado Chumpitaz, ginecología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Empezamos por la derecha. Parénquima homogéneo, sin lesiones focales. Conductos normales, miden 0.2 centímetros. Axila derecha libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama izquierda. Ahí está. Imagen anecoica, bordes bien definidos, pared fina, refuerzo acústico posterior."
+    },
+    {
+      "rol": "medico",
+      "texto": "Radio de las 2, a 3 centímetros del pezón. Mide 1.4 por 0.9 centímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "No tiene vascularidad al doppler. Resto del parénquima conservado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conductos izquierdos de tres milímetros, digo 0.3 centímetros. Axila izquierda sin adenopatías."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Conclusión?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Uno, quiste simple en mama izquierda. Dos, BI-RADS 2. Control anual."
+    }
+  ],
+  "paciente": {
+    "nombre": "Milagros Yolanda Huarcaya Ccori",
+    "edad": 43
+  },
+  "medico_solicitante": "Dr. Renato Alvarado Chumpitaz",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        },
+        {
+          "valor": 9,
+          "unidad": "mm"
+        },
+        {
+          "valor": 3,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste simple anecoico de bordes definidos, pared fina y refuerzo acústico posterior, sin vascularidad al doppler, en radio de las 2, a 30 mm del pezón, de 14 x 9 mm."
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple en mama izquierda.",
+    "BI-RADS 2.",
+    "Control anual."
+  ],
+  "dificultad": "Todas las medidas se dictan en centímetros y deben convertirse a mm (0.2 cm → 2 mm, 3 cm → 30 mm, 1.4 x 0.9 cm → 14 y 9 mm, 0.3 cm → 3 mm); en la mama izquierda el médico dice primero 'tres milímetros' y se corrige con 0.3 cm (mismo valor); la mama derecha se describe normal con su medida de conductos.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2261,
+    "output_tokens": 1378
+  }
+}

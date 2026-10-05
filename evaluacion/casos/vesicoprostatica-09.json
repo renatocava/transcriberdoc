@@ -1,0 +1,131 @@
+{
+  "id": "vesicoprostatica-09",
+  "formato": "vesicoprostatica",
+  "escenario": "asistente_trampa",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Saturnino Alarcón Vilca. 71 años. Lo manda el doctor Wilfredo Rengifo Panduro."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ecografía vésico prostática. Empezamos con próstata."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata aumentada de tamaño. Ecogenicidad heterogénea. Calcificaciones groseras en zona central."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mide 5.2 por 4.4 por 4.9 centímetros. Volumen aproximado 58 cc."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Doctor, ¿le pongo también lóbulo medio protruyendo hacia la vejiga?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No, no protruye. No pongas eso."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga a mediana repleción. Paredes engrosadas, trabeculadas, miden 6 milímetros. Contenido anecoico. Sin cálculos ni masas."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Divertículo le agrego?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No veo divertículo. Sigue."
+    },
+    {
+      "rol": "medico",
+      "texto": "Premiccional 320 cc. Postmiccional 95."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Residuo 25 por ciento entonces."
+    },
+    {
+      "rol": "medico",
+      "texto": "No, treinta por ciento. Pon 30."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, hipertrofia prostática con volumen de 58 cc. Dos, calcificaciones prostáticas. Tres, vejiga de esfuerzo. Cuatro, residuo postmiccional significativo de 30 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Saturnino Alarcón Vilca",
+    "edad": 71
+  },
+  "medico_solicitante": "Wilfredo Rengifo Panduro",
+  "secciones": [
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 44,
+          "unidad": "mm"
+        },
+        {
+          "valor": 49,
+          "unidad": "mm"
+        },
+        {
+          "valor": 58,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de ecogenicidad heterogénea con calcificaciones groseras en zona central."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 6,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Vejiga a mediana repleción con paredes engrosadas y trabeculadas de 6 mm, sin cálculos ni masas."
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 320,
+          "unidad": "cc"
+        },
+        {
+          "valor": 95,
+          "unidad": "cc"
+        },
+        {
+          "valor": 30,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Hipertrofia prostática con volumen de 58 cc.",
+    "Calcificaciones prostáticas.",
+    "Vejiga de esfuerzo.",
+    "Residuo postmiccional significativo de 30%."
+  ],
+  "dificultad": "Asistente trampa: sugiere lóbulo medio protruyente y divertículo vesical, que el médico rechaza; propone RPM de 25% y el médico lo corrige a 30% (dictado en palabras). Medidas prostáticas dictadas en cm que deben convertirse a mm.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2182,
+    "output_tokens": 2285
+  }
+}

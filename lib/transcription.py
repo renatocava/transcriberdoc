@@ -62,6 +62,7 @@ def transcribir_audio(
     audio_bytes: bytes,
     filename: str = "consulta.webm",
     conocidos: tuple[list[str], list[str]] | None = None,
+    formato: str | None = None,
 ) -> dict[str, Any]:
     """Transcribe el audio y devuelve el transcript con sus intervenciones.
 
@@ -69,6 +70,8 @@ def transcribir_audio(
         conocidos: (nombres, muestras como data URL) de médicos registrados
             (`lib.voces.referencias`). Sus intervenciones llegan con el nombre
             como hablante en lugar de una letra.
+        formato: solo en modo simulado, elige el diálogo de ejemplo
+            (consulta o dictado de ecografía).
 
     Returns:
         {"transcript_completo": str,
@@ -76,7 +79,7 @@ def transcribir_audio(
     """
     nombres, muestras = conocidos or ([], [])
     if usar_mock():
-        return transcripcion_mock(medico=nombres[0] if nombres else None)
+        return transcripcion_mock(medico=nombres[0] if nombres else None, formato=formato)
 
     if not audio_bytes:
         raise ValueError("No se recibió audio para transcribir.")

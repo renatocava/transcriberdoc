@@ -1,0 +1,183 @@
+{
+  "id": "vias_urinarias-03",
+  "formato": "vias_urinarias",
+  "escenario": "asistente",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Doctor, ya está el paciente en la camilla. ¿Le tomo los datos?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí, dale. Pregúntale nombre y edad."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Félix Alberto Chumpitaz Rojas, 67 años. Lo manda la doctora Rocío Paredes Llanos, de urología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Ecografía de vías urinarias. Empezamos por riñón derecho."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal. Mide 102 por 48. Cortical 15."
+    },
+    {
+      "rol": "asistente",
+      "texto": "102 por 48, cortical 15, ¿correcto?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Correcto. Pasamos al izquierdo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo también normal, sin ectasia, sin litiasis. 10.5 por 5 centímetros. Cortical 16 milímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "O sea 105 por 50, cortical 16."
+    },
+    {
+      "rol": "medico",
+      "texto": "Eso. Ahora vejiga. Bien distendida, paredes delgadas, contenido anecoico, sin cálculos. Normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional 320 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata. Aumentada de tamaño. Se ven calcificaciones groseras en la zona central. Longitudinal 48, anteroposterior 45, transverso 42. Volumen 47 cc."
+    },
+    {
+      "rol": "asistente",
+      "texto": "48, 45, 42, volumen 47 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí. Que vaya a orinar, por favor."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Ya regresó, doctor."
+    },
+    {
+      "rol": "medico",
+      "texto": "Postmiccional 25 cc. RPM ocho por ciento."
+    },
+    {
+      "rol": "asistente",
+      "texto": "25 cc, residuo 8 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, riñones de caracteres morfológicos normales para la edad. Dos, prostatomegalia con calcificaciones centrales. Tres, vejiga normal con RPM de 8 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Félix Alberto Chumpitaz Rojas",
+    "edad": 67
+  },
+  "medico_solicitante": "Dra. Rocío Paredes Llanos",
+  "secciones": [
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        },
+        {
+          "valor": 16,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "mm"
+        },
+        {
+          "valor": 42,
+          "unidad": "mm"
+        },
+        {
+          "valor": 47,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño con calcificaciones groseras en la zona central."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 320,
+          "unidad": "cc"
+        },
+        {
+          "valor": 25,
+          "unidad": "cc"
+        },
+        {
+          "valor": 8,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Riñones de caracteres morfológicos normales para la edad.",
+    "Prostatomegalia con calcificaciones centrales.",
+    "Vejiga normal con RPM de 8 %."
+  ],
+  "dificultad": "Media: medidas del riñón izquierdo dictadas en centímetros que deben convertirse a mm; el asistente repite cifras (no duplicar); el volumen premiccional se dicta antes de la próstata, separado del postmiccional; RPM dictado en palabras («ocho por ciento»); próstata con hallazgo que contradice el texto normal (calcificaciones).",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2528,
+    "output_tokens": 2164
+  }
+}

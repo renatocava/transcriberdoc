@@ -30,7 +30,7 @@ AYUDA_MODOS = {
     VARIOS: "Médico, paciente y uno o más acompañantes (familiar, intérprete).",
 }
 
-ROLES = ["Doctor", "Paciente", "Acompañante", "Otro"]
+ROLES = ["Doctor", "Paciente", "Asistente", "Acompañante", "Otro"]
 
 
 def hablantes(utterances: list[dict[str, Any]]) -> list[str]:
@@ -49,13 +49,18 @@ def es_nombre(speaker: str) -> bool:
 
 
 def mapping_inicial(
-    utterances: list[dict[str, Any]], modo: str, medicos: Iterable[str] = ()
+    utterances: list[dict[str, Any]],
+    modo: str,
+    medicos: Iterable[str] = (),
+    interlocutor: str = "Paciente",
 ) -> dict[str, str]:
     """Rol por defecto de cada voz según el modo elegido.
 
     Los médicos reconocidos por su voz son «Doctor». Si no hay ninguno, el
     primero en hablar se toma como el médico, que es quien suele abrir la
-    consulta. El resto se corrige en la pantalla de revisión.
+    consulta. La siguiente voz es el `interlocutor`: el paciente en una
+    consulta, el asistente que transcribe en una ecografía. El resto se
+    corrige en la pantalla de revisión.
     """
     voces = hablantes(utterances) or ["A"]
     if modo == UNO or len(voces) == 1:
@@ -70,7 +75,7 @@ def mapping_inicial(
     # se marca como "Otro" para que salte a la vista en la revisión.
     resto = "Otro" if modo == DOS else "Acompañante"
     for i, v in enumerate(otros):
-        mapping[v] = "Paciente" if i == 0 else resto
+        mapping[v] = interlocutor if i == 0 else resto
     return mapping
 
 

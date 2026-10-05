@@ -1,7 +1,7 @@
 """Pruebas de humo de las capas sin UI.
 
     python smoke_test.py                 # todo en modo mock (sin APIs)
-    python smoke_test.py --real          # extracción real con Claude
+    python smoke_test.py --real          # extracción real con Claude (consulta y ecografía)
     python smoke_test.py --real audio.mp3  # transcripción + extracción reales
 """
 
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 
 
@@ -28,7 +29,7 @@ def main() -> int:
     esquema = historia_input_schema()
     assert "$defs" not in json.dumps(esquema), "quedaron $defs sin aplanar"
     assert "$ref" not in json.dumps(esquema), "quedaron $ref sin aplanar"
-    print(f"[1/5] Schema aplanado OK — required: {esquema['required']}")
+    print(f"[1/6] Schema aplanado OK — required: {esquema['required']}")
 
     voces = lambda *s: [{"speaker": x, "text": "t"} for x in s]  # noqa: E731
     assert es_dictado(mapping_inicial(voces("A"), AUTO))
@@ -65,7 +66,7 @@ def main() -> int:
         assert nombres == ["Dr. Prueba"] and muestras[0].startswith("data:audio/wav;base64,")
         registro_voces.eliminar(medico["id"])
         assert registro_voces.listar() == []
-    print("[2/5] Asignación de roles y voces de médicos OK")
+    print("[2/6] Asignación de roles y voces de médicos OK")
 
     h = {"paciente": {"nombre": "Ana"}, "diagnosticos": [{"descripcion": "X", "tipo": "presuntivo"}],
          "antecedentes": {"alergias": ["Penicilina"]}}
@@ -80,7 +81,7 @@ def main() -> int:
     assert h["diagnosticos"][0]["_fuentes"]["ids"] == [2]
     assert mapa["antecedentes.alergias::Penicilina"]["ids"] == [0]
     assert set(mapa) == {"paciente.nombre", "antecedentes.alergias::Penicilina"}
-    print("[3/5] Validación de fuentes OK")
+    print("[3/6] Validación de fuentes OK")
 
     from lib import cie10
     if cie10.disponible():
@@ -108,17 +109,62 @@ def main() -> int:
             transcripcion = transcribir_audio(fh.read(), os.path.basename(audio))
     else:
         transcripcion = transcripcion_mock()
-    print(f"[4/5] Transcripción OK — {len(transcripcion['utterances'])} intervenciones")
+    print(f"[4/6] Transcripción OK — {len(transcripcion['utterances'])} intervenciones")
     print(formatear_dialogo(transcripcion["utterances"][:4], {"A": "Doctor", "B": "Paciente"}))
 
     mapping = mapping_inicial(transcripcion["utterances"], AUTO)
     historia, fuentes = extraer_historia_clinica(transcripcion["utterances"], mapping)
     historia = normalizar_historia(historia)
-    print(f"[5/5] Extracción OK — {len(fuentes)} campos con fuente")
+    print(f"[5/6] Extracción OK — {len(fuentes)} campos con fuente")
     print(json.dumps(historia, indent=2, ensure_ascii=False))
     for ruta, f in fuentes.items():
         print(f"  {ruta:<55} <- {', '.join(f'#{i + 1}' for i in f['ids'])}")
+
+    probar_ecografias()
     return 0
+
+
+def probar_ecografias() -> None:
+    """Informes ecográficos: normalización, cálculos, extracción y Word de los cinco formatos."""
+    import io
+    import zipfile
+
+    from lib import ecografias as eco
+    from lib.extraction import extraer
+    from lib.hablantes import AUTO, mapping_inicial
+    from lib.informe_docx import generar_docx
+    from lib.mock_data import transcripcion_mock
+
+    inf = eco.normalizar_informe("abdomen", {"secciones": {"bazo": "BAZO: 98 mm DE ECOESTRUCTURA NORMAL."}})
+    assert inf["secciones"]["bazo"] == "98 mm DE ECOESTRUCTURA NORMAL."  # sin el rótulo repetido
+    assert inf["secciones"]["higado"] == eco.PLANTILLAS["abdomen"].secciones[0].normal  # ausente -> normal
+    assert inf["medico"] == "" and inf["conclusion"] == list(eco.PLANTILLAS["abdomen"].conclusion)
+    bazo = eco.PLANTILLAS["abdomen"].secciones[4]
+    assert eco.es_normal(bazo, "98 mm DE ECOESTRUCTURA NORMAL.")
+    assert not eco.es_normal(bazo, "98 mm CON IMAGEN NODULAR.")
+    avisos = eco.calculos("L: 40 mm AP: 30 mm T: 50 mm VOL APROX. 60 cc")
+    assert avisos[0].startswith("Volumen calculado") and "31.2 cc" in avisos[0] and "60 cc" in avisos[0]
+    avisos = eco.calculos("PRE MICCIONAL: 300 cc\nPOST MICCIONAL: 36 cc\nRPM: 12 %")
+    assert avisos == ["RPM calculado (post / pre): 12 %"], avisos
+
+    # Con --real, Claude llena el informe a partir de los dictados de ejemplo.
+    for formato in eco.PLANTILLAS:
+        utterances = transcripcion_mock(formato=formato)["utterances"]
+        mapping = mapping_inicial(utterances, AUTO, interlocutor="Asistente")
+        assert mapping.get("B") == "Asistente"
+        informe, fuentes = extraer(utterances, mapping, formato)
+        assert informe["plantilla"] == formato and set(informe["secciones"]) == {
+            s.clave for s in eco.PLANTILLAS[formato].secciones
+        }
+        doc = generar_docx(informe)
+        xml = zipfile.ZipFile(io.BytesIO(doc)).read("word/document.xml").decode()
+        texto = re.sub(r"<[^>]+>", "", xml)
+        assert informe["paciente"]["nombre"].upper() in texto
+        assert all(c in texto for c in informe["conclusion"])
+        print(f"      {formato:<18} {len(fuentes):>2} datos con fuente · Word {len(doc) // 1024} KB")
+        if formato == "abdomen":
+            print(json.dumps(informe, indent=2, ensure_ascii=False))
+    print("[6/6] Informes ecográficos OK")
 
 
 if __name__ == "__main__":

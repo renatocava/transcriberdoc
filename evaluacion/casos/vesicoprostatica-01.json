@@ -1,0 +1,93 @@
+{
+  "id": "vesicoprostatica-01",
+  "formato": "vesicoprostatica",
+  "escenario": "normal_completo",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Abelardo Ccopa Huamaní, 58 años. Lo envía el doctor Raúl Benavides Zegarra. Ecografía vésico-prostática."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga a mediana repleción, paredes delgadas, contenido anecoico homogéneo. No cálculos, no lesiones. Normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional 320 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata homogénea, sin calcificaciones. Longitudinal 38 milímetros. Anteroposterior treinta. Transverso 4.2 centímetros. Volumen aproximado 25 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, que vaya a orinar."
+    },
+    {
+      "rol": "medico",
+      "texto": "Postmiccional 15 cc. Residuo 5 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Abelardo Ccopa Huamaní",
+    "edad": 58
+  },
+  "medico_solicitante": "Raúl Benavides Zegarra",
+  "secciones": [
+    {
+      "clave": "prostata",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 38,
+          "unidad": "mm"
+        },
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 42,
+          "unidad": "mm"
+        },
+        {
+          "valor": 25,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 320,
+          "unidad": "cc"
+        },
+        {
+          "valor": 15,
+          "unidad": "cc"
+        },
+        {
+          "valor": 5,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Orden de dictado alterado (vejiga y volumen premiccional antes que la próstata), un valor en palabras (treinta) y otro en centímetros (4.2 cm a convertir a 42 mm); frase coloquial intermedia sin contenido clínico.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2888,
+    "output_tokens": 984
+  }
+}

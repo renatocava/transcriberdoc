@@ -7,6 +7,8 @@ editarla y "guardarla" en la historia clínica.
 
 - **Transcripción + diarización:** OpenAI `gpt-4o-transcribe-diarize`
 - **Extracción estructurada:** Anthropic `claude-sonnet-4-6` con tool use
+- **Informes de ecografía:** cinco plantillas .docx; el informe se descarga en Word
+  con el mismo formato (`python-docx`)
 - **UI:** Streamlit
 - **Persistencia:** ninguna. Todo vive en memoria; "Guardar" solo confirma en
   pantalla e imprime el JSON final en la consola.
@@ -39,10 +41,11 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
 
 ## Uso en la demo
 
-1. **Grabar** — antes de empezar, elige **Participantes**: *Automático* (detecta
-   cuántas voces hay), *Solo el médico* (dictado), *Médico y paciente* o *Con
-   acompañante*. Si hay voces registradas, elige también **Médico(s) en la
-   consulta** (hasta 4). Ambas elecciones se recuerdan entre consultas. Luego
+1. **Grabar** — antes de empezar, elige el **Formato de salida** (por defecto,
+   ecografía de abdomen completo) y **Participantes**: *Solo el médico* (dictado,
+   el valor por defecto), *Automático* (detecta cuántas voces hay), *Médico y
+   paciente* o *Con acompañante*. Si hay voces registradas, elige también **Médico(s) en la
+   consulta** (hasta 4). Las elecciones se recuerdan entre consultas. Luego
    "Iniciar grabación" / "Detener grabación"; al detener, arranca el procesamiento.
 
    **Voces de médicos:** en el expander del mismo nombre se graba (o sube en WAV)
@@ -52,18 +55,19 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
    dato biométrico). En Streamlit Cloud el disco se borra al reiniciar, así que
    allí las voces no persisten.
 2. **Procesar** — 15-40 s para una consulta de 2-3 minutos.
-3. **Revisar** — transcripción a la izquierda, historia clínica editable a la
-   derecha. Arriba de la transcripción queda un reproductor con el audio de la
-   consulta, para escuchar lo que se grabó mientras se revisa el formulario.
+3. **Revisar** — se muestra solo el informe (o la historia clínica), ya lleno y
+   editable. Bajo el título, la sección plegable **🎧 Transcripción y audio**
+   tiene el audio completo, los roles de las voces y la transcripción, para
+   consultarlos solo cuando hagan falta.
    - **Roles:** cada voz detectada tiene su rol (Doctor, Paciente, Acompañante,
      Otro). Si el sistema confundió quién es quién, corrígelo y confirma para
      re-extraer (ojo: se pierden las ediciones manuales). Si las voces no cuadran
      con el modo elegido, aparece un aviso.
    - **Fuentes:** cada dato lleva un 📎. Al pasar el mouse muestra la cita textual
-     y el minuto; al hacer clic resalta la intervención en la transcripción y
-     reproduce solo ese trozo de audio. ✏️ marca datos editados a mano y ⚠️ los
+     y el minuto; al hacer clic abre una ventana con la cita y solo ese trozo de
+     audio, y la resalta en la transcripción. ✏️ marca datos editados a mano y ⚠️ los
      que no tienen respaldo en la transcripción. Cada intervención indica qué
-     datos salieron de ella, y su ▶ la reproduce.
+     datos salieron de ella, y su ▶ abre la misma ventana para escucharla.
      En modo simulado los minutos son aproximados (no salen del audio real).
    - **CIE-10:** Claude propone un código por diagnóstico y hasta 3 alternativas;
      la app solo acepta los que existen y están vigentes en el catálogo oficial
@@ -76,6 +80,41 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
 "Opciones de demo" → "Usar audio pre-grabado" (lee `assets/demo-consulta.mp3`).
 El mismo expander permite subir cualquier archivo de audio. El flujo posterior
 es idéntico al de una grabación en vivo.
+
+## Informes de ecografía
+
+En la pantalla inicial, **Formato de salida** elige entre la historia clínica de
+una consulta y cinco informes de ecografía, uno por plantilla de
+`plantillas/ecografia/`:
+
+| Formato | Plantilla | Secciones |
+|---|---|---|
+| Abdomen completo | `ECO ABDOMEN COMPLETO NORMAL.docx` | hígado, vesícula, colédoco, porta, bazo, páncreas, riñones, vejiga, genitales, Douglas, cavidad |
+| Mamas | `ECO MAMA NORMAL.docx` | mama derecha e izquierda |
+| Transvaginal | `ECO TV NORMAL.docx` | útero, cérvix, endometrio, ovarios, Douglas |
+| Vésico-prostática | `ECO VESICO PROSTATICO NORMAL.docx` | próstata, vejiga, volúmenes pre/post miccional y RPM |
+| Vías urinarias | `ECO VIAS URINARIAS NORMAL.docx` | riñones (con cortical), próstata, vejiga, volúmenes |
+
+El médico dicta (o conversa con su asistente) lo que ve en el monitor. Cada
+sección parte del **texto normal de la plantilla**: Claude pone las medidas
+dictadas en los `___` y reescribe solo lo que difiere de lo normal. Lo que no se
+dicta queda como `___`; Claude no calcula volúmenes ni porcentajes. En la revisión:
+
+- cada órgano dice si quedó **normal**, **con hallazgos** o **no se mencionó**
+  (texto normal sin respaldo en el dictado), con su 📎 como en la historia clínica;
+- la app **sugiere** el volumen prostático (L×AP×T×0,52) y el RPM (post/pre), y
+  avisa si no cuadran con lo escrito, pero nunca los escribe sola;
+- antes de descargar avisa qué secciones aún tienen medidas `___`;
+- "⬇️ Descargar informe (.docx)" genera el Word **sobre la plantilla original**:
+  conserva membrete, pie, márgenes y viñetas; llena nombres, edad, médico
+  (PARTICULAR si no se dicta), examen y fecha, y reescribe cuerpo y conclusión.
+
+Con un formato de ecografía, la segunda voz se asigna como **Asistente** (el
+transcriptor), no como paciente. Si se grabó con el formato equivocado, se puede
+cambiar en la revisión y se vuelve a extraer.
+
+Los textos normales viven en `lib/ecografias.py`. Si cambia una plantilla, hay
+que actualizar ahí el texto de la sección correspondiente.
 
 ## Audio de respaldo
 
@@ -160,10 +199,14 @@ lib/transcription.py    wrapper de OpenAI (diarización -> utterances A/B)
 lib/extraction.py       wrapper de Anthropic (tool use forzado)
 lib/state.py            máquina de estados y helpers de session_state
 lib/config.py           secrets y flag de modo simulado
-lib/mock_data.py        consulta de ejemplo para el modo simulado
+lib/mock_data.py        consulta y dictados de ecografía para el modo simulado
+lib/ecografias.py       formatos de ecografía: secciones y texto normal de cada plantilla
+lib/informe_docx.py     informe ecográfico en Word sobre la plantilla original
+plantillas/ecografia/   las cinco plantillas .docx
 components/recording.py pantalla idle (micrófono, audio pre-grabado, upload)
 components/processing.py loader con st.status y manejo de errores
 components/review.py    transcripción + formulario editable
+components/informe_eco.py revisión del informe ecográfico y descarga en Word
 ```
 
 ### Notas de implementación

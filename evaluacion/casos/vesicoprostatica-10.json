@@ -1,0 +1,118 @@
+{
+  "id": "vesicoprostatica-10",
+  "formato": "vesicoprostatica",
+  "escenario": "coloquial",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, a ver, eh, empezamos con este paciente. Clemente Gutiérrez Ayala, 67 años. Lo manda el doctor Wilfredo Pacheco Rojas, de urología."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo doctor, ya está el nombre. ¿Empezamos por la próstata?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No, no, primero los volúmenes que ya orinó, digo, antes de que orine. Eh, premiccional 320 cc. Ya, que vaya al baño, por favor."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya volvió. A ver, postmiccional 95 cc. El residuo sale 30 %, o sea bastante, ¿no?"
+    },
+    {
+      "rol": "asistente",
+      "texto": "Anotado, 320, 95 y 30 %."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, ahora la vejiga. Eh, con buena repleción antes de orinar, pero mira, las paredes están engrosadas, trabeculadas, miden como 6 mm. Contenido anecoico, sin cálculos, sin masas, eso sí."
+    },
+    {
+      "rol": "medico",
+      "texto": "Y la próstata, eh, aumentada de tamaño. Mide cinco punto dos por 4.8 por 5 cm. Volumen aproximado sesenta y cinco cc. Parénquima heterogéneo, eh, hay una calcificación pequeñita de 4 mm en la zona central, nada más."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Conclusiones, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, pon: uno, prostatomegalia grado dos con calcificación intraparenquimal. Dos, vejiga de esfuerzo. Tres, residuo postmiccional significativo de 30 %. Eso sería todo, ya."
+    }
+  ],
+  "paciente": {
+    "nombre": "Clemente Gutiérrez Ayala",
+    "edad": 67
+  },
+  "medico_solicitante": "Wilfredo Pacheco Rojas",
+  "secciones": [
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        },
+        {
+          "valor": 65,
+          "unidad": "cc"
+        },
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de parénquima heterogéneo, con una calcificación de 4 mm en la zona central."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 6,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Vejiga con paredes engrosadas y trabeculadas de 6 mm, contenido anecoico sin cálculos ni masas."
+    },
+    {
+      "clave": "volumenes",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 320,
+          "unidad": "cc"
+        },
+        {
+          "valor": 95,
+          "unidad": "cc"
+        },
+        {
+          "valor": 30,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": "Residuo postmiccional significativo de 30 %."
+    }
+  ],
+  "conclusion_dictada": [
+    "Prostatomegalia grado II con calcificación intraparenquimal.",
+    "Vejiga de esfuerzo.",
+    "Residuo postmiccional significativo de 30 %."
+  ],
+  "dificultad": "Dictado coloquial con muletillas y orden invertido (volúmenes, vejiga, próstata); medidas prostáticas dictadas en cm que deben convertirse a mm, una en palabras (cinco punto dos) y el volumen en palabras (sesenta y cinco); medida de pared vesical y de calcificación incluidas como medidas del hallazgo; médico solicitante mencionado al inicio.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2185,
+    "output_tokens": 1799
+  }
+}

@@ -1,0 +1,229 @@
+{
+  "id": "abdomen-04",
+  "formato": "abdomen",
+  "escenario": "medidas_cm",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Paciente Luz Marina Cóndor Villanueva, 52 años, la manda el doctor Julio César Paredes Llerena."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Abdomen completo. Empezamos con hígado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Hígado de bordes regulares, ecogenicidad aumentada en forma difusa, leve. Sin dilatación de vías biliares intrahepáticas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Lóbulo hepático derecho 14.5 cm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vesícula 7.8 por 3.2 cm. Pared 2 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "En su interior imagen ecogénica con sombra acústica posterior, móvil, de 1.2 cm."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Una sola imagen, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Sí, una sola."
+    },
+    {
+      "rol": "medico",
+      "texto": "Colédoco 4 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Porta 1.1 cm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Bazo diez punto cinco centímetros, homogéneo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Páncreas normal, cabeza 2.2 cm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal, 10.2 por 4.8 cm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo 10.6 por 5.1 cm. Polo superior quiste cortical simple, anecoico, de 1.8 cm. Resto normal, no hidronefrosis."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga sin alteraciones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Douglas libre. No líquido libre en cavidad."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusiones: uno, esteatosis hepática leve. Dos, colelitiasis única. Tres, quiste cortical simple en riñón izquierdo."
+    }
+  ],
+  "paciente": {
+    "nombre": "Luz Marina Cóndor Villanueva",
+    "edad": 52
+  },
+  "medico_solicitante": "Julio César Paredes Llerena",
+  "secciones": [
+    {
+      "clave": "higado",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 145,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Ecogenicidad aumentada en forma difusa de grado leve, sugestiva de esteatosis hepática leve."
+    },
+    {
+      "clave": "vesicula",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 32,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2,
+          "unidad": "mm"
+        },
+        {
+          "valor": 12,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "En su interior imagen ecogénica única, móvil, con sombra acústica posterior de 12 mm, compatible con cálculo."
+    },
+    {
+      "clave": "coledoco",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "porta",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 11,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "bazo",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "pancreas",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 22,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 106,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste cortical simple anecoico de 18 mm en el polo superior."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "genitales",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cavidad",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Esteatosis hepática leve.",
+    "Colelitiasis única.",
+    "Quiste cortical simple en riñón izquierdo."
+  ],
+  "dificultad": "Casi todas las medidas se dictan en centímetros (con decimales y una en palabras: «diez punto cinco centímetros») y deben convertirse a mm; la pared vesicular se dicta en milímetros escritos en palabra. El cálculo vesicular y el quiste renal aportan medidas adicionales en sus secciones. Genitales internos no se mencionan y no deben marcarse como normales.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2906,
+    "output_tokens": 2348
+  }
+}

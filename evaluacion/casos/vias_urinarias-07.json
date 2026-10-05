@@ -1,0 +1,138 @@
+{
+  "id": "vias_urinarias-07",
+  "formato": "vias_urinarias",
+  "escenario": "omisiones",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Paciente Justiniano Ramos Quispecahuana. Lo envía el doctor Edgar Pacheco Rivas, de urología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Empezamos. Riñón derecho."
+    },
+    {
+      "rol": "medico",
+      "texto": "Morfología normal, buena diferenciación córtico medular. Sin ectasia, sin litiasis."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mide 10.5 por 4.8 centímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Pasamos al izquierdo. Gírese un poquito, señor. Ahí, quieto."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo, 108 por 50 milímetros. Cortical 15."
+    },
+    {
+      "rol": "medico",
+      "texto": "En polo superior imagen anecoica, redondeada, paredes finas, refuerzo posterior. Quiste simple cortical de 18 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Resto sin hidronefrosis."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata. Mide 52 por 45 por 48."
+    },
+    {
+      "rol": "medico",
+      "texto": "Hay calcificaciones groseras en zona central, la mayor de 4 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, listo, puede limpiarse."
+    }
+  ],
+  "paciente": {
+    "nombre": "Justiniano Ramos Quispecahuana",
+    "edad": null
+  },
+  "medico_solicitante": "Edgar Pacheco Rivas",
+  "secciones": [
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste simple cortical en polo superior de 18 mm, anecoico, de paredes finas y con refuerzo posterior."
+    },
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Calcificaciones groseras en zona central de la próstata, la mayor de 4 mm."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Omisiones: no se mencionan vejiga ni volúmenes vesicales; faltan la cortical del riñón derecho y el volumen prostático (no deben calcularse). Medidas del riñón derecho dictadas en cm (convertir a mm) y próstata sin unidad explícita (mm por plantilla). Frases de indicación al paciente intercaladas que deben ignorarse.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3355,
+    "output_tokens": 1709
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "id": "abdomen-01",
+  "formato": "abdomen",
+  "escenario": "normal_completo",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Abigail Sofía Rengifo Tapullima, 34 años. Lo envía el doctor Martín Saavedra Panduro. Abdomen completo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Hígado parénquima homogéneo, ecogenicidad conservada. Vías biliares intrahepáticas no dilatadas. Lóbulo hepático derecho 132 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vesícula 78 por 31, paredes delgadas de 2 milímetros, sin cálculos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Colédoco 3 milímetros. Porta 10 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Bazo 98 milímetros, ecoestructura normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Páncreas conservado, cabeza mide 22 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal, 104 por 46. Riñón izquierdo normal, 10.8 por 4.9 centímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga, genitales internos, Douglas, todo normal. Sin líquido libre ni masas en cavidad."
+    }
+  ],
+  "paciente": {
+    "nombre": "Abigail Sofía Rengifo Tapullima",
+    "edad": 34
+  },
+  "medico_solicitante": "Martín Saavedra Panduro",
+  "secciones": [
+    {
+      "clave": "higado",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 132,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vesicula",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 31,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "coledoco",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 3,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "porta",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 10,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "bazo",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 98,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "pancreas",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 22,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 104,
+          "unidad": "mm"
+        },
+        {
+          "valor": 46,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 49,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "genitales",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cavidad",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Riñón izquierdo dictado en centímetros con decimales (10.8 x 4.9 cm) que debe convertirse a mm; vesícula dictada como '78 por 31' sin unidad explícita; vejiga, genitales y Douglas cubiertos con una frase general conjunta; LHD dictado como 'lóbulo hepático derecho'.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3658,
+    "output_tokens": 1234
+  }
+}

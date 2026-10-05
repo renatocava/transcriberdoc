@@ -1,4 +1,4 @@
-"""Vista de revisión: transcripción a la izquierda, historia clínica editable a la derecha."""
+"""Vista de revisión: la historia clínica editable; transcripción y audio, a pedido."""
 
 from __future__ import annotations
 
@@ -8,14 +8,15 @@ from typing import Any
 import streamlit as st
 
 from lib import cie10, state
-from lib.extraction import extraer_historia_clinica
+from lib.ecografias import CONSULTA, FORMATOS, es_ecografia
+from lib.extraction import extraer
 from lib.fuentes import SEP, de_texto, editado
 from lib.hablantes import ROLES, aviso, etiqueta, hablantes
 
 TIPOS_DX = ["presuntivo", "definitivo", "diferencial"]
 SEXOS = ["", "M", "F", "Otro"]
-COLOR_ROL = {"Doctor": "blue", "Paciente": "green", "Acompañante": "orange"}
-ICONO_ROL = {"Doctor": "🩺", "Paciente": "🧑", "Acompañante": "👥"}
+COLOR_ROL = {"Doctor": "blue", "Paciente": "green", "Asistente": "violet", "Acompañante": "orange"}
+ICONO_ROL = {"Doctor": "🩺", "Paciente": "🧑", "Asistente": "📝", "Acompañante": "👥"}
 PREFIJO_ROL = "f_rol_"
 
 #: Ruta de cada campo simple -> etiqueta visible (para las fuentes).
@@ -56,6 +57,8 @@ def _mmss(segundos: float) -> str:
 
 def _enfocar(ids: list[int]) -> None:
     st.session_state["foco"] = list(ids)
+    # El diálogo no se puede abrir desde un callback: se marca y lo abre la vista.
+    st.session_state["ver_fuente"] = bool(ids)
 
 
 def _fuente(ruta: str) -> dict[str, Any] | None:
@@ -81,7 +84,7 @@ def _ayuda(fuente: dict[str, Any] | None, valor: Any) -> str | None:
         )
     if editado(fuente, valor):
         citas.append("✏️ *Editado a mano después de la extracción.*")
-    citas.append("*Clic en 📎 para verlo en la transcripción y escuchar el audio.*")
+    citas.append("*Clic en 📎 para ver la cita y escuchar el audio.*")
     return "\n\n".join(citas)
 
 
@@ -100,7 +103,7 @@ def _boton_fuente(contenedor: Any, fuente: dict[str, Any] | None, valor: Any, ke
         contenedor.markdown("⚠️", help=SIN_FUENTE)
 
 
-def _fila_fuentes(campos: list[tuple[str, Any]], prefijo: str) -> None:
+def _fila_fuentes(campos: list[tuple[str, Any]], prefijo: str, etiquetas: dict[str, str] = ETIQUETAS) -> None:
     """Botones «📎 Campo · #n» para los campos simples de una sección."""
     con_fuente = [(ruta, valor, _fuente(ruta)) for ruta, valor in campos]
     con_fuente = [c for c in con_fuente if c[2]]
@@ -110,7 +113,7 @@ def _fila_fuentes(campos: list[tuple[str, Any]], prefijo: str) -> None:
         for ruta, valor, fuente in con_fuente:
             marca = " ✏️" if editado(fuente, valor) else ""
             st.button(
-                f"📎 {ETIQUETAS[ruta]} · {_numeros(fuente)}{marca}",
+                f"📎 {etiquetas[ruta]} · {_numeros(fuente)}{marca}",
                 key=f"{prefijo}_{ruta}",
                 help=_ayuda(fuente, valor),
                 type="tertiary",
@@ -124,7 +127,9 @@ def _valor(key: str, defecto: Any) -> Any:
     return st.session_state.get(key, defecto)
 
 
-def _indice_inverso(historia: dict[str, Any]) -> dict[int, list[str]]:
+def _indice_inverso(
+    historia: dict[str, Any], etiquetas: dict[str, str], listas: dict[str, str]
+) -> dict[int, list[str]]:
     """Intervención -> datos del formulario que salen de ella."""
     inverso: dict[int, list[str]] = {}
 
@@ -135,9 +140,9 @@ def _indice_inverso(historia: dict[str, Any]) -> dict[int, list[str]]:
     for ruta, fuente in st.session_state.get("fuentes", {}).items():
         if SEP in ruta:
             base, texto = ruta.split(SEP, 1)
-            anotar(fuente["ids"], f"{LISTAS_TEXTO.get(base, base)}: {texto}")
+            anotar(fuente["ids"], f"{listas.get(base, base)}: {texto}")
         else:
-            anotar(fuente["ids"], ETIQUETAS.get(ruta, ruta))
+            anotar(fuente["ids"], etiquetas.get(ruta, ruta))
     for dx in historia.get("diagnosticos", []):
         if dx.get("_fuentes"):
             codigo = f" ({dx['cie10']})" if dx.get("cie10") else ""
@@ -172,6 +177,26 @@ def _agregar_texto(lista: list, input_key: str) -> None:
 
 def _agregar_registro(lista: list, plantilla: dict[str, Any]) -> None:
     lista.append({**plantilla, "_uid": state.nuevo_uid()})
+
+
+def _formato_actual() -> str:
+    return (st.session_state.get("historia") or {}).get("plantilla") or CONSULTA
+
+
+def _reextraer(utterances: list[dict[str, Any]], mapping: dict[str, str], formato: str) -> None:
+    """Vuelve a extraer con otros roles u otro formato; descarta las ediciones manuales."""
+    try:
+        with st.spinner("Re-extrayendo información..."):
+            historia, fuentes = extraer(utterances, mapping, formato)
+        st.session_state["speaker_mapping"] = mapping
+        st.session_state["historia"] = state.ensure_uids(historia)
+        st.session_state["fuentes"] = fuentes
+        st.session_state["foco"] = []
+        for clave in [k for k in st.session_state if str(k).startswith("f_") and not str(k).startswith(PREFIJO_ROL)]:
+            del st.session_state[clave]
+        st.rerun()
+    except Exception as exc:
+        st.error(f"No se pudo re-extraer la información: {exc}")
 
 
 def _cancelar_cambio_roles() -> None:
@@ -216,7 +241,7 @@ def _editor_textos(titulo: str, lista: list[str], prefijo: str, placeholder: str
 
 
 # --------------------------------------------------------------------------
-# Columna izquierda: transcripción
+# Transcripción (sección plegable)
 # --------------------------------------------------------------------------
 def _render_roles(utterances: list[dict[str, Any]]) -> None:
     mapping = st.session_state["speaker_mapping"]
@@ -239,52 +264,55 @@ def _render_roles(utterances: list[dict[str, Any]]) -> None:
         st.warning("Los cambios manuales en el formulario se perderán.")
         c_ok, c_no = st.columns(2)
         if c_ok.button("Confirmar y re-extraer", type="primary", use_container_width=True):
-            try:
-                with st.spinner("Re-extrayendo información clínica..."):
-                    historia, fuentes = extraer_historia_clinica(utterances, nuevo)
-                st.session_state["speaker_mapping"] = nuevo
-                st.session_state["historia"] = state.ensure_uids(historia)
-                st.session_state["fuentes"] = fuentes
-                st.session_state["foco"] = []
-                for clave in [k for k in st.session_state if str(k).startswith("f_") and not str(k).startswith(PREFIJO_ROL)]:
-                    del st.session_state[clave]
-                st.rerun()
-            except Exception as exc:
-                st.error(f"No se pudo re-extraer la información: {exc}")
+            _reextraer(utterances, nuevo, _formato_actual())
         c_no.button("Cancelar", use_container_width=True, on_click=_cancelar_cambio_roles)
 
 
-def _render_foco(utterances: list[dict[str, Any]]) -> None:
+def selector_formato() -> None:
+    """Permite cambiar el formato de salida ya grabado (p. ej. si se olvidó elegirlo)."""
+    actual = _formato_actual()
+    # Sin prefijo f_: así sobrevive a la limpieza de widgets al re-extraer.
+    st.session_state.setdefault("w_formato_rev", actual)
+    nuevo = st.selectbox(
+        "Formato de salida", list(FORMATOS), format_func=FORMATOS.get, key="w_formato_rev",
+    )
+    if nuevo != actual:
+        st.warning("Se volverá a extraer todo con el nuevo formato; los cambios manuales se perderán.")
+        c_ok, c_no = st.columns(2)
+        if c_ok.button("Cambiar formato", type="primary", use_container_width=True):
+            st.session_state[state.CLAVE_FORMATO] = nuevo
+            _reextraer(_utterances(), st.session_state["speaker_mapping"], nuevo)
+        c_no.button("Cancelar", key="w_formato_no", use_container_width=True,
+                    on_click=st.session_state.update, kwargs={"w_formato_rev": actual})
+
+
+@st.dialog("📍 Fuente del dato", width="large")
+def _dialogo_fuente() -> None:
     """Fragmentos seleccionados, cada uno con su trozo de audio."""
+    utterances = _utterances()
     foco = [i for i in st.session_state.get("foco", []) if i < len(utterances)]
-    if not foco:
-        return
     mapping = st.session_state["speaker_mapping"]
     audio = st.session_state.get("audio_bytes")
     formato = state.mime_audio(st.session_state.get("audio_filename", ""))
-    with st.container(border=True):
-        c_tit, c_x = st.columns([12, 1], vertical_alignment="center")
-        c_tit.markdown("**📍 Fuente seleccionada**")
-        c_x.button("✕", key="f_foco_cerrar", help="Cerrar", type="tertiary", on_click=_enfocar, args=([],))
-        for i in foco:
-            u = utterances[i]
-            inicio, fin = float(u.get("start") or 0), float(u.get("end") or 0)
-            st.caption(f"#{i + 1} · {etiqueta(u.get('speaker', ''), mapping)} · {_mmss(inicio)}–{_mmss(fin)}")
-            st.markdown(f"«{(u.get('text') or '').strip()}»")
-            if audio and fin > inicio:
-                st.audio(audio, format=formato, start_time=max(0.0, inicio - 0.3), end_time=fin + 0.5)
+    for i in foco:
+        u = utterances[i]
+        inicio, fin = float(u.get("start") or 0), float(u.get("end") or 0)
+        st.caption(f"#{i + 1} · {etiqueta(u.get('speaker', ''), mapping)} · {_mmss(inicio)}–{_mmss(fin)}")
+        st.markdown(f"«{(u.get('text') or '').strip()}»")
+        if audio and fin > inicio:
+            st.audio(audio, format=formato, start_time=max(0.0, inicio - 0.3), end_time=fin + 0.5)
 
 
-def _render_transcript(historia: dict[str, Any]) -> None:
-    st.subheader("Transcripción")
+def render_transcript(
+    historia: dict[str, Any], etiquetas: dict[str, str] = ETIQUETAS, listas: dict[str, str] = LISTAS_TEXTO
+) -> None:
     state.reproductor_audio()
     utterances = _utterances()
     _render_roles(utterances)
-    _render_foco(utterances)
 
     mapping = st.session_state["speaker_mapping"]
     foco = set(st.session_state.get("foco", []))
-    usos = _indice_inverso(historia)
+    usos = _indice_inverso(historia, etiquetas, listas)
     with st.container(height=560, border=False):
         for i, u in enumerate(utterances):
             voz = u.get("speaker", "")
@@ -309,8 +337,16 @@ def _render_transcript(historia: dict[str, Any]) -> None:
                     st.caption("📎 " + " · ".join(usos[i]))
 
 
+def seccion_transcripcion(
+    historia: dict[str, Any], etiquetas: dict[str, str] = ETIQUETAS, listas: dict[str, str] = LISTAS_TEXTO
+) -> None:
+    """Transcripción, audio y roles de las voces, plegados bajo el título del documento."""
+    with st.expander("🎧 Transcripción y audio", key="w_transcripcion"):
+        render_transcript(historia, etiquetas, listas)
+
+
 # --------------------------------------------------------------------------
-# Columna derecha: formulario
+# Formulario
 # --------------------------------------------------------------------------
 def _seccion_paciente(historia: dict) -> None:
     pac = historia.setdefault("paciente", {})
@@ -544,6 +580,8 @@ def _guardar(historia: dict) -> None:
 
 def _render_formulario(historia: dict) -> None:
     st.subheader("Historia Clínica")
+    selector_formato()
+    seccion_transcripcion(historia)
     st.caption("📎 muestra de qué parte de la consulta sale cada dato · ⚠️ dato sin respaldo en la transcripción")
     _seccion_paciente(historia)
     _seccion_motivo(historia)
@@ -569,10 +607,14 @@ def render_review() -> None:
         st.rerun()
         return
 
-    col_transcript, col_form = st.columns([2, 3], gap="large")
-    # El formulario se dibuja primero en su columna para que la transcripción
-    # muestre los vínculos ya actualizados con lo que el médico editó.
-    with col_form:
-        _render_formulario(historia)
-    with col_transcript:
-        _render_transcript(historia)
+    # El documento es lo principal: una sola columna centrada.
+    _, centro, _ = st.columns([1, 4, 1])
+    with centro:
+        if es_ecografia(historia.get("plantilla")):
+            from components.informe_eco import render_informe  # import local: evita el ciclo
+
+            render_informe(historia)
+        else:
+            _render_formulario(historia)
+    if st.session_state.pop("ver_fuente", False):
+        _dialogo_fuente()

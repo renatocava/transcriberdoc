@@ -1,0 +1,156 @@
+{
+  "id": "vias_urinarias-02",
+  "formato": "vias_urinarias",
+  "escenario": "hallazgo_simple",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Leoncio Gamarra Huillca, 52 años."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ecografía de vías urinarias."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal, mide 105 por 48, cortical 16."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo, mide 10.8 por 5.1 centímetros, cortical 15."
+    },
+    {
+      "rol": "medico",
+      "texto": "En cáliz inferior imagen hiperecogénica con sombra acústica posterior de 7 milímetros. No dilatación pielocalicial."
+    },
+    {
+      "rol": "medico",
+      "texto": "Resto del riñón izquierdo conservado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata homogénea, sin calcificaciones. Longitudinal 38, AP 30, transverso 42. Volumen veinticinco cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional 380 cc, postmiccional 25 cc, residuo 7 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, litiasis renal izquierda no obstructiva de 7 milímetros. Dos, riñón derecho de características normales. Tres, próstata de volumen normal. Cuatro, vejiga normal con RPM de 7 por ciento."
+    }
+  ],
+  "paciente": {
+    "nombre": "Leoncio Gamarra Huillca",
+    "edad": 52
+  },
+  "medico_solicitante": "",
+  "secciones": [
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 16,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        },
+        {
+          "valor": 7,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Litiasis de 7 mm en el cáliz inferior (imagen hiperecogénica con sombra acústica posterior), sin dilatación pielocalicial."
+    },
+    {
+      "clave": "prostata",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 38,
+          "unidad": "mm"
+        },
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 42,
+          "unidad": "mm"
+        },
+        {
+          "valor": 25,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 380,
+          "unidad": "cc"
+        },
+        {
+          "valor": 25,
+          "unidad": "cc"
+        },
+        {
+          "valor": 7,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Litiasis renal izquierda no obstructiva de 7 mm.",
+    "Riñón derecho de características normales.",
+    "Próstata de volumen normal.",
+    "Vejiga normal con RPM de 7 %."
+  ],
+  "dificultad": "Medidas del riñón izquierdo dictadas en centímetros (10.8 x 5.1 cm) que deben convertirse a mm; volumen prostático dictado en palabras («veinticinco»); el hallazgo litiásico está separado de la línea de dimensiones y su medida debe sumarse a la sección del riñón izquierdo; la conclusión dictada sustituye a la conclusión normal de la plantilla.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3356,
+    "output_tokens": 1682
+  }
+}

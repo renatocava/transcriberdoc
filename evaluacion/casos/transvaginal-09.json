@@ -1,0 +1,160 @@
+{
+  "id": "transvaginal-09",
+  "formato": "transvaginal",
+  "escenario": "asistente_trampa",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Deysi Carolina Huamaní Llacsa. 41 años. La manda la doctora Patricia Salazar Cárdenas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Transvaginal. Útero en AVF, lateralizado a la izquierda. Longitudinal 78. AP 42. Transverso 51."
+    },
+    {
+      "rol": "medico",
+      "texto": "En cara anterior, imagen nodular hipoecoica, intramural, bordes definidos. 18 por 15 milímetros. Compatible con mioma."
+    },
+    {
+      "rol": "medico",
+      "texto": "Resto del miometrio homogéneo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Cérvix canal no dilatado, veintiocho milímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Doctor, el endometrio ¿9 milímetros?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No, 7. Homogéneo, 7 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario derecho 32 por 21. Conservado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario izquierdo 30 por 19."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Le pongo quiste simple en el izquierdo? Tiene una imagen de como 20."
+    },
+    {
+      "rol": "medico",
+      "texto": "No, es folículo. No lo midas. Déjalo normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Douglas libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Mioma uterino intramural único."
+    }
+  ],
+  "paciente": {
+    "nombre": "Deysi Carolina Huamaní Llacsa",
+    "edad": 41
+  },
+  "medico_solicitante": "Patricia Salazar Cárdenas",
+  "secciones": [
+    {
+      "clave": "utero",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 42,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        },
+        {
+          "valor": 18,
+          "unidad": "mm"
+        },
+        {
+          "valor": 15,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen nodular hipoecoica intramural de bordes definidos en cara anterior de 18 x 15 mm, compatible con mioma; resto del miometrio homogéneo."
+    },
+    {
+      "clave": "cervix",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 28,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "endometrio",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 7,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 32,
+          "unidad": "mm"
+        },
+        {
+          "valor": 21,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 19,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Mioma uterino intramural único."
+  ],
+  "dificultad": "Asistente trampa doble: sugiere endometrio de 9 mm y el médico corrige a 7 mm; sugiere quiste simple de 20 mm en ovario izquierdo y el médico lo descarta como folículo y pide dejarlo normal, por lo que ni el quiste ni la cifra de 20 deben aparecer. Además, la medida del cérvix está dictada en palabras y el útero tiene un hallazgo (mioma) cuyas medidas deben sumarse a las tres del útero.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2393,
+    "output_tokens": 1955
+  }
+}

@@ -1,0 +1,220 @@
+{
+  "id": "abdomen-09",
+  "formato": "abdomen",
+  "escenario": "asistente_trampa",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Paciente Maritza Soledad Apaza Choque, 52 años. Solicita doctor Raúl Ccori Benavides. Abdomen completo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Hígado. Parénquima homogéneo, ecogenicidad conservada. Vías biliares no dilatadas. Lóbulo derecho 138 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vesícula. 82 por 34 mm. Pared 3 mm. En su interior imagen hiperecogénica con sombra acústica posterior, móvil, de 14 mm."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Doctor, ¿son dos cálculos? Parece que hay otro de 6 mm al lado."
+    },
+    {
+      "rol": "medico",
+      "texto": "No, eso es pliegue. Un solo cálculo, 14 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Colédoco de cuatro milímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Porta 13?"
+    },
+    {
+      "rol": "medico",
+      "texto": "No. Porta 10 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Bazo 96 mm, normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Páncreas normal, cabeza 22 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho 102 por 45 mm, normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo 106 por 48 mm."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Pongo quiste en polo superior izquierdo? Hay una imagen anecoica."
+    },
+    {
+      "rol": "medico",
+      "texto": "No, es seno renal. Riñón izquierdo normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga vacía, normal. Genitales internos sin particularidades. Douglas libre. Cavidad sin líquido libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Colelitiasis única de 14 mm. Resto del estudio dentro de límites normales."
+    }
+  ],
+  "paciente": {
+    "nombre": "Maritza Soledad Apaza Choque",
+    "edad": 52
+  },
+  "medico_solicitante": "Raúl Ccori Benavides",
+  "secciones": [
+    {
+      "clave": "higado",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 138,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vesicula",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 82,
+          "unidad": "mm"
+        },
+        {
+          "valor": 34,
+          "unidad": "mm"
+        },
+        {
+          "valor": 3,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Cálculo único móvil de 14 mm con sombra acústica posterior en su interior."
+    },
+    {
+      "clave": "coledoco",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "porta",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 10,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "bazo",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 96,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "pancreas",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 22,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 106,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "genitales",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cavidad",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Colelitiasis única de 14 mm.",
+    "Resto del estudio dentro de límites normales."
+  ],
+  "dificultad": "El asistente sugiere un segundo cálculo de 6 mm, porta de 13 mm y quiste renal izquierdo; el médico descarta los tres (pliegue, porta 10 mm, seno renal). Solo debe quedar un cálculo de 14 mm, porta 10 mm y riñón izquierdo normal. Colédoco dictado en palabras.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2996,
+    "output_tokens": 2506
+  }
+}

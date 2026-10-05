@@ -1,0 +1,86 @@
+{
+  "id": "mama-10",
+  "formato": "mama",
+  "escenario": "coloquial",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, a ver, empezamos. Paciente Nelly Margarita Huanca Sulca, 46 años."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Quién la manda, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "La manda el doctor Edwin Ramiro Taype Ochoa, ginecología. Este, comenzamos por la izquierda nomás que ya estoy acá."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama izquierda, eh, parénquima homogéneo, ya. Pero acá en el cuadrante superoexterno, hora 2, hay una imagen quística, anecoica, bordes bien definidos, refuerzo posterior, mide 14 por 9 mm. Simple, sin tabiques."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conductos de la izquierda, a ver, 2 milímetros. Normal. Axila izquierda libre, ningún ganglio sospechoso."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya, pasamos a la derecha. Eh, la derecha está normal, todo conservado, sin lesiones, sin distorsión. Conductos, este, 1.8 milímetros. Axila libre también."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Conclusión, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión: uno, quiste simple en mama izquierda, BIRADS 2. Dos, mama derecha sin alteraciones. Ya, eso nomás."
+    }
+  ],
+  "paciente": {
+    "nombre": "Nelly Margarita Huanca Sulca",
+    "edad": 46
+  },
+  "medico_solicitante": "Edwin Ramiro Taype Ochoa",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 1.8,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 14,
+          "unidad": "mm"
+        },
+        {
+          "valor": 9,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen quística simple anecoica de bordes bien definidos con refuerzo posterior, sin tabiques, en cuadrante superoexterno (hora 2) de 14 x 9 mm."
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple en mama izquierda, BIRADS 2.",
+    "Mama derecha sin alteraciones."
+  ],
+  "dificultad": "Dictado coloquial con muletillas, comienza por mama izquierda (orden inverso a la plantilla); medida decimal de conductos (1.8 mm); medidas del quiste mezcladas con la de conductos en la misma sección; mama derecha cubierta con frase general más medida.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 2354,
+    "output_tokens": 952
+  }
+}

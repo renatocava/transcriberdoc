@@ -1,0 +1,187 @@
+{
+  "id": "abdomen-07",
+  "formato": "abdomen",
+  "escenario": "omisiones",
+  "dictado": [
+    {
+      "rol": "asistente",
+      "texto": "Doctor, el paciente es Julio César Bendezú Ormeño. Viene con orden del doctor Raúl Saavedra Peña."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Abdomen completo. Empezamos por hígado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Hígado de ecogenicidad aumentada en forma difusa. Esteatosis leve. No dilatación de vías biliares intrahepáticas. Lóbulo derecho 152 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vesícula 78 por 30. Paredes delgadas. Sin cálculos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Colédoco permeable, 4 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Porta no dilatada."
+    },
+    {
+      "rol": "medico",
+      "texto": "Bazo 10.5 centímetros, ecoestructura normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Páncreas conservado, sin lesiones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal. 102 por 48."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo. En polo superior quiste cortical simple de catorce milímetros. Resto normal. Mide 108 por 51."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga con poca repleción, paredes delgadas, sin imágenes en su interior."
+    },
+    {
+      "rol": "medico",
+      "texto": "No líquido libre en cavidad. No masas."
+    }
+  ],
+  "paciente": {
+    "nombre": "Julio César Bendezú Ormeño",
+    "edad": null
+  },
+  "medico_solicitante": "Raúl Saavedra Peña",
+  "secciones": [
+    {
+      "clave": "higado",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 152,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Parénquima con ecogenicidad aumentada en forma difusa, compatible con esteatosis hepática leve."
+    },
+    {
+      "clave": "vesicula",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 30,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "coledoco",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "porta",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "bazo",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "pancreas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 51,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Quiste cortical simple de 14 mm en el polo superior."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "genitales",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cavidad",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [],
+  "dificultad": "Omisiones: genitales internos y fondo de saco de Douglas no mencionados; faltan medidas de pared vesicular, vena porta y páncreas. Bazo dictado en cm (10.5 cm → 105 mm) y un número en palabras (catorce). En el riñón izquierdo se dicta la medida del quiste junto con las dimensiones renales. La vejiga 'con poca repleción' se considera normal. No se dicta la edad ni la conclusión.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3673,
+    "output_tokens": 2193
+  }
+}
