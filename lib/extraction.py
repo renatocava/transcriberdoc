@@ -113,10 +113,10 @@ def _validar_cie10(historia: dict[str, Any]) -> None:
         dx["_cie10_sugeridos"] = list(dict.fromkeys(c for c in [codigo, *validas[:3]] if c))
 
 
-def _llamar(system: str, contenido: str, tool: dict[str, Any]) -> dict[str, Any]:
+def _llamar(system: str, contenido: str, tool: dict[str, Any], modelo: str | None = None) -> dict[str, Any]:
     """Llama a Claude forzando el tool y devuelve su input."""
     respuesta = _cliente().messages.create(
-        model=MODELO,
+        model=modelo or MODELO,
         max_tokens=MAX_TOKENS,
         system=system,
         tools=[tool],
@@ -130,16 +130,22 @@ def _llamar(system: str, contenido: str, tool: dict[str, Any]) -> dict[str, Any]
 
 
 def extraer(
-    utterances: list[dict[str, Any]], mapping: dict[str, str], formato: str = ecografias.CONSULTA
+    utterances: list[dict[str, Any]],
+    mapping: dict[str, str],
+    formato: str = ecografias.CONSULTA,
+    modelo: str | None = None,
 ) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
-    """Historia clínica o informe ecográfico, según el formato elegido."""
+    """Historia clínica o informe ecográfico, según el formato elegido.
+
+    `modelo` cambia el modelo de Claude (la vista en vivo usa uno más rápido).
+    """
     if ecografias.es_ecografia(formato):
-        return extraer_informe_ecografico(utterances, mapping, formato)
-    return extraer_historia_clinica(utterances, mapping)
+        return extraer_informe_ecografico(utterances, mapping, formato, modelo)
+    return extraer_historia_clinica(utterances, mapping, modelo)
 
 
 def extraer_informe_ecografico(
-    utterances: list[dict[str, Any]], mapping: dict[str, str], formato: str
+    utterances: list[dict[str, Any]], mapping: dict[str, str], formato: str, modelo: str | None = None
 ) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
     """Informe ecográfico del formato dado y el mapa de fuentes de cada dato."""
     if usar_mock():
@@ -158,7 +164,7 @@ def extraer_informe_ecografico(
             "input_schema": esquema,
         }
         system = SYSTEM_ECO.format(examen=plantilla.nombre.lower(), ejemplo=plantilla.secciones[0].clave)
-        datos = _llamar(system, f"Transcripción del estudio:\n\n{dialogo}", tool)
+        datos = _llamar(system, f"Transcripción del estudio:\n\n{dialogo}", tool, modelo)
         datos = dict(datos or {})
         fuentes = datos.pop("fuentes", None) or []
     informe = ecografias.normalizar_informe(formato, datos)
@@ -166,7 +172,7 @@ def extraer_informe_ecografico(
 
 
 def extraer_historia_clinica(
-    utterances: list[dict[str, Any]], mapping: dict[str, str]
+    utterances: list[dict[str, Any]], mapping: dict[str, str], modelo: str | None = None
 ) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
     """Devuelve la historia clínica estructurada y el mapa de fuentes de cada dato."""
     if usar_mock():
@@ -190,4 +196,4 @@ def extraer_historia_clinica(
         "input_schema": esquema,
     }
 
-    return _con_fuentes(_llamar(SYSTEM_PROMPT, contenido, tool), len(utterances))
+    return _con_fuentes(_llamar(SYSTEM_PROMPT, contenido, tool, modelo), len(utterances))

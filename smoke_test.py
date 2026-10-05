@@ -121,7 +121,45 @@ def main() -> int:
         print(f"  {ruta:<55} <- {', '.join(f'#{i + 1}' for i in f['ids'])}")
 
     probar_ecografias()
+    if not real:
+        probar_en_vivo()
     return 0
+
+
+def probar_en_vivo() -> None:
+    """Grabación en vivo (mock): frases desordenadas, repetidas y perdidas."""
+    import time
+
+    from lib.en_vivo import SesionEnVivo, palabras_clave
+    from lib.hablantes import UNO
+
+    assert "BI-RADS" in palabras_clave("mama") and "mama derecha" in palabras_clave("mama")
+    assert "presión arterial" in palabras_clave("consulta")
+
+    turno = lambda seq, texto: {"seq": seq, "texto": texto, "inicio": seq * 4.0, "fin": seq * 4.0 + 3}  # noqa: E731
+    s = SesionEnVivo("prueba", "abdomen", UNO, ([], []))
+    s.agregar_turnos([turno(1, "Hígado normal.")])  # la 1 llega antes que la 0: se espera
+    assert s.utterances() == []
+    s.agregar_turnos([turno(0, "Paciente Carlos, 52 años."), turno(1, "repetida"), turno(2, "")])
+    assert [u["text"] for u in s.utterances()] == ["Paciente Carlos, 52 años.", "Hígado normal."]  # sin vacías
+    limite = time.monotonic() + 10
+    while (s.n_extraidas < 2 or s.extrayendo) and time.monotonic() < limite:
+        time.sleep(0.05)
+    assert s.n_extraidas == 2 and s.historia["plantilla"] == "abdomen", s.n_extraidas
+    s.configurar("mama", UNO, ([], []))  # cambiar el formato rehace el informe
+    limite = time.monotonic() + 10
+    while s.formato_extraido != "mama" and time.monotonic() < limite:
+        time.sleep(0.05)
+    assert s.historia["plantilla"] == "mama"
+    final = s.terminar(3)
+    assert final and len(final["transcription"]["utterances"]) == 2 and final["historia"]["plantilla"] == "mama"
+    assert all(v == "Doctor" for v in final["mapping"].values())
+
+    s = SesionEnVivo("perdida", "abdomen", UNO, (["Dr. Cava"], ["x"]))
+    s.agregar_turnos([turno(0, "Uno."), turno(2, "Tres.")])  # la 1 nunca llegó: hay que procesar el audio
+    assert s.utterances()[0]["speaker"] == "Dr. Cava"
+    assert s.terminar(3) is None
+    print("[7/7] Grabación en vivo OK")
 
 
 def probar_ecografias() -> None:

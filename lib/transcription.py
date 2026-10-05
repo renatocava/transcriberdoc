@@ -11,6 +11,8 @@ from lib.config import api_key, usar_mock
 from lib.mock_data import transcripcion_mock
 
 MODELO = "gpt-4o-transcribe-diarize"
+#: Transcripción en tiempo real del dictado: el texto llega palabra a palabra.
+MODELO_TIEMPO_REAL = "gpt-live-transcribe"
 _LETRAS = string.ascii_uppercase
 
 
@@ -56,6 +58,32 @@ def _fusionar(utterances: list[dict[str, Any]]) -> list[dict[str, Any]]:
         else:
             fusionadas.append(dict(u))
     return fusionadas
+
+
+def secreto_tiempo_real(palabras_clave: list[str], segundos: int = 600) -> tuple[str, int]:
+    """Clave temporal para que el navegador transcriba en tiempo real.
+
+    El navegador se conecta directo a OpenAI con esta clave, que solo sirve para
+    abrir sesiones de transcripción durante `segundos`: la API key nunca sale
+    del servidor. Devuelve (clave, expiración en segundos desde epoch).
+    """
+    sesion = {
+        "type": "transcription",
+        "audio": {
+            "input": {
+                "format": {"type": "audio/pcm", "rate": 24000},
+                "transcription": {"model": MODELO_TIEMPO_REAL, "language": "es", "keywords": palabras_clave},
+                "noise_reduction": {"type": "far_field"},
+                # Sin detección de turnos (el modelo no la admite): el navegador
+                # cierra cada frase en las pausas.
+                "turn_detection": None,
+            }
+        },
+    }
+    respuesta = _cliente().realtime.client_secrets.create(
+        session=sesion, expires_after={"anchor": "created_at", "seconds": segundos}
+    )
+    return respuesta.value, respuesta.expires_at
 
 
 def transcribir_audio(

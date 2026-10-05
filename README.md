@@ -46,7 +46,20 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
    el valor por defecto), *Automático* (detecta cuántas voces hay), *Médico y
    paciente* o *Con acompañante*. Si hay voces registradas, elige también **Médico(s) en la
    consulta** (hasta 4). Las elecciones se recuerdan entre consultas. Luego
-   "Iniciar grabación" / "Detener grabación"; al detener, arranca el procesamiento.
+   "Iniciar grabación" / "Detener grabación".
+
+   **En vivo:** mientras se graba, el navegador transcribe en tiempo real con
+   `gpt-live-transcribe` (OpenAI) y las palabras aparecen bajo el botón mientras
+   se dicen, con ~1 s de retraso. Se conecta directo a OpenAI con una clave
+   temporal que genera el servidor (vale 10 min y solo abre sesiones de
+   transcripción): la API key nunca llega al navegador. Cada formato le pasa sus
+   términos técnicos como palabras clave. En cada pausa de la voz la frase se
+   cierra y el informe (o la historia clínica) se vuelve a llenar a la derecha con
+   un modelo rápido (`claude-haiku-4-5`). Al detener, con *Solo el médico* se hace
+   una última extracción con el modelo principal y se pasa directo a revisar
+   (unos 11 s). La transcripción en tiempo real no separa voces: con varias, o si
+   faltó alguna frase, se transcribe el audio completo con diarización como antes.
+   Con `USE_MOCK` el texto en vivo se simula.
 
    **Voces de médicos:** en el expander del mismo nombre se graba (o sube en WAV)
    una muestra de 5–10 s de cada médico, con su consentimiento. La diarización lo
@@ -54,7 +67,7 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
    asignado solo. Las muestras se guardan en `voces/` (fuera de git; la voz es un
    dato biométrico). En Streamlit Cloud el disco se borra al reiniciar, así que
    allí las voces no persisten.
-2. **Procesar** — 15-40 s para una consulta de 2-3 minutos.
+2. **Procesar** — 15-40 s para una consulta de 2-3 minutos (unos 11 s en dictado, porque ya se transcribió en vivo).
 3. **Revisar** — se muestra solo el informe (o la historia clínica), ya lleno y
    editable. Bajo el título, la sección plegable **🎧 Transcripción y audio**
    tiene el audio completo, los roles de las voces y la transcripción, para

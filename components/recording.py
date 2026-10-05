@@ -6,6 +6,7 @@ from pathlib import Path
 
 import streamlit as st
 
+from components import en_vivo
 from components.medicos import gestion_voces, selector_medicos
 from lib import state
 from lib.ecografias import FORMATOS, PLANTILLAS, es_ecografia, normalizar_informe
@@ -60,30 +61,6 @@ def _selector_modo() -> None:
     st.caption(AYUDA_MODOS[modo])
 
 
-def _grabador() -> None:
-    try:
-        from streamlit_mic_recorder import mic_recorder
-    except ImportError:
-        st.warning(
-            "El componente de grabación no está instalado. "
-            "Usa las opciones de demo para continuar."
-        )
-        return
-
-    audio = mic_recorder(
-        start_prompt="🎙️  Iniciar grabación",
-        stop_prompt="⏹️  Detener grabación",
-        just_once=False,
-        use_container_width=True,
-        format="webm",
-        key="mic",
-    )
-
-    # `id` cambia con cada grabación nueva: evita reprocesar la misma al volver a idle.
-    if audio and audio.get("bytes") and audio.get("id") != st.session_state.get("last_audio_id"):
-        _arrancar(audio["bytes"], "consulta.webm", audio.get("id"))
-
-
 def _vista_previa() -> None:
     """El formato elegido, vacío: cambia en cuanto se elige otro en el selector."""
     formato = state.formato()
@@ -92,7 +69,7 @@ def _vista_previa() -> None:
             from components.informe_eco import vista_informe  # import local: evita el ciclo
 
             vista_informe(normalizar_informe(formato, {}), set(), f"{PLANTILLAS[formato].nombre} · vista previa")
-            st.caption("Al detener la grabación, lo dictado reemplaza los espacios en ámbar.")
+            st.caption("Mientras se graba, lo dictado va reemplazando los espacios en ámbar.")
         else:
             st.markdown("**📄 Historia clínica · vista previa**")
             st.markdown(
@@ -100,7 +77,7 @@ def _vista_previa() -> None:
                 "- Examen físico y signos vitales\n- Diagnósticos con su código CIE-10\n"
                 "- Plan: medicamentos, exámenes e indicaciones"
             )
-            st.caption("Se llena con lo conversado al detener la grabación.")
+            st.caption("Se va llenando con lo conversado mientras se graba.")
 
 
 def render_idle() -> None:
@@ -114,17 +91,18 @@ def render_idle() -> None:
         selector_medicos()
         _selector_formato()
         _selector_modo()
-        _grabador()
-        st.markdown(
-            "<p style='text-align:center; color:#64748B; font-size:0.85rem; margin-top:1rem;'>"
-            + (
-                "El informe se llena automáticamente al detener la grabación."
-                if es_ecografia(state.formato())
-                else "La transcripción y el resumen se generan automáticamente al detener la grabación."
+        en_vivo.grabador()
+        if en_vivo.sesion() is None:
+            st.markdown(
+                "<p style='text-align:center; color:#64748B; font-size:0.85rem; margin-top:1rem;'>"
+                + (
+                    "El informe se llena mientras dictas; al detener, pasa a revisión."
+                    if es_ecografia(state.formato())
+                    else "La historia clínica se llena mientras conversan; al detener, pasa a revisión."
+                )
+                + "</p>",
+                unsafe_allow_html=True,
             )
-            + "</p>",
-            unsafe_allow_html=True,
-        )
 
         gestion_voces()
 
@@ -146,4 +124,5 @@ def render_idle() -> None:
                 if st.button("Procesar archivo subido", type="primary", use_container_width=True):
                     _arrancar(subido.getvalue(), subido.name, f"upload::{subido.name}")
     with der:
-        _vista_previa()
+        if not en_vivo.informe():
+            _vista_previa()
