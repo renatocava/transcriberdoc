@@ -147,6 +147,17 @@ def probar_ecografias() -> None:
     avisos = eco.calculos("PRE MICCIONAL: 300 cc\nPOST MICCIONAL: 36 cc\nRPM: 12 %")
     assert avisos == ["RPM calculado (post / pre): 12 %"], avisos
 
+    # Vista del informe: lo dictado en verde, lo que falta en ámbar, el resto fijo.
+    trozos = eco.resaltar("MIDE: ___ mm, DE PAREDES DELGADAS DE ___ mm.", "MIDE: 78 x 32 mm, DE PAREDES DELGADAS DE ___ mm.")
+    assert [t for t in trozos if t[0] != eco.FIJO] == [(eco.DICTADO, "78 x 32"), (eco.FALTA, "___")], trozos
+    assert "".join(t for _, t in trozos) == "MIDE: 78 x 32 mm, DE PAREDES DELGADAS DE ___ mm."
+    assert eco.resaltar("HOMOGENEA DE ___", "homogénea de ___")[0] == (eco.FIJO, "homogénea de ")
+    from lib.informe_html import html_informe
+    html = html_informe(inf, {"bazo"})
+    assert '<mark class="ok">98</mark>' in html and '<mark class="falta">___</mark>' in html
+    assert '<p class=""><b>BAZO:</b>' in html and '<p class="gris"><b>HÍGADO:</b>' in html  # no dictado: gris
+    assert "<script" not in html_informe({**inf, "paciente": {"nombre": "<script>x</script>"}})
+
     # Con --real, Claude llena el informe a partir de los dictados de ejemplo.
     for formato in eco.PLANTILLAS:
         utterances = transcripcion_mock(formato=formato)["utterances"]

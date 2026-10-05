@@ -66,7 +66,7 @@ def render_processing() -> None:
         transcripcion, mapping, historia, fuentes = resultado
         st.session_state["transcription"] = transcripcion
         st.session_state["speaker_mapping"] = mapping
-        st.session_state["historia"] = state.ensure_uids(historia)
+        state.recien_extraida(historia)
         st.session_state["fuentes"] = fuentes
         state.set_stage(state.REVIEW)
 

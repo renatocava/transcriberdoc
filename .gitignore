@@ -10,3 +10,7 @@ venv/
 
 .audio_tmp/
 voces/
+
+# Observaciones del equipo médico (audios e imágenes de WhatsApp): nunca al repo
+observacion*
+observaciones/

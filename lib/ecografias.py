@@ -22,7 +22,9 @@ Sin dependencias de Streamlit: lo usan también las pruebas.
 from __future__ import annotations
 
 import datetime as dt
+import difflib
 import re
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -344,3 +346,52 @@ def calculos(texto: str) -> list[str]:
             aviso += f" — ⚠️ el informe dice {escrito[1]} %"
         avisos.append(aviso)
     return avisos
+
+
+# --------------------------------------------------------------------------
+# Resaltado para la vista del informe: qué es plantilla y qué se dictó
+# --------------------------------------------------------------------------
+#: Tipos de trozo que devuelve `resaltar`.
+FIJO, DICTADO, FALTA = "fijo", "dictado", "pendiente"
+
+_TOKEN = re.compile(rf"{PENDIENTE}|\w+|[^\w\s]|\s+")
+
+
+def _clave_token(token: str) -> str:
+    """Comparación sin mayúsculas ni tildes: «HOMOGÉNEA» y «homogenea» son el mismo texto."""
+    sin_tildes = unicodedata.normalize("NFD", token.upper())
+    return "".join(c for c in sin_tildes if not unicodedata.combining(c))
+
+
+def resaltar(base: str, texto: str) -> list[tuple[str, str]]:
+    """Trozos `(tipo, texto)` de `texto` comparado con el texto normal `base`.
+
+    FIJO: igual que la plantilla. DICTADO: medidas puestas en los `___` y todo
+    lo que el médico cambió o agregó. FALTA: medidas que siguen en `___`.
+    Los trozos, unidos, reproducen `texto` tal cual.
+    """
+    tokens = _TOKEN.findall(texto)
+    palabras = [i for i, t in enumerate(tokens) if not t.isspace()]
+    base_palabras = [_clave_token(t) for t in _TOKEN.findall(base) if not t.isspace()]
+    tipos = [FIJO] * len(tokens)
+    comparador = difflib.SequenceMatcher(
+        None, base_palabras, [_clave_token(tokens[i]) for i in palabras], autojunk=False
+    )
+    for op, _, _, j1, j2 in comparador.get_opcodes():
+        if op != "equal":
+            for j in range(j1, j2):
+                tipos[palabras[j]] = DICTADO
+    for i, t in enumerate(tokens):
+        if t == PENDIENTE:
+            tipos[i] = FALTA
+        # Un espacio entre dos palabras dictadas es parte del mismo dato («78 x 32»).
+        elif t.isspace() and 0 < i < len(tokens) - 1 and tipos[i - 1] == tipos[i + 1] == DICTADO:
+            tipos[i] = DICTADO
+
+    trozos: list[tuple[str, str]] = []
+    for tipo, t in zip(tipos, tokens):
+        if trozos and trozos[-1][0] == tipo:
+            trozos[-1] = (tipo, trozos[-1][1] + t)
+        else:
+            trozos.append((tipo, t))
+    return trozos

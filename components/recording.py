@@ -8,7 +8,7 @@ import streamlit as st
 
 from components.medicos import gestion_voces, selector_medicos
 from lib import state
-from lib.ecografias import FORMATOS, es_ecografia
+from lib.ecografias import FORMATOS, PLANTILLAS, es_ecografia, normalizar_informe
 from lib.hablantes import AYUDA_MODOS, MODOS
 
 AUDIO_DEMO = Path(__file__).resolve().parent.parent / "assets" / "demo-consulta.mp3"
@@ -84,19 +84,36 @@ def _grabador() -> None:
         _arrancar(audio["bytes"], "consulta.webm", audio.get("id"))
 
 
+def _vista_previa() -> None:
+    """El formato elegido, vacío: cambia en cuanto se elige otro en el selector."""
+    formato = state.formato()
+    with st.container(border=True):
+        if es_ecografia(formato):
+            from components.informe_eco import vista_informe  # import local: evita el ciclo
+
+            vista_informe(normalizar_informe(formato, {}), set(), f"{PLANTILLAS[formato].nombre} · vista previa")
+            st.caption("Al detener la grabación, lo dictado reemplaza los espacios en ámbar.")
+        else:
+            st.markdown("**📄 Historia clínica · vista previa**")
+            st.markdown(
+                "- Datos del paciente\n- Motivo de consulta y enfermedad actual\n- Antecedentes\n"
+                "- Examen físico y signos vitales\n- Diagnósticos con su código CIE-10\n"
+                "- Plan: medicamentos, exámenes e indicaciones"
+            )
+            st.caption("Se llena con lo conversado al detener la grabación.")
+
+
 def render_idle() -> None:
-    _, centro, _ = st.columns([1, 2, 1])
-    with centro:
+    izq, der = st.columns([5, 6], gap="large")
+    with izq:
         st.markdown(
-            "<div style='text-align:center; padding: 2.5rem 0 1.5rem 0;'>"
-            "<div style='font-size:3rem;'>🩺</div>"
-            "<p style='font-size:1.15rem; color:#334155; margin-top:0.75rem;'>"
-            "Presiona el micrófono para grabar la consulta o el dictado de la ecografía.</p></div>",
+            "<p style='font-size:1.05rem; color:#334155; margin:0.5rem 0 1rem 0;'>"
+            "🩺 Presiona el micrófono para grabar la consulta o el dictado de la ecografía.</p>",
             unsafe_allow_html=True,
         )
+        selector_medicos()
         _selector_formato()
         _selector_modo()
-        selector_medicos()
         _grabador()
         st.markdown(
             "<p style='text-align:center; color:#64748B; font-size:0.85rem; margin-top:1rem;'>"
@@ -128,3 +145,5 @@ def render_idle() -> None:
             if subido is not None:
                 if st.button("Procesar archivo subido", type="primary", use_container_width=True):
                     _arrancar(subido.getvalue(), subido.name, f"upload::{subido.name}")
+    with der:
+        _vista_previa()

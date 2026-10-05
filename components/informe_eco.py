@@ -1,4 +1,8 @@
-"""Revisión del informe ecográfico: el informe editable; transcripción y audio, a pedido."""
+"""Revisión del informe ecográfico: la conversación a la izquierda y el informe a la derecha.
+
+El informe se ve como quedará en el Word, con lo dictado en verde y lo que
+falta en ámbar; «Editar» cambia la vista por el formulario de campos.
+"""
 
 from __future__ import annotations
 
@@ -16,13 +20,18 @@ from components.review import (
     _fuente,
     _numeros,
     _valor,
-    seccion_transcripcion,
+    render_transcript,
     selector_formato,
 )
 from lib import state
 from lib.ecografias import PENDIENTE, PLANTILLAS, Plantilla, Seccion, calculos, es_normal, pendientes
 from lib.fuentes import de_texto, editado
+from lib.hablantes import es_dictado
 from lib.informe_docx import generar_docx, nombre_archivo
+from lib.informe_html import LEYENDA, html_informe
+
+#: Vista (False) o formulario de edición (True) del informe en revisión.
+CLAVE_EDITAR = "f_eco_editar"
 
 ETIQUETAS_PACIENTE = {
     "paciente.nombre": "Nombre",
@@ -141,14 +150,14 @@ def _conclusion(informe: dict) -> None:
             )
 
 
-def boton_descarga(informe: dict, key: str, primario: bool = False) -> None:
+def boton_descarga(informe: dict, key: str, primario: bool = False, texto: str = "⬇️ Descargar informe (.docx)") -> None:
     try:
         datos = generar_docx(informe)
     except Exception as exc:  # una plantilla dañada no debe tumbar la revisión
         st.error(f"No se pudo generar el Word: {exc}")
         return
     st.download_button(
-        "⬇️ Descargar informe (.docx)",
+        texto,
         data=datos,
         file_name=nombre_archivo(informe),
         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -165,10 +174,35 @@ def _guardar(informe: dict) -> None:
     state.set_stage(state.SAVED)
 
 
+def dictadas(informe: dict, fuentes: dict[str, Any]) -> set[str]:
+    """Secciones (y "conclusion") que no son el texto normal sin tocar: dictadas o editadas."""
+    plantilla = PLANTILLAS[informe["plantilla"]]
+    claves = {
+        s.clave for s in plantilla.secciones
+        if f"secciones.{s.clave}" in fuentes or informe["secciones"].get(s.clave, "").strip() != s.normal
+    }
+    conclusion = informe.get("conclusion") or []
+    if conclusion != list(plantilla.conclusion) or any(de_texto(fuentes, "conclusion", t) for t in conclusion):
+        claves.add("conclusion")
+    return claves
+
+
+def vista_informe(informe: dict, dictadas_: set[str], titulo: str) -> None:
+    """El informe tal como saldrá en el Word, con lo variable resaltado."""
+    completo = not pendientes(informe)
+    fondo, color = ("#DCFCE7", "#166534") if completo else ("#FEF3C7", "#92400E")
+    c_tit, c_est = st.columns([3, 1], vertical_alignment="center")
+    c_tit.markdown(f"**📄 {titulo}**")
+    c_est.markdown(
+        f"<div style='text-align:right'><span style='background:{fondo};color:{color};border-radius:6px;"
+        f"padding:0.1rem 0.5rem;font-size:0.78rem'>{'Completo' if completo else 'Faltan medidas'}</span></div>",
+        unsafe_allow_html=True,
+    )
+    st.markdown(html_informe(informe, dictadas_), unsafe_allow_html=True)
+    st.markdown(LEYENDA, unsafe_allow_html=True)
+
+
 def _render_formulario(informe: dict, plantilla: Plantilla) -> None:
-    st.subheader(plantilla.nombre)
-    selector_formato()
-    seccion_transcripcion(informe, _etiquetas(plantilla), {"conclusion": "Conclusión"})
     st.caption(
         "Cada órgano parte del texto normal de la plantilla. 📎 muestra de dónde sale lo dictado; "
         f"{PENDIENTE} marca una medida que falta."
@@ -176,20 +210,41 @@ def _render_formulario(informe: dict, plantilla: Plantilla) -> None:
     _seccion_paciente(informe)
     _secciones(informe, plantilla)
     _conclusion(informe)
+    st.button("✓ Ver informe", key="f_eco_ver", type="primary", use_container_width=True,
+              on_click=st.session_state.update, kwargs={CLAVE_EDITAR: False})
 
-    faltan = pendientes(informe)
-    if faltan:
-        st.warning(f"Quedan medidas sin dictar ({PENDIENTE}) en: {', '.join(faltan)}.")
-    st.write("")
-    boton_descarga(informe, "f_eco_descargar")
-    c_ok, c_no = st.columns(2)
-    if c_ok.button("Guardar informe", type="primary", use_container_width=True):
-        _guardar(informe)
-        st.rerun()
-    if c_no.button("Descartar", use_container_width=True):
-        state.reset()
-        st.rerun()
+
+def _render_conversacion(informe: dict, plantilla: Plantilla) -> None:
+    dictado = es_dictado(st.session_state["speaker_mapping"])
+    st.markdown(f"**💬 {'Dictado del médico' if dictado else 'Conversación'}**")
+    render_transcript(informe, _etiquetas(plantilla), {"conclusion": "Conclusión"})
 
 
 def render_informe(informe: dict) -> None:
-    _render_formulario(informe, PLANTILLAS[informe["plantilla"]])
+    plantilla = PLANTILLAS[informe["plantilla"]]
+    izq, der = st.columns([5, 6], gap="large")
+    with izq:
+        _render_conversacion(informe, plantilla)
+    with der:
+        selector_formato()
+        with st.container(border=True):
+            if st.session_state.get(CLAVE_EDITAR):
+                _render_formulario(informe, plantilla)
+            else:
+                vista_informe(informe, dictadas(informe, st.session_state.get("fuentes", {})), "Informe")
+                c_ed, c_des = st.columns(2)
+                c_ed.button("✏️ Editar", key="f_eco_editar_btn", use_container_width=True,
+                            on_click=st.session_state.update, kwargs={CLAVE_EDITAR: True})
+                with c_des:
+                    boton_descarga(informe, "f_eco_descargar", texto="⬇️ Descargar")
+
+        faltan = pendientes(informe)
+        if faltan:
+            st.warning(f"Quedan medidas sin dictar ({PENDIENTE}) en: {', '.join(faltan)}.")
+        c_ok, c_no = st.columns(2)
+        if c_ok.button("Guardar informe", type="primary", use_container_width=True):
+            _guardar(informe)
+            st.rerun()
+        if c_no.button("Descartar", use_container_width=True):
+            state.reset()
+            st.rerun()

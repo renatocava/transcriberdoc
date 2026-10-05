@@ -189,7 +189,7 @@ def _reextraer(utterances: list[dict[str, Any]], mapping: dict[str, str], format
         with st.spinner("Re-extrayendo información..."):
             historia, fuentes = extraer(utterances, mapping, formato)
         st.session_state["speaker_mapping"] = mapping
-        st.session_state["historia"] = state.ensure_uids(historia)
+        state.recien_extraida(historia)
         st.session_state["fuentes"] = fuentes
         st.session_state["foco"] = []
         for clave in [k for k in st.session_state if str(k).startswith("f_") and not str(k).startswith(PREFIJO_ROL)]:
@@ -276,7 +276,11 @@ def selector_formato() -> None:
     nuevo = st.selectbox(
         "Formato de salida", list(FORMATOS), format_func=FORMATOS.get, key="w_formato_rev",
     )
-    if nuevo != actual:
+    if nuevo != actual and not state.hay_ediciones():
+        # Sin cambios manuales que perder, el informe cambia de formato al instante.
+        st.session_state[state.CLAVE_FORMATO] = nuevo
+        _reextraer(_utterances(), st.session_state["speaker_mapping"], nuevo)
+    elif nuevo != actual:
         st.warning("Se volverá a extraer todo con el nuevo formato; los cambios manuales se perderán.")
         c_ok, c_no = st.columns(2)
         if c_ok.button("Cambiar formato", type="primary", use_container_width=True):
@@ -607,14 +611,15 @@ def render_review() -> None:
         st.rerun()
         return
 
-    # El documento es lo principal: una sola columna centrada.
-    _, centro, _ = st.columns([1, 4, 1])
-    with centro:
-        if es_ecografia(historia.get("plantilla")):
-            from components.informe_eco import render_informe  # import local: evita el ciclo
+    if es_ecografia(historia.get("plantilla")):
+        # Conversación a la izquierda, informe a la derecha.
+        from components.informe_eco import render_informe  # import local: evita el ciclo
 
-            render_informe(historia)
-        else:
+        render_informe(historia)
+    else:
+        # La historia clínica es lo principal: una sola columna centrada.
+        _, centro, _ = st.columns([1, 4, 1])
+        with centro:
             _render_formulario(historia)
     if st.session_state.pop("ver_fuente", False):
         _dialogo_fuente()

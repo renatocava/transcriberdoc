@@ -25,6 +25,7 @@ CLAVES_CORE = (
     "transcription",
     "speaker_mapping",
     "historia",
+    "historia_extraida",
     "fuentes",
     "foco",
     "error",
@@ -53,6 +54,8 @@ _DEFECTOS: dict[str, Any] = {
     "speaker_mapping": {"A": "Doctor", "B": "Paciente"},
     # Historia clínica o, si lleva la clave "plantilla", informe ecográfico.
     "historia": None,
+    # Copia de la historia tal como salió de la extracción, para saber si se editó.
+    "historia_extraida": None,
     "fuentes": {},  # ruta -> {"ids", "valor"}; ver lib/fuentes.py
     "foco": [],  # intervenciones resaltadas en la transcripción
     "error": None,
@@ -136,6 +139,17 @@ def ensure_uids(historia: dict[str, Any]) -> dict[str, Any]:
             if isinstance(item, dict) and not item.get("_uid"):
                 item["_uid"] = nuevo_uid()
     return historia
+
+
+def recien_extraida(historia: dict[str, Any]) -> None:
+    """Guarda la historia recién extraída y su copia, para detectar ediciones manuales."""
+    st.session_state["historia"] = ensure_uids(historia)
+    st.session_state["historia_extraida"] = strip_uids(st.session_state["historia"])
+
+
+def hay_ediciones() -> bool:
+    """True si el médico cambió algo de la historia desde la última extracción."""
+    return strip_uids(st.session_state.get("historia")) != st.session_state.get("historia_extraida")
 
 
 def strip_uids(obj: Any) -> Any:
