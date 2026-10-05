@@ -8,7 +8,10 @@ editarla y "guardarla" en la historia clínica.
 - **Transcripción + diarización:** OpenAI `gpt-4o-transcribe-diarize`
 - **Extracción estructurada:** Anthropic `claude-sonnet-4-6` con tool use
 - **Informes de ecografía:** cinco plantillas .docx; el informe se descarga en Word
-  con el mismo formato (`python-docx`)
+  con el mismo formato (`python-docx`). Cada `___` de una plantilla es un espacio
+  con nombre (`bazo.longitud`, `vesicula.pared`): Claude devuelve solo los valores
+  dictados y, si un párrafo es distinto de lo normal, ese párrafo reescrito; la app
+  arma el texto fijo (`lib/ecografias.py`, `componer`)
 - **UI:** Streamlit
 - **Persistencia:** ninguna. Todo vive en memoria; "Guardar" solo confirma en
   pantalla e imprime el JSON final en la consola.
@@ -54,8 +57,10 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
    temporal que genera el servidor (vale 10 min y solo abre sesiones de
    transcripción): la API key nunca llega al navegador. Cada formato le pasa sus
    términos técnicos como palabras clave. En cada pausa de la voz la frase se
-   cierra y el informe (o la historia clínica) se vuelve a llenar a la derecha con
-   un modelo rápido (`claude-haiku-4-5`). Al detener, con *Solo el médico* se hace
+   cierra y el informe se actualiza a la derecha con un modelo rápido
+   (`claude-haiku-4-5`). En ecografía la actualización es incremental: Haiku recibe
+   lo ya registrado y solo las frases nuevas, y devuelve solo lo que cambia (1–2 s
+   por frase). La historia clínica se vuelve a llenar entera. Al detener, con *Solo el médico* se hace
    una última extracción con el modelo principal y se pasa directo a revisar
    (unos 11 s). La transcripción en tiempo real no separa voces: con varias, o si
    faltó alguna frase, se transcribe el audio completo con diarización como antes.

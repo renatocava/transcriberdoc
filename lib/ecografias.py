@@ -2,8 +2,12 @@
 
 Cada formato replica una plantilla .docx de `plantillas/ecografia/`: los
 mismos órganos, en el mismo orden y con el texto "normal" de la plantilla.
-El médico dicta lo que ve en el monitor; Claude parte de ese texto normal,
-pone las medidas dictadas en los `___` y reescribe solo lo que difiere.
+El médico dicta lo que ve en el monitor. Cada `___` de la plantilla es un
+espacio con nombre (`bazo.longitud`): Claude devuelve solo los valores de las
+medidas dictadas y, para una sección distinta de lo normal, su texto reescrito;
+la app arma el informe con el texto fijo de la plantilla (`componer`). Así el
+modelo no copia el texto normal y la respuesta es corta, lo que permite
+actualizar el informe en vivo frase a frase (`aplicar_cambios`).
 
 Un informe es un dict:
 
@@ -21,6 +25,7 @@ Sin dependencias de Streamlit: lo usan también las pruebas.
 
 from __future__ import annotations
 
+import copy
 import datetime as dt
 import difflib
 import re
@@ -46,6 +51,12 @@ class Seccion:
     #: Texto normal; la primera línea va tras el rótulo, las demás en párrafos aparte.
     lineas: tuple[str, ...]
     etiqueta_ui: str = ""
+    #: Nombre de cada `___` del texto normal, en orden («lhd», «pared»...).
+    espacios: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if self.normal.count(PENDIENTE) != len(self.espacios):
+            raise ValueError(f"{self.clave}: {self.normal.count(PENDIENTE)} espacios ___ y {len(self.espacios)} nombres")
 
     @property
     def etiqueta(self) -> str:
@@ -54,6 +65,12 @@ class Seccion:
     @property
     def normal(self) -> str:
         return "\n".join(self.lineas)
+
+    @property
+    def marcada(self) -> str:
+        """Texto normal con cada `___` como su marcador: «MIDE: LHD: {lhd} mm»."""
+        nombres = iter(self.espacios)
+        return re.sub(re.escape(PENDIENTE), lambda _: "{" + next(nombres) + "}", self.normal)
 
 
 @dataclass(frozen=True)
@@ -94,7 +111,9 @@ _VOLUMENES = Seccion(
     "volumenes", "",
     ("PRE MICCIONAL: ___ cc", "POST MICCIONAL: ___ cc", "RPM: ___ %"),
     "Volúmenes vesicales",
+    ("pre", "post", "rpm"),
 )
+_ESPACIOS_PROSTATA = ("l", "ap", "t", "volumen")
 
 PLANTILLAS: dict[str, Plantilla] = {
     p.clave: p
@@ -107,19 +126,21 @@ PLANTILLAS: dict[str, Plantilla] = {
                     "PARÉNQUIMA HOMOGENEA DE ECOGENICIDAD CONSERVADA Y EN FORMA DIFUSA, DE BORDES "
                     "LOBULADOS. NO SE APRECIA DILATACIÓN DE LAS VÍAS BILIARES INTRAHEPÁTICAS.",
                     "MIDE: LHD: ___ mm",
-                )),
+                ), espacios=("lhd",)),
                 Seccion("vesicula", "VESÍCULA BILIAR", (
                     "MIDE: ___ mm, DE PAREDES DELGADAS DE ___ mm, SIN EVIDENCIA DE CALCULOS EN SU INTERIOR.",
-                )),
-                Seccion("coledoco", "COLÉDOCO", ("PERMEABLE DE ___ mm.",)),
-                Seccion("porta", "VENA PORTA", ("NO DILATADA DE ___ mm",)),
-                Seccion("bazo", "BAZO", ("___ mm DE ECOESTRUCTURA NORMAL.",)),
+                ), espacios=("dimensiones", "pared")),
+                Seccion("coledoco", "COLÉDOCO", ("PERMEABLE DE ___ mm.",), espacios=("calibre",)),
+                Seccion("porta", "VENA PORTA", ("NO DILATADA DE ___ mm",), espacios=("calibre",)),
+                Seccion("bazo", "BAZO", ("___ mm DE ECOESTRUCTURA NORMAL.",), espacios=("longitud",)),
                 Seccion("pancreas", "PÁNCREAS", (
                     "DE MORFOLOGÍA Y ECOGENICIDAD CONSERVADA, SIN LESIÓN FOCAL CIRCUNSCRITA NI "
                     "PROCESOS INFLAMATORIOS, MIDE: ___ mm EN SU PORCION CEFALICA.",
-                )),
-                Seccion("rinon_der", "RIÑÓN DERECHO", (_RINON, "SUS DIMENSIONES SON: ___ mm.")),
-                Seccion("rinon_izq", "RIÑÓN IZQUIERDO", (_RINON, "SUS DIMENSIONES SON: ___ mm.")),
+                ), espacios=("cabeza",)),
+                Seccion("rinon_der", "RIÑÓN DERECHO", (_RINON, "SUS DIMENSIONES SON: ___ mm."),
+                        espacios=("dimensiones",)),
+                Seccion("rinon_izq", "RIÑÓN IZQUIERDO", (_RINON, "SUS DIMENSIONES SON: ___ mm."),
+                        espacios=("dimensiones",)),
                 Seccion("vejiga", "VEJIGA", (
                     "VACUA, PAREDES DELGADAS, SIN IMÁGENES SOLIDAS NI QUISTICAS EN SU INTERIOR.",
                 )),
@@ -135,8 +156,8 @@ PLANTILLAS: dict[str, Plantilla] = {
             "mama", "Ecografía de mamas", "ECO MAMA NORMAL.docx",
             "ECOGRAFIA DE MAMAS BILATERAL",
             (
-                Seccion("mama_der", "MAMA DERECHA", _MAMA),
-                Seccion("mama_izq", "MAMA IZQUIERDA", _MAMA),
+                Seccion("mama_der", "MAMA DERECHA", _MAMA, espacios=("conductos",)),
+                Seccion("mama_izq", "MAMA IZQUIERDA", _MAMA, espacios=("conductos",)),
             ),
             ("ECOGRAFIA DE AMBAS MAMAS DE CARACTERES MORFOLOGICOS NORMALES.",),
         ),
@@ -147,11 +168,11 @@ PLANTILLAS: dict[str, Plantilla] = {
                 Seccion("utero", "ÚTERO", (
                     "EN AVF LATERALIZADO A LA IZQUIERDA DE L: ___ mm AP: ___ mm T: ___ mm, MIOMETRIO "
                     "DE ECOGENICIDAD PARENQUIMAL HOMOGENO, SIN LESIONES SOLIDAS O QUISTICAS EN SU INTERIOR.",
-                )),
-                Seccion("cervix", "CÉRVIX", ("CON CANAL NO DILATADO ___ mm.",)),
-                Seccion("endometrio", "ENDOMETRIO", ("HOMOGENEO DE ___ mm",)),
-                Seccion("ovario_der", "OVARIO DERECHO", (_OVARIO,)),
-                Seccion("ovario_izq", "OVARIO IZQUIERDO", (_OVARIO,)),
+                ), espacios=("l", "ap", "t")),
+                Seccion("cervix", "CÉRVIX", ("CON CANAL NO DILATADO ___ mm.",), espacios=("canal",)),
+                Seccion("endometrio", "ENDOMETRIO", ("HOMOGENEO DE ___ mm",), espacios=("grosor",)),
+                Seccion("ovario_der", "OVARIO DERECHO", (_OVARIO,), espacios=("medida",)),
+                Seccion("ovario_izq", "OVARIO IZQUIERDO", (_OVARIO,), espacios=("medida",)),
                 Seccion("douglas", "FONDO DE SACO DE DOUGLAS", ("LIBRE.",)),
             ),
             ("ESTUDIO ECOGRAFICO TV DE CARACTERES MORFOLOGICOS NORMALES.",),
@@ -160,7 +181,7 @@ PLANTILLAS: dict[str, Plantilla] = {
             "vesicoprostatica", "Ecografía vésico-prostática", "ECO VESICO PROSTATICO NORMAL.docx",
             "ECOGRAFIA VESICO-PROSTATICO",
             (
-                Seccion("prostata", "PROSTATA", (_PROSTATA,), "Próstata"),
+                Seccion("prostata", "PROSTATA", (_PROSTATA,), "Próstata", _ESPACIOS_PROSTATA),
                 Seccion("vejiga", "VEJIGA", (
                     "A MEDIANA REPLESION, PAREDES DELGADAS, CONTENIDO LÍQUIDO HOMOGÉNEO SIN CÁLCULOS "
                     "NI PROCESOS EXPANSIVOS EN SU INTERIOR.",
@@ -173,9 +194,11 @@ PLANTILLAS: dict[str, Plantilla] = {
             "vias_urinarias", "Ecografía de vías urinarias", "ECO VIAS URINARIAS NORMAL.docx",
             "ECOGRAFIA VIAS URINARIAS COMPLETA",
             (
-                Seccion("rinon_der", "RIÑÓN DERECHO", (_RINON, "SUS DIMENSIONES SON: ___ mm\t\tCORTICAL: ___ mm")),
-                Seccion("rinon_izq", "RIÑÓN IZQUIERDO", (_RINON, "SUS DIMENSIONES SON: ___ mm\t\tCORTICAL: ___ mm")),
-                Seccion("prostata", "PROSTATA", (_PROSTATA,), "Próstata"),
+                Seccion("rinon_der", "RIÑÓN DERECHO", (_RINON, "SUS DIMENSIONES SON: ___ mm\t\tCORTICAL: ___ mm"),
+                        espacios=("dimensiones", "cortical")),
+                Seccion("rinon_izq", "RIÑÓN IZQUIERDO", (_RINON, "SUS DIMENSIONES SON: ___ mm\t\tCORTICAL: ___ mm"),
+                        espacios=("dimensiones", "cortical")),
+                Seccion("prostata", "PROSTATA", (_PROSTATA,), "Próstata", _ESPACIOS_PROSTATA),
                 Seccion("vejiga", "VEJIGA", (
                     "ADECUADAMENTE DISTENDIDA, PAREDES DELGADAS, CONTENIDO LÍQUIDO HOMOGÉNEO SIN "
                     "CÁLCULOS NI PROCESOS EXPANSIVOS EN SU INTERIOR.",
@@ -248,9 +271,135 @@ def normalizar_informe(formato: str, datos: dict[str, Any] | None, fecha: dt.dat
     }
 
 
-def input_schema(formato: str) -> dict[str, Any]:
-    """JSON Schema del tool para un formato; cada sección describe su texto normal."""
+# --------------------------------------------------------------------------
+# Espacios con nombre: el modelo da los valores, la app arma el texto
+# --------------------------------------------------------------------------
+_MARCADOR = re.compile(r"\{(\w+)\}")
+#: Unidad repetida al final de una medida («98 mm»): la plantilla ya la pone.
+_UNIDAD_FINAL = re.compile(r"\s*(mm|cm|cc|ml|%)\.?$", re.I)
+
+
+def espacios(formato: str) -> dict[str, tuple[Seccion, str]]:
+    """Ruta de cada espacio del formato («bazo.longitud») -> (sección, nombre)."""
+    return {f"{s.clave}.{n}": (s, n) for s in PLANTILLAS[formato].secciones for n in s.espacios}
+
+
+def parrafos(seccion: Seccion) -> dict[str, str]:
+    """Clave de cada párrafo del texto normal (con marcadores) -> su texto.
+
+    Un hallazgo reemplaza solo su párrafo: el resto de la sección (por ejemplo,
+    la línea con la medida de los conductos) sigue siendo el de la plantilla.
+    """
+    lineas = seccion.marcada.split("\n")
+    if len(lineas) == 1:
+        return {seccion.clave: lineas[0]}
+    return {f"{seccion.clave}.{i}": linea for i, linea in enumerate(lineas, start=1)}
+
+
+def estado_vacio() -> dict[str, Any]:
+    """Lo registrado de un informe antes de armarlo: aún nada dictado."""
+    return {"paciente": {"nombre": "", "edad": None}, "medico": "", "medidas": {}, "hallazgos": {}, "conclusion": []}
+
+
+def _rellenar(texto: str, valores: dict[str, str]) -> str:
+    return _MARCADOR.sub(lambda m: valores.get(m[1]) or PENDIENTE, texto)
+
+
+def aplicar_cambios(formato: str, estado: dict[str, Any], cambios: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+    """Aplica lo que devolvió el modelo al estado del informe.
+
+    Returns:
+        (estado nuevo, rutas que tocó), con las rutas de las fuentes:
+        'paciente.nombre', 'secciones.bazo', 'conclusion[0]'...
+    """
     plantilla = PLANTILLAS[formato]
+    por_clave = {s.clave: s for s in plantilla.secciones}
+    por_parrafo = {k: (s, texto) for s in plantilla.secciones for k, texto in parrafos(s).items()}
+    rutas_espacio = espacios(formato)
+    cambios = cambios if isinstance(cambios, dict) else {}
+    nuevo = copy.deepcopy(estado)
+    tocadas: list[str] = []
+
+    pac = cambios.get("paciente") if isinstance(cambios.get("paciente"), dict) else {}
+    if str(pac.get("nombre") or "").strip():
+        nuevo["paciente"]["nombre"] = str(pac["nombre"]).strip()
+        tocadas.append("paciente.nombre")
+    try:
+        if pac.get("edad") not in (None, ""):
+            nuevo["paciente"]["edad"] = int(pac["edad"])
+            tocadas.append("paciente.edad")
+    except (TypeError, ValueError):
+        pass
+    if str(cambios.get("medico") or "").strip():
+        nuevo["medico"] = str(cambios["medico"]).strip()
+        tocadas.append("medico")
+
+    medidas = cambios.get("medidas") if isinstance(cambios.get("medidas"), dict) else {}
+    for ruta, valor in medidas.items():
+        if ruta not in rutas_espacio:
+            continue
+        valor = _UNIDAD_FINAL.sub("", str(valor or "").strip()).strip()
+        if valor and valor != PENDIENTE:
+            nuevo["medidas"][ruta] = valor
+        else:  # "" borra una medida (el médico se corrigió)
+            nuevo["medidas"].pop(ruta, None)
+        tocadas.append(f"secciones.{rutas_espacio[ruta][0].clave}")
+
+    hallazgos = cambios.get("hallazgos") if isinstance(cambios.get("hallazgos"), dict) else {}
+    for clave, texto in hallazgos.items():
+        if clave not in por_parrafo:
+            continue
+        seccion, normal = por_parrafo[clave]
+        texto = _texto_seccion(texto, seccion)
+        if texto and texto != normal:
+            nuevo["hallazgos"][clave] = texto
+        else:  # "" o el texto normal: el párrafo vuelve a lo normal
+            nuevo["hallazgos"].pop(clave, None)
+        tocadas.append(f"secciones.{seccion.clave}")
+
+    for clave in cambios.get("normales") or []:
+        if clave in por_clave:
+            tocadas.append(f"secciones.{clave}")
+
+    conclusion = [str(c).strip() for c in cambios.get("conclusion") or [] if str(c).strip()]
+    if conclusion:
+        nuevo["conclusion"] = conclusion
+        tocadas += [f"conclusion[{i}]" for i in range(len(conclusion))]
+    return nuevo, list(dict.fromkeys(tocadas))
+
+
+def componer(formato: str, estado: dict[str, Any], fecha: dt.date | None = None) -> dict[str, Any]:
+    """El informe completo: el texto de la plantilla con los valores registrados."""
+    plantilla = PLANTILLAS[formato]
+    medidas = estado.get("medidas") or {}
+    hallazgos = estado.get("hallazgos") or {}
+    secciones = {
+        s.clave: _rellenar(
+            "\n".join(hallazgos.get(k) or texto for k, texto in parrafos(s).items()),
+            {n: medidas.get(f"{s.clave}.{n}", "") for n in s.espacios},
+        )
+        for s in plantilla.secciones
+    }
+    # La conclusión normal de vejiga lleva el RPM: se completa con el dictado.
+    rpm = medidas.get("volumenes.rpm")
+    conclusion = estado.get("conclusion") or [c.replace(PENDIENTE, rpm) if rpm else c for c in plantilla.conclusion]
+    datos = {"paciente": estado.get("paciente"), "medico": estado.get("medico"), "secciones": secciones,
+             "conclusion": conclusion}
+    return normalizar_informe(formato, datos, fecha)
+
+
+def esquema_cambios(formato: str, conclusion_propuesta: bool) -> dict[str, Any]:
+    """JSON Schema del tool: solo lo que dice el dictado, nunca el texto normal.
+
+    Args:
+        conclusion_propuesta: si el médico no dicta conclusión, el modelo
+            propone una (extracción completa) o la deja vacía (en vivo).
+    """
+    plantilla = PLANTILLAS[formato]
+    lineas_con = {
+        ruta: next(l for l in seccion.marcada.split("\n") if "{" + nombre + "}" in l)
+        for ruta, (seccion, nombre) in espacios(formato).items()
+    }
     return {
         "type": "object",
         "properties": {
@@ -263,31 +412,71 @@ def input_schema(formato: str) -> dict[str, Any]:
             },
             "medico": {
                 "type": "string",
-                "description": "Médico que solicita el examen, solo si se menciona. Vacío si no.",
+                "description": "Médico que solicita el examen, solo si se menciona, con su título (Dr., Dra.).",
             },
-            "secciones": {
+            "medidas": {
                 "type": "object",
+                "description": (
+                    "Solo las medidas dictadas, por su nombre: el número sin la unidad, en la unidad de la "
+                    "plantilla (si dicta en centímetros, pásalo a milímetros; ml equivale a cc). Dos o tres "
+                    "diámetros: «78 x 32». Para borrar una medida que el médico corrigió: \"\"."
+                ),
                 "properties": {
-                    s.clave: {
+                    ruta: {"type": "string", "description": f"{seccion.etiqueta}: «{lineas_con[ruta]}»"}
+                    for ruta, (seccion, _) in espacios(formato).items()
+                },
+                "additionalProperties": False,
+            },
+            "hallazgos": {
+                "type": "object",
+                "description": (
+                    "Solo los párrafos que el médico describe distintos de lo normal: el párrafo reescrito "
+                    "en el mismo estilo (MAYÚSCULAS, frases cortas), sin el rótulo. Conserva los marcadores "
+                    "{nombre} de las medidas de la plantilla (sus valores van en `medidas`). Cada frase "
+                    "normal que deja de ser cierta con lo dictado se quita o se cambia por lo dictado "
+                    "(con una lesión dentro, el órgano ya no es «de morfología y dimensiones conservadas»). "
+                    "Las medidas propias del hallazgo (tamaño de un nódulo, de un cálculo) van escritas en el "
+                    "texto, en milímetros (1.2 cm son 12 mm). Los demás párrafos de la sección no se tocan. "
+                    "\"\" devuelve el párrafo a lo normal."
+                ),
+                "properties": {
+                    clave: {
                         "type": "string",
-                        "description": (
-                            f"{s.etiqueta}. Sin el rótulo; una línea por párrafo. Texto normal:\n{s.normal}"
-                        ),
+                        "description": f"{s.etiqueta}{'' if clave == s.clave else ', párrafo ' + clave.split('.')[1]}. "
+                        f"Normal: {texto}",
                     }
                     for s in plantilla.secciones
+                    for clave, texto in parrafos(s).items()
                 },
-                "required": [s.clave for s in plantilla.secciones],
+                "additionalProperties": False,
+            },
+            "normales": {
+                "type": "array",
+                "items": {"type": "string", "enum": [s.clave for s in plantilla.secciones]},
+                "description": (
+                    "Secciones que el médico menciona como normales, sin medidas ni hallazgos, incluidas "
+                    "las que abarca algo general como «el resto normal»."
+                ),
             },
             "conclusion": {
                 "type": "array",
                 "items": {"type": "string"},
                 "description": (
-                    "Ítems de la conclusión, uno por línea. Conclusión normal de la plantilla: "
+                    "Ítems de la conclusión, uno por línea. "
+                    + (
+                        "La que dicte el médico; si no dicta ninguna, propón una breve que resuma los "
+                        "hallazgos dictados sin agregar diagnósticos que el médico no dijo (o la normal si "
+                        "todo es normal): "
+                        if conclusion_propuesta
+                        else "Solo si el médico la dicta; si no, omítela. Conclusión normal: "
+                    )
                     + " / ".join(plantilla.conclusion)
                 ),
             },
         },
-        "required": ["paciente", "secciones", "conclusion"],
+        # En la extracción completa la conclusión es obligatoria: si faltara, el
+        # informe quedaría con la normal de la plantilla aunque haya hallazgos.
+        "required": ["conclusion"] if conclusion_propuesta else [],
     }
 
 

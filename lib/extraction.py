@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any
 
 from lib import cie10, ecografias
@@ -13,7 +14,7 @@ from lib.schema import historia_input_schema, normalizar_historia
 
 MODELO = "claude-sonnet-4-6"
 TOOL_NAME = "llenar_historia_clinica"
-TOOL_ECO = "llenar_informe_ecografico"
+TOOL_ECO = "registrar_informe_ecografico"
 MAX_TOKENS = 8192  # el formulario más las fuentes de cada dato
 
 SYSTEM_PROMPT = (
@@ -34,26 +35,35 @@ SYSTEM_PROMPT = (
 
 SYSTEM_ECO = (
     "Eres un asistente de ecografía. El médico dicta, o conversa con su asistente o "
-    "transcriptor, lo que va viendo en el monitor del ecógrafo. Llena el informe de "
-    "{examen} con la herramienta `llenar_informe_ecografico`. Reglas estrictas: "
-    "(1) Cada sección parte de su texto normal de plantilla, que está en la descripción del "
-    "campo. Reemplaza cada ___ por la medida dictada, en la unidad de la plantilla (si dicta "
-    "en centímetros, pásalo a milímetros; ml equivale a cc). Si da dos o tres diámetros para "
-    "un mismo ___, escríbelos como «78 x 32». (2) Si el médico describe algo distinto de lo "
-    "normal, reescribe solo esa parte del texto, en el mismo estilo (MAYÚSCULAS, frases "
-    "cortas) y conserva el resto tal cual. (3) Si una medida no se dicta, deja ___. NUNCA "
-    "inventes medidas ni hallazgos, y no calcules volúmenes ni porcentajes que el médico no "
-    "dijo. (4) Si una sección no se menciona, devuelve su texto normal sin cambios y no le "
-    "pongas fuente. Si el médico dice algo general («el resto normal»), esa intervención es "
-    "la fuente de las secciones que abarca. (5) Conclusión: la que dicte el médico, un ítem "
-    "por línea. Si no dicta ninguna, propón una breve y coherente con los hallazgos (o la "
-    "conclusión normal de la plantilla si todo es normal) y no le pongas fuente. "
-    "(6) Los hallazgos los da el Doctor; lo que pregunta o repite el asistente solo vale si "
-    "el Doctor lo confirma. (7) Paciente: nombre y edad en años si se dictan. Médico "
-    "solicitante: solo si se menciona. (8) Cada intervención lleva un número [n]. En "
-    "`fuentes` registra, para cada dato que llenes, los números de las intervenciones de "
-    "donde sale. Rutas: 'paciente.nombre', 'paciente.edad', 'medico', "
-    "'secciones.<clave>' (por ejemplo 'secciones.{ejemplo}') y 'conclusion[0]'."
+    "transcriptor, lo que va viendo en el monitor del ecógrafo. Registra en el informe de "
+    "{examen}, con la herramienta `registrar_informe_ecografico`, lo que dicen {cuales}. El "
+    "texto normal de cada sección ya está en la plantilla y lo arma la app: NO lo copies. "
+    "Reglas estrictas: (1) `medidas`: cada medida dictada en su espacio con nombre (la "
+    "descripción dice en qué línea va). (2) `hallazgos`: solo para el párrafo de una sección que "
+    "el médico describe distinto de lo normal; reescribe ese párrafo en el mismo estilo, "
+    "conservando los marcadores {{nombre}} de las medidas de la plantilla. Revisa cada frase "
+    "normal del párrafo: si deja de ser cierta con lo dictado, quítala o cámbiala por lo "
+    "dictado (con una lesión dentro, el órgano ya no es «de morfología y dimensiones "
+    "conservadas»; si dictó bordes regulares, ya no son «lobulados»; con un quiste, ya no "
+    "está «sin lesiones quísticas»). Los demás párrafos no se tocan. Las "
+    "medidas propias del hallazgo (el tamaño de un nódulo o de un cálculo) se escriben en el "
+    "texto, en milímetros como el resto del informe (1.2 cm son 12 mm); nunca escribas ___. (3) `normales`: secciones "
+    "que menciona como normales sin medidas ni hallazgos. (4) NUNCA inventes medidas ni "
+    "hallazgos, y no calcules volúmenes ni porcentajes que el médico no dijo. Lo que no se "
+    "menciona no va en ningún campo. (5) Si el médico corrige algo dicho antes («no, perdón, "
+    "ciento dos»), registra el valor corregido. (6) Los hallazgos los da el Doctor; lo que "
+    "pregunta o repite el asistente solo vale si el Doctor lo confirma. (7) Paciente: nombre y "
+    "edad en años si se dictan. Médico solicitante: solo si se menciona, tal como se dicta, "
+    "con su título (Dr., Dra.).{fuentes}"
+)
+
+FUENTES_ECO = (
+    " (8) Cada intervención lleva un número [n]. En `fuentes` registra, para cada dato que "
+    "llenes, los números de las intervenciones de donde sale. Rutas: 'paciente.nombre', "
+    "'paciente.edad', 'medico', 'secciones.<clave>' (la sección de la medida, del hallazgo o de "
+    "la mención como normal; por ejemplo 'secciones.{ejemplo}') y 'conclusion[0]'. Si el "
+    "médico dice algo general («el resto normal»), esa intervención es la fuente de las "
+    "secciones que abarca. No pongas fuente a una conclusión que propusiste tú."
 )
 
 CONTEXTO_DICTADO = (
@@ -69,15 +79,15 @@ def _cliente():
 
 
 def formatear_dialogo(
-    utterances: list[dict[str, Any]], mapping: dict[str, str], numerar: bool = False
+    utterances: list[dict[str, Any]], mapping: dict[str, str], numerar: bool = False, desde: int = 1
 ) -> str:
     """Convierte las intervenciones en un diálogo etiquetado por rol.
 
-    Con `numerar`, cada línea lleva `[n]` (índice + 1) para que el modelo pueda
-    citar de dónde sale cada dato.
+    Con `numerar`, cada línea lleva `[n]` (desde `desde`) para que el modelo
+    pueda citar de dónde sale cada dato.
     """
     lineas = []
-    for i, u in enumerate(utterances, start=1):
+    for i, u in enumerate(utterances, start=desde):
         rol = etiqueta(u.get("speaker", ""), mapping)
         texto = (u.get("text") or "").strip()
         if texto:
@@ -144,30 +154,88 @@ def extraer(
     return extraer_historia_clinica(utterances, mapping, modelo)
 
 
+def extraer_cambios_ecografia(
+    formato: str,
+    estado: dict[str, Any],
+    anteriores: list[dict[str, Any]],
+    nuevas: list[dict[str, Any]],
+    mapping: dict[str, str],
+    inicio: int,
+    modelo: str | None = None,
+    con_fuentes: bool = True,
+    conclusion_propuesta: bool = True,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Lo que cambian en el informe las intervenciones `nuevas`.
+
+    Claude devuelve solo valores de los espacios con nombre, el texto de las
+    secciones con hallazgos y las secciones nombradas como normales (ver
+    `ecografias.esquema_cambios`): nunca copia el texto normal, así que
+    responde rápido. Sirve igual para todo el estudio (estado vacío y todas
+    las intervenciones) que para actualizarlo en vivo frase a frase.
+
+    Args:
+        estado: lo ya registrado (`ecografias.estado_vacio()` al empezar).
+        anteriores: últimas intervenciones ya registradas, como contexto.
+        inicio: índice (desde 0) de la primera nueva, para numerarlas [n].
+        con_fuentes: pide al modelo de qué intervención sale cada dato.
+        conclusion_propuesta: si no se dicta conclusión, la propone.
+
+    Returns:
+        (cambios para `ecografias.aplicar_cambios`, fuentes como las da el modelo).
+    """
+    plantilla = ecografias.PLANTILLAS[formato]
+    dialogo = formatear_dialogo(nuevas, mapping, numerar=True, desde=inicio + 1)
+    if not dialogo.strip():
+        raise ValueError("La transcripción está vacía, no hay nada que extraer.")
+    partes = []
+    if estado != ecografias.estado_vacio():
+        registrado = {k: v for k, v in estado.items() if v not in ("", [], {}, None)}
+        partes.append(f"Informe actual (ya registrado):\n{json.dumps(registrado, ensure_ascii=False)}")
+    if anteriores:
+        contexto = formatear_dialogo(anteriores, mapping, numerar=True, desde=inicio + 1 - len(anteriores))
+        partes.append(f"Intervenciones anteriores (contexto, ya registradas):\n{contexto}")
+    partes.append(f"Intervenciones nuevas (regístralas):\n{dialogo}" if partes else f"Transcripción del estudio:\n\n{dialogo}")
+
+    esquema = ecografias.esquema_cambios(formato, conclusion_propuesta)
+    if con_fuentes:
+        esquema["properties"]["fuentes"] = esquema_fuentes()
+        esquema["required"] = [*esquema["required"], "fuentes"]
+    tool = {
+        "name": TOOL_ECO,
+        "description": f"Registra en el informe de {plantilla.nombre.lower()} lo que dictó el médico.",
+        "input_schema": esquema,
+    }
+    system = SYSTEM_ECO.format(
+        examen=plantilla.nombre.lower(),
+        cuales=(
+            "las intervenciones nuevas (lo anterior ya está en el informe actual)"
+            if estado != ecografias.estado_vacio() or anteriores
+            else "las intervenciones"
+        ),
+        fuentes=FUENTES_ECO.format(ejemplo=plantilla.secciones[0].clave) if con_fuentes else "",
+    )
+    cambios = dict(_llamar(system, "\n\n".join(partes), tool, modelo) or {})
+    fuentes = [f for f in cambios.pop("fuentes", None) or [] if isinstance(f, dict)]
+    for f in fuentes:  # a veces cita la medida o el hallazgo en vez de su sección
+        campo = str(f.get("campo", ""))
+        if campo.startswith(("medidas.", "hallazgos.")):
+            f["campo"] = "secciones." + campo.split(".")[1]
+    return cambios, fuentes
+
+
 def extraer_informe_ecografico(
     utterances: list[dict[str, Any]], mapping: dict[str, str], formato: str, modelo: str | None = None
 ) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
     """Informe ecográfico del formato dado y el mapa de fuentes de cada dato."""
     if usar_mock():
         datos, fuentes = informe_mock(formato)
+        informe = ecografias.normalizar_informe(formato, datos)
     else:
-        dialogo = formatear_dialogo(utterances, mapping, numerar=True)
-        if not dialogo.strip():
-            raise ValueError("La transcripción está vacía, no hay nada que extraer.")
-        plantilla = ecografias.PLANTILLAS[formato]
-        esquema = ecografias.input_schema(formato)
-        esquema["properties"]["fuentes"] = esquema_fuentes()
-        esquema["required"].append("fuentes")
-        tool = {
-            "name": TOOL_ECO,
-            "description": f"Registra el informe de {plantilla.nombre.lower()} con lo que dictó el médico.",
-            "input_schema": esquema,
-        }
-        system = SYSTEM_ECO.format(examen=plantilla.nombre.lower(), ejemplo=plantilla.secciones[0].clave)
-        datos = _llamar(system, f"Transcripción del estudio:\n\n{dialogo}", tool, modelo)
-        datos = dict(datos or {})
-        fuentes = datos.pop("fuentes", None) or []
-    informe = ecografias.normalizar_informe(formato, datos)
+        cambios, fuentes = extraer_cambios_ecografia(
+            formato, ecografias.estado_vacio(), [], utterances, mapping, 0, modelo
+        )
+        estado, _ = ecografias.aplicar_cambios(formato, ecografias.estado_vacio(), cambios)
+        informe = ecografias.componer(formato, estado)
     return informe, vincular(informe, fuentes, len(utterances))
 
 

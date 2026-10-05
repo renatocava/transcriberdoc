@@ -185,6 +185,28 @@ def probar_ecografias() -> None:
     avisos = eco.calculos("PRE MICCIONAL: 300 cc\nPOST MICCIONAL: 36 cc\nRPM: 12 %")
     assert avisos == ["RPM calculado (post / pre): 12 %"], avisos
 
+    # Espacios con nombre: cada ___ tiene nombre y el informe se arma con los valores.
+    assert set(eco.espacios("abdomen")) >= {"bazo.longitud", "vesicula.pared", "higado.lhd"}
+    assert eco.PLANTILLAS["abdomen"].secciones[4].marcada == "{longitud} mm DE ECOESTRUCTURA NORMAL."
+    estado, tocadas = eco.aplicar_cambios("mama", eco.estado_vacio(), {
+        "paciente": {"nombre": "Roxana Quispe", "edad": 29},
+        "medidas": {"mama_izq.conductos": "2 mm", "mama_der.inventada": "9"},  # la unidad sobra; la ruta no existe
+        "hallazgos": {"mama_izq.1": "NÓDULO SÓLIDO DE 14 x 9 mm."},
+        "normales": ["mama_der"],
+    })
+    assert tocadas == ["paciente.nombre", "paciente.edad", "secciones.mama_izq", "secciones.mama_der"], tocadas
+    izq = eco.componer("mama", estado)["secciones"]["mama_izq"].split("\n")
+    # El hallazgo reemplaza solo su párrafo: los conductos y la axila siguen siendo los de la plantilla.
+    assert izq == ["NÓDULO SÓLIDO DE 14 x 9 mm.", "CONDUCTOS GALACTÓFOROS DE DIÁMETROS NORMALES. MIDE: 2 mm",
+                   "REGIÓN AXILAR LIBRE DE ADENOPATIAS."], izq
+    # Correcciones: "" borra la medida y devuelve el párrafo a lo normal.
+    estado, _ = eco.aplicar_cambios("mama", estado, {"medidas": {"mama_izq.conductos": ""}, "hallazgos": {"mama_izq.1": ""}})
+    assert eco.componer("mama", estado)["secciones"]["mama_izq"] == eco.PLANTILLAS["mama"].secciones[1].normal
+    vp = eco.componer("vesicoprostatica", {**eco.estado_vacio(), "medidas": {"volumenes.rpm": "12"}})
+    assert vp["conclusion"][1] == "VEJIGA CON RPM DE 12 %"  # el RPM dictado completa la conclusión normal
+    claves = eco.esquema_cambios("mama", False)["properties"]["hallazgos"]["properties"]
+    assert list(claves) == ["mama_der.1", "mama_der.2", "mama_der.3", "mama_izq.1", "mama_izq.2", "mama_izq.3"]
+
     # Vista del informe: lo dictado en verde, lo que falta en ámbar, el resto fijo.
     trozos = eco.resaltar("MIDE: ___ mm, DE PAREDES DELGADAS DE ___ mm.", "MIDE: 78 x 32 mm, DE PAREDES DELGADAS DE ___ mm.")
     assert [t for t in trozos if t[0] != eco.FIJO] == [(eco.DICTADO, "78 x 32"), (eco.FALTA, "___")], trozos

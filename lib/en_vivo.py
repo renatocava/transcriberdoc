@@ -4,9 +4,12 @@ El navegador (components/grabador_vivo/) transcribe en tiempo real directo con
 OpenAI (`gpt-live-transcribe`), con una clave temporal que da el servidor: las
 palabras aparecen en pantalla mientras se dicen y, en cada pausa, la frase
 terminada llega aquí como una intervención. Con lo transcrito hasta ese momento
-el informe se vuelve a llenar en segundo plano con un modelo rápido. Esa vista
-es provisional: al detener se hace una última extracción con el modelo
-principal sobre la transcripción completa.
+el informe se actualiza en segundo plano con un modelo rápido. En ecografía la
+actualización es incremental: el modelo recibe lo ya registrado y solo las
+frases nuevas, y devuelve solo lo que cambia (ver
+`extraction.extraer_cambios_ecografia`), así que tarda alrededor de un segundo.
+Esa vista es provisional: al detener se hace una última extracción completa
+con el modelo principal.
 
 Sin dependencias de Streamlit: el hilo no toca session_state, solo esta clase.
 """
@@ -18,8 +21,14 @@ import time
 from typing import Any
 
 from lib import extraction
-from lib.ecografias import PLANTILLAS, es_ecografia
+from lib.config import usar_mock
+from lib.ecografias import PLANTILLAS, aplicar_cambios, componer, es_ecografia, estado_vacio
+from lib.fuentes import vincular
 from lib.hablantes import mapping_inicial
+
+#: Frases ya registradas que acompañan a las nuevas, para entender referencias
+#: («la otra mide lo mismo») y correcciones.
+CONTEXTO_FRASES = 3
 
 #: Modelo de las extracciones intermedias: llega antes, aunque el final lo da MODELO.
 MODELO_EN_VIVO = "claude-haiku-4-5-20251001"
@@ -85,6 +94,9 @@ class SesionEnVivo:
         self.actualizado: float | None = None  # time.time() de la última extracción
         self.extrayendo = False
         self.error: str | None = None
+        # Actualización incremental (ecografía): lo registrado y de qué frases sale.
+        self._estado = estado_vacio()
+        self._fuentes: dict[str, set[int]] = {}  # ruta -> números [n] (desde 1)
 
         threading.Thread(target=self._bucle, daemon=True, name="en-vivo-extrae").start()
 
@@ -164,6 +176,53 @@ class SesionEnVivo:
             self.formato_extraido, self.n_extraidas = formato, len(utterances)
             self.actualizado = time.time()
 
+    def _actualizar(self) -> None:
+        """Pone el informe en vivo al día con las frases nuevas."""
+        if es_ecografia(self.formato) and not usar_mock():
+            self._actualizar_incremental()
+        else:
+            self._extraer(MODELO_EN_VIVO)
+
+    def _actualizar_incremental(self) -> None:
+        utterances = self.utterances()
+        with self._lock:
+            formato, modo, nombres = self.formato, self.modo, self.conocidos[0]
+        if formato != self.formato_extraido:  # formato nuevo: se registra todo de cero
+            self._estado, self._fuentes, self.n_extraidas = estado_vacio(), {}, 0
+        desde = self.n_extraidas
+        nuevas = utterances[desde:]
+        if not nuevas:
+            return
+        mapping = mapping_inicial(utterances, modo, nombres, interlocutor="Asistente")
+        # Con una sola frase nueva, ella es la fuente de todo lo que cambie: no hace
+        # falta pedirle al modelo que la cite (menos texto que generar).
+        con_fuentes = len(nuevas) > 1
+        t0 = time.monotonic()
+        cambios, citadas = extraction.extraer_cambios_ecografia(
+            formato, self._estado, utterances[max(0, desde - CONTEXTO_FRASES):desde], nuevas, mapping, desde,
+            modelo=MODELO_EN_VIVO, con_fuentes=con_fuentes, conclusion_propuesta=False,
+        )
+        estado, tocadas = aplicar_cambios(formato, self._estado, cambios)
+        numeros_nuevas = set(range(desde + 1, len(utterances) + 1))
+        for f in citadas:
+            ids = {n for n in f.get("fragmentos") or [] if isinstance(n, int) and 1 <= n <= len(utterances)}
+            if ids:
+                self._fuentes.setdefault(str(f.get("campo", "")), set()).update(ids)
+        for ruta in tocadas:
+            if not con_fuentes or not any(f.get("campo") == ruta for f in citadas):
+                self._fuentes.setdefault(ruta, set()).update(numeros_nuevas)
+        informe = componer(formato, estado)
+        fuentes = vincular(
+            informe, [{"campo": c, "fragmentos": sorted(ids)} for c, ids in self._fuentes.items()], len(utterances)
+        )
+        _log(f"{self.id[:8]} informe +{len(nuevas)} frase(s) en {time.monotonic() - t0:.1f} s (incremental) · "
+             f"{len(tocadas)} dato(s)")
+        with self._lock:
+            self._estado = estado
+            self.historia, self.fuentes, self.mapping = informe, fuentes, mapping
+            self.formato_extraido, self.n_extraidas = formato, len(utterances)
+            self.actualizado = time.time()
+
     def _bucle(self) -> None:
         while True:
             self._hay_nuevo.wait()
@@ -179,7 +238,7 @@ class SesionEnVivo:
                     continue
                 self.extrayendo = True
                 try:
-                    self._extraer(MODELO_EN_VIVO)
+                    self._actualizar()
                 except Exception as exc:  # la vista en vivo sigue con el informe anterior
                     _log(f"{self.id[:8]} extracción FALLÓ: {type(exc).__name__}: {exc}")
                     self.error = f"No se pudo actualizar el informe: {type(exc).__name__}: {exc}"
