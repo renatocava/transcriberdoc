@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arquitectura de MedScribe</title>
+<style>
+:root {
+  --bg: #ffffff; --surface: #f8fafc; --surface-2: #f1f5f9; --border: #e2e8f0;
+  --text: #0f172a; --muted: #475569; --faint: #94a3b8;
+  --accent: #0284c7; --accent-soft: #e0f2fe;
+  --ui: #e0f2fe; --ui-b: #0284c7;
+  --ia: #ede9fe; --ia-b: #7c3aed;
+  --dom: #dcfce7; --dom-b: #16a34a;
+  --sop: #f1f5f9; --sop-b: #64748b;
+  --ext: #fef3c7; --ext-b: #d97706;
+  --data: #fce7f3; --data-b: #db2777;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1120; --surface: #111827; --surface-2: #1e293b; --border: #334155;
+    --text: #e2e8f0; --muted: #94a3b8; --faint: #64748b;
+    --accent: #38bdf8; --accent-soft: #0c4a6e;
+    --ui: #0c2f45; --ui-b: #38bdf8;
+    --ia: #2a1f4a; --ia-b: #a78bfa;
+    --dom: #0f2e1d; --dom-b: #4ade80;
+    --sop: #1e293b; --sop-b: #94a3b8;
+    --ext: #3a2a0a; --ext-b: #fbbf24;
+    --data: #3b1229; --data-b: #f472b6;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1120; --surface: #111827; --surface-2: #1e293b; --border: #334155;
+  --text: #e2e8f0; --muted: #94a3b8; --faint: #64748b;
+  --accent: #38bdf8; --accent-soft: #0c4a6e;
+  --ui: #0c2f45; --ui-b: #38bdf8;
+  --ia: #2a1f4a; --ia-b: #a78bfa;
+  --dom: #0f2e1d; --dom-b: #4ade80;
+  --sop: #1e293b; --sop-b: #94a3b8;
+  --ext: #3a2a0a; --ext-b: #fbbf24;
+  --data: #3b1229; --data-b: #f472b6;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 1040px; margin: 0 auto; padding: 40px 16px 80px; }
+header.doc { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 8px; }
+header.doc h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
+header.doc p { margin: 0; color: var(--muted); }
+.meta { font-size: .85rem; color: var(--faint); margin-top: 10px !important; }
+nav.toc { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .9rem; margin: 16px 0 0; }
+nav.toc a { color: var(--accent); text-decoration: none; }
+nav.toc a:hover { text-decoration: underline; }
+h2 { font-size: 1.4rem; margin: 48px 0 12px; padding-top: 8px; letter-spacing: -0.01em; }
+h3 { font-size: 1.08rem; margin: 28px 0 8px; }
+p, li { color: var(--text); }
+.lead { color: var(--muted); }
+code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .88em;
+  background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+figure { margin: 20px 0; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px; overflow-x: auto; }
+figure svg { display: block; width: 100%; height: auto; min-width: 640px; }
+figcaption { font-size: .85rem; color: var(--muted); margin-top: 10px; }
+.table-wrap { overflow-x: auto; margin: 12px 0; border: 1px solid var(--border); border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { background: var(--surface-2); font-weight: 600; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+.tag { display: inline-block; font-size: .75rem; font-weight: 600; padding: 1px 8px; border-radius: 999px;
+  border: 1px solid; white-space: nowrap; }
+.t-ui { background: var(--ui); border-color: var(--ui-b); }
+.t-ia { background: var(--ia); border-color: var(--ia-b); }
+.t-dom { background: var(--dom); border-color: var(--dom-b); }
+.t-sop { background: var(--sop); border-color: var(--sop-b); }
+.t-data { background: var(--data); border-color: var(--data-b); }
+.t-ext { background: var(--ext); border-color: var(--ext-b); }
+ol.pipeline { list-style: none; padding: 0; margin: 16px 0; counter-reset: paso; display: grid; gap: 10px; }
+ol.pipeline li { counter-increment: paso; position: relative; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px 12px 52px; }
+ol.pipeline li::before { content: counter(paso); position: absolute; left: 14px; top: 12px;
+  width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--bg);
+  font-weight: 700; font-size: .85rem; display: grid; place-items: center; }
+ol.pipeline b { display: block; }
+ol.pipeline span { color: var(--muted); font-size: .92rem; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 14px; margin: 16px 0; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.card h3 { margin-top: 0; }
+.card ul { padding-left: 18px; margin: 8px 0 0; }
+.card li { margin: 3px 0; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px;
+  border-radius: 0 8px 8px 0; margin: 16px 0; font-size: .95rem; }
+.note.warn { border-color: var(--ext-b); background: var(--ext); }
+/* SVG */
+.box { stroke-width: 1.4; rx: 8; }
+.b-ui { fill: var(--ui); stroke: var(--ui-b); }
+.b-ia { fill: var(--ia); stroke: var(--ia-b); }
+.b-dom { fill: var(--dom); stroke: var(--dom-b); }
+.b-sop { fill: var(--sop); stroke: var(--sop-b); }
+.b-ext { fill: var(--ext); stroke: var(--ext-b); }
+.b-data { fill: var(--data); stroke: var(--data-b); }
+.b-app { fill: var(--surface-2); stroke: var(--text); }
+.b-client { fill: var(--surface-2); stroke: var(--muted); }
+.container { fill: none; stroke: var(--faint); stroke-dasharray: 6 5; stroke-width: 1.2; }
+.note-box { fill: none; stroke: var(--ia-b); stroke-dasharray: 4 4; stroke-width: 1.2; }
+.lbl { fill: var(--text); font: 600 13px system-ui, sans-serif; }
+.sub { fill: var(--muted); font: 11px system-ui, sans-serif; }
+.layer { fill: var(--muted); font: 600 11px system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+.edge { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+.edge-ext { fill: none; stroke: var(--ext-b); stroke-width: 1.6; }
+.arrowhead { fill: var(--muted); }
+.arrowhead-ext { fill: var(--ext-b); }
+.edge-lbl { fill: var(--muted); font: 11px system-ui, sans-serif; paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+@media print {
+  body { background: #fff; color: #000; }
+  main { padding: 0; max-width: none; }
+  nav.toc { display: none; }
+  figure, .card, ol.pipeline li, .table-wrap { break-inside: avoid; }
+  h2 { break-after: avoid; }
+  figure svg { min-width: 0; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<header class="doc">
+  <h1>MedScribe AI — Arquitectura y requisitos de hardware</h1>
+  <p>Módulos y componentes de la aplicación, flujo de datos entre ellos y el hardware necesario para servirla.</p>
+  <p class="meta">Repositorio <code>transcriberdoc</code> · commit <code>176fabb</code> · 2 de octubre de 2026</p>
+  <nav class="toc">
+    <a href="#resumen">Resumen</a>
+    <a href="#capas">Vista de capas</a>
+    <a href="#modulos">Módulos</a>
+    <a href="#flujo">Flujo de procesamiento</a>
+    <a href="#estados">Máquina de estados</a>
+    <a href="#datos">Datos y persistencia</a>
+    <a href="#hardware">Requisitos de hardware</a>
+    <a href="#red">Red y seguridad</a>
+  </nav>
+</header>
+
+<h2 id="resumen">1. Resumen</h2>
+<p>MedScribe es una aplicación web de una sola página escrita en <b>Python con Streamlit</b>. El médico graba la
+consulta en el navegador; el servidor envía el audio a <b>OpenAI</b> para transcribirlo y separar a los hablantes,
+y luego envía la transcripción a <b>Anthropic (Claude)</b> para llenar una historia clínica estructurada, con la fuente
+de cada dato y los códigos CIE-10 validados contra el catálogo oficial del MINSA. El médico revisa, corrige y guarda.</p>
+<p class="lead">Toda la inferencia de IA ocurre en APIs externas. El servidor solo orquesta, valida y muestra la
+interfaz, así que el hardware que necesita es modesto (ver <a href="#hardware">sección 7</a>).</p>
+
+<div class="table-wrap"><table>
+  <tr><th>Aspecto</th><th>Tecnología</th></tr>
+  <tr><td>Interfaz y servidor web</td><td>Streamlit 1.63 (servidor Tornado + WebSocket), <code>streamlit-mic-recorder</code> 0.0.8</td></tr>
+  <tr><td>Transcripción y diarización</td><td>OpenAI <code>gpt-4o-transcribe-diarize</code> (SDK <code>openai</code> 3.8)</td></tr>
+  <tr><td>Extracción estructurada</td><td>Anthropic <code>claude-sonnet-4-6</code> con tool use forzado (SDK <code>anthropic</code> 1.4)</td></tr>
+  <tr><td>Validación de datos</td><td>Pydantic 2.13</td></tr>
+  <tr><td>Catálogo CIE-10</td><td>SQLite de solo lectura con índice de texto completo (FTS5), 15 037 códigos</td></tr>
+  <tr><td>Lenguaje</td><td>Python 3.11 (3.10 también funciona)</td></tr>
+  <tr><td>Persistencia clínica</td><td>Ninguna: la consulta vive en memoria de la sesión; «Guardar» imprime el JSON en la consola</td></tr>
+</table></div>
+
+<h2 id="capas">2. Vista de capas</h2>
+<p>El código se organiza en un punto de entrada (<code>app.py</code>), una capa de pantallas
+(<code>components/</code>) y una biblioteca sin interfaz (<code>lib/</code>). Las pantallas dependen de
+<code>lib</code>, nunca al revés, salvo <code>lib/state.py</code>, que encapsula <code>st.session_state</code>.</p>
+
+<figure>
+<svg viewBox="0 0 1000 690" role="img" aria-labelledby="capas-t">
+  <title id="capas-t">Diagrama de capas de MedScribe</title>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker>
+    <marker id="ahx" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="arrowhead-ext"/></marker>
+  </defs>
+
+  <!-- Cliente -->
+  <rect class="box b-client" x="20" y="14" width="700" height="58"/>
+  <text class="lbl" x="370" y="38" text-anchor="middle">Navegador del médico</text>
+  <text class="sub" x="370" y="57" text-anchor="middle">micrófono (getUserMedia → webm) · reproductor de audio · UI renderizada por Streamlit</text>
+
+  <path class="edge" d="M370,72 V104" marker-end="url(#ah)" marker-start="url(#ah)"/>
+  <text class="edge-lbl" x="380" y="93">HTTPS + WebSocket</text>
+
+  <!-- Servidor -->
+  <rect class="container" x="20" y="108" width="700" height="570" rx="12"/>
+  <text class="layer" x="34" y="128">Servidor · Python + Streamlit</text>
+
+  <rect class="box b-app" x="230" y="138" width="280" height="42"/>
+  <text class="lbl" x="370" y="157" text-anchor="middle">app.py</text>
+  <text class="sub" x="370" y="172" text-anchor="middle">router por estado + encabezado</text>
+
+  <path class="edge" d="M370,180 V210" marker-end="url(#ah)"/>
+
+  <text class="layer" x="45" y="206">Pantallas · components/</text>
+  <rect class="box b-ui" x="45" y="214" width="150" height="54"/>
+  <text class="lbl" x="120" y="237" text-anchor="middle">recording</text>
+  <text class="sub" x="120" y="255" text-anchor="middle">grabar / subir / demo</text>
+  <rect class="box b-ui" x="215" y="214" width="150" height="54"/>
+  <text class="lbl" x="290" y="237" text-anchor="middle">medicos</text>
+  <text class="sub" x="290" y="255" text-anchor="middle">voces registradas</text>
+  <rect class="box b-ui" x="385" y="214" width="150" height="54"/>
+  <text class="lbl" x="460" y="237" text-anchor="middle">processing</text>
+  <text class="sub" x="460" y="255" text-anchor="middle">orquesta el pipeline</text>
+  <rect class="box b-ui" x="555" y="214" width="150" height="54"/>
+  <text class="lbl" x="630" y="237" text-anchor="middle">review</text>
+  <text class="sub" x="630" y="255" text-anchor="middle">transcripción + formulario</text>
+
+  <text class="layer" x="45" y="300">Integración IA · lib/</text>
+  <rect class="note-box" x="45" y="308" width="320" height="54" rx="8"/>
+  <text class="sub" x="205" y="331" text-anchor="middle">Con USE_MOCK = true estas dos llamadas</text>
+  <text class="sub" x="205" y="347" text-anchor="middle">devuelven mock_data, sin red ni API keys</text>
+  <rect class="box b-ia" x="385" y="308" width="150" height="54"/>
+  <text class="lbl" x="460" y="331" text-anchor="middle">transcription</text>
+  <text class="sub" x="460" y="349" text-anchor="middle">audio → intervenciones</text>
+  <rect class="box b-ia" x="555" y="308" width="150" height="54"/>
+  <text class="lbl" x="630" y="331" text-anchor="middle">extraction</text>
+  <text class="sub" x="630" y="349" text-anchor="middle">diálogo → historia</text>
+
+  <text class="layer" x="45" y="394">Dominio · lib/</text>
+  <rect class="box b-dom" x="45" y="402" width="150" height="54"/>
+  <text class="lbl" x="120" y="425" text-anchor="middle">hablantes</text>
+  <text class="sub" x="120" y="443" text-anchor="middle">voces → roles</text>
+  <rect class="box b-dom" x="215" y="402" width="150" height="54"/>
+  <text class="lbl" x="290" y="425" text-anchor="middle">schema</text>
+  <text class="sub" x="290" y="443" text-anchor="middle">modelos Pydantic</text>
+  <rect class="box b-dom" x="385" y="402" width="150" height="54"/>
+  <text class="lbl" x="460" y="425" text-anchor="middle">fuentes</text>
+  <text class="sub" x="460" y="443" text-anchor="middle">dato ↔ intervención</text>
+  <rect class="box b-dom" x="555" y="402" width="150" height="54"/>
+  <text class="lbl" x="630" y="425" text-anchor="middle">cie10</text>
+  <text class="sub" x="630" y="443" text-anchor="middle">validar / buscar códigos</text>
+
+  <text class="layer" x="45" y="488">Soporte · lib/</text>
+  <rect class="box b-sop" x="45" y="496" width="150" height="54"/>
+  <text class="lbl" x="120" y="519" text-anchor="middle">state</text>
+  <text class="sub" x="120" y="537" text-anchor="middle">estados + session_state</text>
+  <rect class="box b-sop" x="215" y="496" width="150" height="54"/>
+  <text class="lbl" x="290" y="519" text-anchor="middle">config</text>
+  <text class="sub" x="290" y="537" text-anchor="middle">secrets / env / mock</text>
+  <rect class="box b-sop" x="385" y="496" width="150" height="54"/>
+  <text class="lbl" x="460" y="519" text-anchor="middle">voces</text>
+  <text class="sub" x="460" y="537" text-anchor="middle">muestras WAV de médicos</text>
+  <rect class="box b-sop" x="555" y="496" width="150" height="54"/>
+  <text class="lbl" x="630" y="519" text-anchor="middle">mock_data</text>
+  <text class="sub" x="630" y="537" text-anchor="middle">consulta simulada</text>
+
+  <text class="layer" x="45" y="582">Almacenamiento local</text>
+  <rect class="box b-data" x="45" y="590" width="150" height="54"/>
+  <text class="lbl" x="120" y="613" text-anchor="middle">session_state</text>
+  <text class="sub" x="120" y="631" text-anchor="middle">RAM, por pestaña</text>
+  <rect class="box b-data" x="215" y="590" width="150" height="54"/>
+  <text class="lbl" x="290" y="613" text-anchor="middle">.streamlit/secrets</text>
+  <text class="sub" x="290" y="631" text-anchor="middle">API keys</text>
+  <rect class="box b-data" x="385" y="590" width="150" height="54"/>
+  <text class="lbl" x="460" y="613" text-anchor="middle">voces/</text>
+  <text class="sub" x="460" y="631" text-anchor="middle">WAV + medicos.json</text>
+  <rect class="box b-data" x="555" y="590" width="150" height="54"/>
+  <text class="lbl" x="630" y="613" text-anchor="middle">data/cie10.sqlite</text>
+  <text class="sub" x="630" y="631" text-anchor="middle">1,9 MB · solo lectura</text>
+
+  <!-- APIs externas -->
+  <text class="layer" x="770" y="250">Servicios externos</text>
+  <rect class="box b-ext" x="770" y="262" width="210" height="58"/>
+  <text class="lbl" x="875" y="285" text-anchor="middle">OpenAI API</text>
+  <text class="sub" x="875" y="303" text-anchor="middle">gpt-4o-transcribe-diarize</text>
+  <rect class="box b-ext" x="770" y="336" width="210" height="58"/>
+  <text class="lbl" x="875" y="359" text-anchor="middle">Anthropic API</text>
+  <text class="sub" x="875" y="377" text-anchor="middle">claude-sonnet-4-6 · tool use</text>
+
+  <path class="edge-ext" d="M460,308 V291 H766" marker-end="url(#ahx)"/>
+  <text class="edge-lbl" x="560" y="285">audio + muestras de voz</text>
+  <path class="edge-ext" d="M705,335 H738 V365 H766" marker-end="url(#ahx)"/>
+  <text class="edge-lbl" x="742" y="410" text-anchor="start">transcripción numerada</text>
+</svg>
+<figcaption>Las flechas grises indican quién llama a quién dentro del servidor; las ámbar, las llamadas salientes
+por HTTPS. Las dependencias detalladas entre módulos están en la tabla de la sección 3.</figcaption>
+</figure>
+
+<h2 id="modulos">3. Módulos y componentes</h2>
+
+<h3>Punto de entrada</h3>
+<div class="table-wrap"><table>
+  <tr><th>Archivo</th><th>Responsabilidad</th><th>Depende de</th></tr>
+  <tr><td><code>app.py</code></td><td>Configura la página, inicializa el estado, dibuja el encabezado (con el badge <code>DEMO · SIMULADO</code>) y despacha a la pantalla que corresponde a la etapa actual. Contiene la pantalla de confirmación «guardado».</td><td><code>components.*</code>, <code>state</code>, <code>config</code></td></tr>
+</table></div>
+
+<h3>Pantallas — <code>components/</code></h3>
+<div class="table-wrap"><table>
+  <tr><th>Módulo</th><th>Capa</th><th>Responsabilidad</th><th>Depende de</th></tr>
+  <tr><td><code>recording.py</code></td><td><span class="tag t-ui">UI</span></td><td>Pantalla inicial: elegir participantes (automático, solo médico, médico y paciente, con acompañante), grabar con el micrófono, usar el audio de demo o subir un archivo. Al recibir audio pasa a <code>processing</code>.</td><td><code>medicos</code>, <code>state</code>, <code>hablantes</code></td></tr>
+  <tr><td><code>medicos.py</code></td><td><span class="tag t-ui">UI</span></td><td>Selector de médicos presentes (hasta 4) y gestión de voces: grabar o subir una muestra WAV de 3–10 s con consentimiento, listarla y eliminarla.</td><td><code>state</code>, <code>voces</code></td></tr>
+  <tr><td><code>processing.py</code></td><td><span class="tag t-ui">UI</span></td><td>Orquesta el pipeline dentro de un <code>st.status</code>: transcribir → asignar roles → extraer. Atrapa cualquier excepción y ofrece «Reintentar» (la demo no debe caerse en vivo).</td><td><code>transcription</code>, <code>extraction</code>, <code>hablantes</code>, <code>voces</code>, <code>state</code></td></tr>
+  <tr><td><code>review.py</code></td><td><span class="tag t-ui">UI</span></td><td>Vista de revisión (578 líneas, la más grande): transcripción con reproductor y saltos al minuto, corrección de roles con re-extracción, formulario editable, botones 📎 de fuente, marcas ✏️/⚠️, buscador CIE-10 por diagnóstico, guardar y descartar.</td><td><code>cie10</code>, <code>extraction</code>, <code>fuentes</code>, <code>hablantes</code>, <code>state</code></td></tr>
+</table></div>
+
+<h3>Biblioteca — <code>lib/</code></h3>
+<div class="table-wrap"><table>
+  <tr><th>Módulo</th><th>Capa</th><th>Responsabilidad</th><th>Depende de</th></tr>
+  <tr><td><code>transcription.py</code></td><td><span class="tag t-ia">IA</span></td><td>Envía el audio a <code>gpt-4o-transcribe-diarize</code> (<code>diarized_json</code>, español, chunking automático, voces conocidas opcionales). Convierte <code>speaker_1</code>… en A, B…, conserva el nombre de los médicos reconocidos y fusiona segmentos consecutivos del mismo hablante.</td><td><code>config</code>, <code>mock_data</code>, OpenAI</td></tr>
+  <tr><td><code>extraction.py</code></td><td><span class="tag t-ia">IA</span></td><td>Arma el diálogo numerado y etiquetado por rol, llama a Claude con un único tool obligatorio (<code>llenar_historia_clinica</code>, hasta 8192 tokens), normaliza la respuesta, descarta códigos CIE-10 inválidos con aviso y vincula las fuentes.</td><td><code>schema</code>, <code>fuentes</code>, <code>hablantes</code>, <code>cie10</code>, <code>config</code>, <code>mock_data</code>, Anthropic</td></tr>
+  <tr><td><code>schema.py</code></td><td><span class="tag t-dom">Dominio</span></td><td>Modelos Pydantic de la historia clínica (paciente, antecedentes, signos vitales, examen físico, diagnósticos, medicamentos, plan). Genera el JSON Schema del tool aplanando <code>$ref</code>/<code>$defs</code> y rellena los campos ausentes.</td><td>Pydantic</td></tr>
+  <tr><td><code>fuentes.py</code></td><td><span class="tag t-dom">Dominio</span></td><td>Esquema de la propiedad <code>fuentes</code> que pide al modelo citar de qué intervención sale cada dato; valida las rutas, las ancla a la historia y detecta datos editados a mano.</td><td>—</td></tr>
+  <tr><td><code>hablantes.py</code></td><td><span class="tag t-dom">Dominio</span></td><td>Modos de participantes, roles (Doctor, Paciente, Acompañante, Otro), mapeo inicial voz → rol, etiquetas visibles y aviso cuando las voces no cuadran con el modo.</td><td>—</td></tr>
+  <tr><td><code>cie10.py</code></td><td><span class="tag t-dom">Dominio</span></td><td>Acceso de solo lectura a <code>data/cie10.sqlite</code>: normalizar, validar vigencia, obtener descripción y buscar por código o por palabras (FTS sin tildes). Conexión única cacheada.</td><td>SQLite</td></tr>
+  <tr><td><code>state.py</code></td><td><span class="tag t-sop">Soporte</span></td><td>Máquina de estados y helpers de <code>st.session_state</code>: etapas, reset, ids estables (<code>_uid</code>) en listas editables, tipo MIME y reproductor del audio.</td><td>Streamlit, <code>hablantes</code></td></tr>
+  <tr><td><code>config.py</code></td><td><span class="tag t-sop">Soporte</span></td><td>Lee secrets de <code>st.secrets</code> o de variables de entorno, y el flag <code>USE_MOCK</code>.</td><td>—</td></tr>
+  <tr><td><code>voces.py</code></td><td><span class="tag t-sop">Soporte</span></td><td>Registro de voces de médicos en disco (<code>voces/</code>): valida y recorta WAV, guarda el índice JSON y entrega nombres + muestras como data URL para la API (máx. 4).</td><td>Sistema de archivos</td></tr>
+  <tr><td><code>mock_data.py</code></td><td><span class="tag t-sop">Soporte</span></td><td>Consulta simulada (diálogo, historia y fuentes) para ensayar sin APIs. Es también el guion del audio de demo.</td><td>—</td></tr>
+</table></div>
+
+<h3>Herramientas fuera de la aplicación</h3>
+<div class="table-wrap"><table>
+  <tr><th>Archivo</th><th>Uso</th><th>Requiere</th></tr>
+  <tr><td><code>scripts/construir_cie10.py</code></td><td>Genera <code>data/cie10.sqlite</code> desde el Excel oficial del MINSA y el Anexo 1 de la RM 447-2024; aborta si algo no cuadra.</td><td>Solo cuando el MINSA publica una versión nueva</td></tr>
+  <tr><td><code>scripts/generar_audio_demo.py</code></td><td>Sintetiza <code>assets/demo-consulta.mp3</code> con dos voces a partir del diálogo de <code>mock_data</code>.</td><td><code>ffmpeg</code> y <code>piper</code>; solo en la máquina de desarrollo</td></tr>
+  <tr><td><code>smoke_test.py</code></td><td>Prueba el pipeline sin interfaz, simulado o contra las APIs reales.</td><td>—</td></tr>
+</table></div>
+
+<h2 id="flujo">4. Flujo de procesamiento de una consulta</h2>
+<ol class="pipeline">
+  <li><b>Captura del audio</b><span><code>recording</code> recibe el audio del micrófono (webm/Opus), del archivo de demo o de un archivo subido y lo guarda en <code>session_state</code>. Pasa a <code>processing</code>.</span></li>
+  <li><b>Transcripción con diarización</b><span><code>transcription</code> envía el audio y, si hay médicos elegidos, sus muestras de voz a OpenAI. Devuelve intervenciones <code>{speaker, text, start, end}</code>. 15–40 s para una consulta de 2–3 min, contando también la extracción.</span></li>
+  <li><b>Asignación de roles</b><span><code>hablantes.mapping_inicial</code> asigna Doctor / Paciente / Acompañante según el modo elegido y las voces reconocidas por nombre.</span></li>
+  <li><b>Extracción estructurada</b><span><code>extraction</code> envía a Claude el diálogo numerado con roles y el JSON Schema de <code>schema</code> + <code>fuentes</code>. Claude responde obligatoriamente con el tool.</span></li>
+  <li><b>Validación</b><span><code>schema.normalizar_historia</code> completa la estructura, <code>cie10.validar</code> descarta códigos inexistentes o dados de baja y <code>fuentes.vincular</code> ancla cada dato a sus intervenciones.</span></li>
+  <li><b>Revisión</b><span><code>review</code> muestra transcripción y formulario. Si el médico corrige roles, se repite el paso 4 (se pierden las ediciones). Editar el formulario no vuelve a llamar a las APIs.</span></li>
+  <li><b>Guardado</b><span>Se quitan las claves internas (<code>_uid</code>, <code>_fuentes</code>) y el JSON final se imprime en la consola del servidor. No se escribe en ninguna base de datos.</span></li>
+</ol>
+
+<h2 id="estados">5. Máquina de estados</h2>
+<p>La etapa vive en <code>st.session_state["stage"]</code>. Solo hay <code>st.rerun()</code> al cambiar de etapa,
+al re-extraer y al guardar o descartar.</p>
+<figure>
+<svg viewBox="0 0 900 230" role="img" aria-labelledby="est-t">
+  <title id="est-t">Estados idle, processing, review y saved</title>
+  <defs>
+    <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker>
+  </defs>
+  <rect class="box b-ui" x="30" y="80" width="150" height="56"/>
+  <text class="lbl" x="105" y="104" text-anchor="middle">idle</text>
+  <text class="sub" x="105" y="122" text-anchor="middle">recording</text>
+  <rect class="box b-ia" x="265" y="80" width="150" height="56"/>
+  <text class="lbl" x="340" y="104" text-anchor="middle">processing</text>
+  <text class="sub" x="340" y="122" text-anchor="middle">processing</text>
+  <rect class="box b-dom" x="500" y="80" width="150" height="56"/>
+  <text class="lbl" x="575" y="104" text-anchor="middle">review</text>
+  <text class="sub" x="575" y="122" text-anchor="middle">review</text>
+  <rect class="box b-sop" x="735" y="80" width="140" height="56"/>
+  <text class="lbl" x="805" y="104" text-anchor="middle">saved</text>
+  <text class="sub" x="805" y="122" text-anchor="middle">app.render_saved</text>
+
+  <path class="edge" d="M180,108 H261" marker-end="url(#ah2)"/>
+  <text class="edge-lbl" x="220" y="100" text-anchor="middle">audio recibido</text>
+  <path class="edge" d="M415,108 H496" marker-end="url(#ah2)"/>
+  <text class="edge-lbl" x="455" y="100" text-anchor="middle">historia lista</text>
+  <path class="edge" d="M650,108 H731" marker-end="url(#ah2)"/>
+  <text class="edge-lbl" x="690" y="100" text-anchor="middle">Guardar</text>
+
+  <path class="edge" d="M555,80 C555,30 600,30 600,76" marker-end="url(#ah2)"/>
+  <text class="edge-lbl" x="577" y="26" text-anchor="middle">corregir roles → re-extraer</text>
+
+  <path class="edge" d="M340,136 C340,175 105,175 105,140" marker-end="url(#ah2)"/>
+  <text class="edge-lbl" x="222" y="169" text-anchor="middle">error → Reintentar</text>
+  <path class="edge" d="M575,136 C575,200 105,200 105,140" marker-end="url(#ah2)"/>
+  <text class="edge-lbl" x="340" y="188" text-anchor="middle">Descartar</text>
+  <path class="edge" d="M805,136 C805,226 105,226 105,140" marker-end="url(#ah2)"/>
+  <text class="edge-lbl" x="455" y="208" text-anchor="middle">Nueva consulta</text>
+</svg>
+<figcaption>Debajo de cada estado, el componente que lo dibuja.</figcaption>
+</figure>
+
+<h2 id="datos">6. Datos y persistencia</h2>
+<div class="table-wrap"><table>
+  <tr><th>Dato</th><th>Dónde vive</th><th>Duración</th><th>Sensibilidad</th></tr>
+  <tr><td>Audio de la consulta, transcripción, historia, fuentes</td><td><code>st.session_state</code> (RAM del servidor)</td><td>Mientras la pestaña esté abierta; se borra con «Nueva consulta» o al cerrar la sesión</td><td>Alta (dato clínico)</td></tr>
+  <tr><td>Historia guardada</td><td>Salida estándar del proceso (consola / journal)</td><td>Lo que retenga el registro del servidor</td><td>Alta</td></tr>
+  <tr><td>Muestras de voz de médicos</td><td><code>voces/*.wav</code> + <code>voces/medicos.json</code></td><td>Persistente en disco; fuera de git</td><td>Alta (dato biométrico)</td></tr>
+  <tr><td>Catálogo CIE-10</td><td><code>data/cie10.sqlite</code></td><td>Versionado en git; solo lectura</td><td>Pública</td></tr>
+  <tr><td>Audio de demo</td><td><code>assets/demo-consulta.mp3</code> (1,7 MB)</td><td>Versionado en git</td><td>Sintético</td></tr>
+  <tr><td>API keys</td><td><code>.streamlit/secrets.toml</code> o variables de entorno</td><td>Persistente; fuera de git</td><td>Secreta</td></tr>
+</table></div>
+
+<h2 id="hardware">7. Requisitos de hardware</h2>
+<p>Como la transcripción y la extracción corren en OpenAI y Anthropic, el servidor <b>no necesita GPU</b> ni
+mucha CPU: pasa la mayor parte del tiempo esperando respuestas de red. La memoria crece con las sesiones abiertas,
+porque cada una guarda su audio y su transcripción en RAM.</p>
+
+<div class="cards">
+  <div class="card">
+    <h3>Servidor — mínimo</h3>
+    <p class="lead" style="margin:0">Demo con 1–3 usuarios a la vez</p>
+    <ul>
+      <li><b>CPU:</b> 1 vCPU x86-64 o ARM64</li>
+      <li><b>RAM:</b> 1 GB</li>
+      <li><b>Disco:</b> 2 GB libres (entorno virtual ~0,5 GB + código y datos ~5 MB)</li>
+      <li><b>GPU:</b> no se usa</li>
+      <li><b>SO:</b> Linux, macOS o Windows con Python 3.11</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Servidor — recomendado</h3>
+    <p class="lead" style="margin:0">Uso en clínica, hasta ~10–15 consultas simultáneas</p>
+    <ul>
+      <li><b>CPU:</b> 2 vCPU</li>
+      <li><b>RAM:</b> 2–4 GB</li>
+      <li><b>Disco:</b> 10 GB SSD (registros, voces y margen para actualizaciones)</li>
+      <li><b>GPU:</b> no se usa</li>
+      <li><b>SO:</b> Linux (p. ej. Ubuntu 22.04/24.04 LTS) con systemd y un proxy HTTPS (Caddy o Nginx)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Equipo del médico (cliente)</h3>
+    <ul>
+      <li>Navegador moderno: Chrome/Edge 100+, Firefox 100+ o Safari 15+</li>
+      <li>Micrófono (integrado, USB o de solapa). Para consultas con paciente conviene uno omnidireccional o de conferencia cerca de ambos</li>
+      <li>4 GB de RAM o más; cualquier CPU de los últimos ~8 años</li>
+      <li>Pantalla de 1366 × 768 o mayor: la revisión usa dos columnas</li>
+      <li>Parlantes o audífonos para reproducir las citas de audio</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3>Red</h3>
+    <ul>
+      <li>Salida HTTPS (puerto 443) desde el servidor hacia <code>api.openai.com</code> y <code>api.anthropic.com</code></li>
+      <li>Subida del cliente al servidor: ~0,5–2 MB por consulta de 2–3 min (webm/Opus); el límite de la API es 25 MB por audio</li>
+      <li>1 Mbps simétrico basta por consulta; la latencia la dominan las APIs, no el enlace</li>
+      <li>Sin internet: solo funciona el modo simulado (<code>USE_MOCK = true</code>)</li>
+    </ul>
+  </div>
+</div>
+
+<h3>De dónde salen estas cifras</h3>
+<div class="table-wrap"><table>
+  <tr><th>Medición o supuesto</th><th>Valor</th><th>Origen</th></tr>
+  <tr><td>Proceso Streamlit recién arrancado, sin sesiones</td><td>~46 MB RSS</td><td>Medido en esta máquina, Python 3.10, 2 oct 2026</td></tr>
+  <tr><td>Intérprete con Streamlit, OpenAI, Anthropic, Pydantic y el grabador cargados</td><td>~87 MB RSS</td><td>Medido (pico de memoria del proceso)</td></tr>
+  <tr><td>Memoria por sesión activa</td><td>~10–30 MB</td><td>Estimado: audio (0,5–5 MB) + transcripción + historia + estado de widgets de Streamlit</td></tr>
+  <tr><td>Catálogo CIE-10 en uso</td><td>&lt; 5 MB</td><td>Base de 1,9 MB abierta en solo lectura, una conexión por proceso</td></tr>
+  <tr><td>CPU por consulta</td><td>Baja; picos breves al serializar el audio y al redibujar la revisión</td><td>Estimado: el trabajo pesado ocurre en las APIs</td></tr>
+</table></div>
+<div class="note">Con ~90 MB de base y ~30 MB por sesión en el peor caso, 1 GB alcanza holgadamente para una
+demo y 2 GB para una clínica pequeña. Antes de dimensionar para más usuarios, conviene medir con carga real:
+la memoria por sesión es la cifra menos segura de esta tabla.</div>
+
+<h2 id="red">8. Red, despliegue y seguridad</h2>
+<ul>
+  <li><b>El micrófono exige contexto seguro.</b> El navegador solo entrega el micrófono en HTTPS o en
+  <code>localhost</code>. Si el servidor se abre por una IP de red local con HTTP, la grabación falla en silencio.
+  En un servidor propio hace falta un proxy HTTPS delante de Streamlit (puerto 8501 por defecto) que también
+  reenvíe WebSocket.</li>
+  <li><b>Un proceso, muchas sesiones.</b> Streamlit atiende todas las sesiones en un solo proceso Python; cada
+  consulta en curso bloquea solo su propia sesión mientras espera a las APIs.</li>
+  <li><b>Arranque automático.</b> En Linux, un servicio systemd con las API keys como variables de entorno
+  (<code>lib/config.py</code> las lee si no hay <code>secrets.toml</code>).</li>
+  <li><b>Datos clínicos.</b> El audio y la transcripción salen hacia OpenAI y Anthropic. Las muestras de voz son
+  datos biométricos y quedan en <code>voces/</code>: respáldalas y restringe sus permisos. La historia
+  «guardada» queda en los registros del servidor, que deben tratarse como información clínica.</li>
+  <li><b>Streamlit Community Cloud.</b> El despliegue actual funciona sin hardware propio; allí el disco se
+  borra al reiniciar, así que las voces registradas no persisten.</li>
+</ul>
+
+</main>
+</body>
+</html>
