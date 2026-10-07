@@ -1,8 +1,10 @@
 """Cuántas personas hablan en la consulta y qué rol tiene cada voz.
 
 La API de diarización no deja fijar el número de hablantes, así que el modo
-elegido antes de grabar se aplica después, al asignar roles a las voces que
-detectó el modelo. Sin dependencias de Streamlit: lo usan también las pruebas.
+se aplica después, al asignar roles a las voces que detectó el modelo. La app
+ya no lo pregunta: la ecografía es un dictado (UNO) y en la consulta se
+detectan las voces (AUTO); ver `state.modo_hablantes`.
+Sin dependencias de Streamlit: lo usan también las pruebas.
 """
 
 from __future__ import annotations
@@ -14,21 +16,6 @@ AUTO = "auto"
 UNO = "1"
 DOS = "2"
 VARIOS = "3+"
-
-#: Modo -> etiqueta del selector previo a la grabación.
-MODOS = {
-    AUTO: "Automático",
-    UNO: "Solo el médico",
-    DOS: "Médico y paciente",
-    VARIOS: "Con acompañante",
-}
-
-AYUDA_MODOS = {
-    AUTO: "Detecta cuántas voces hay y asigna los roles por orden de aparición.",
-    UNO: "Dictado: el médico describe la consulta; todo se atribuye al médico.",
-    DOS: "Consulta entre médico y paciente.",
-    VARIOS: "Médico, paciente y uno o más acompañantes (familiar, intérprete).",
-}
 
 ROLES = ["Doctor", "Paciente", "Asistente", "Acompañante", "Otro"]
 

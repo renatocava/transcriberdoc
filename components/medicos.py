@@ -1,4 +1,4 @@
-"""Médicos con voz registrada: elegir quién atiende y registrar o eliminar voces."""
+"""Médico que realiza el estudio y las voces registradas de los médicos."""
 
 from __future__ import annotations
 
@@ -16,33 +16,60 @@ CONSENTIMIENTO = (
 )
 
 
-def _guardar_seleccion() -> None:
-    st.session_state[state.CLAVE_MEDICOS] = list(st.session_state["w_medicos"])
+#: Opción del selector para escribir el nombre de un médico sin voz registrada,
+#: y la clave que recuerda que se eligió (aunque aún no se haya escrito el nombre).
+OTRO = "__otro__"
+CLAVE_OTRO = "medico_es_otro"
 
 
-def selector_medicos() -> None:
-    """Médicos presentes en la consulta; sus voces se reconocen por nombre."""
+def _elegir(medico_id: str | None, nombre: str, otro: bool = False) -> None:
+    st.session_state[state.CLAVE_MEDICOS] = [medico_id] if medico_id else []
+    st.session_state[state.CLAVE_MEDICO] = nombre.strip()
+    st.session_state[CLAVE_OTRO] = otro
+
+
+def _guardar_seleccion(registrados: dict[str, str]) -> None:
+    elegido = st.session_state["w_medico"]
+    if elegido == OTRO:
+        _elegir(None, st.session_state.get("w_medico_otro", ""), otro=True)
+    else:
+        _elegir(elegido, registrados.get(elegido, ""))
+
+
+def _guardar_otro() -> None:
+    _elegir(None, st.session_state["w_medico_otro"], otro=True)
+
+
+def selector_medico() -> None:
+    """Médico que realiza el estudio: va en la línea MÉDICO del informe y, si
+    registró su voz, sus intervenciones aparecen con su nombre."""
     registrados = {m["id"]: m["nombre"] for m in voces.listar()}
-    if not registrados:
-        st.caption("👤 Registra la voz de un médico en «Voces de médicos» para que aparezca con su nombre.")
-        return
-    # Igual que el modo: copia propia porque el widget solo existe en esta pantalla.
-    st.session_state["w_medicos"] = [i for i in state.medicos_consulta() if i in registrados]
-    st.multiselect(
-        "Médico(s) en la consulta",
-        options=list(registrados),
-        format_func=registrados.get,
-        max_selections=voces.MAX_CONOCIDOS,
-        key="w_medicos",
+    seleccion = [i for i in state.medicos_consulta() if i in registrados]
+    # Igual que el formato: copia propia porque el widget solo existe en esta pantalla.
+    otro = st.session_state.get(CLAVE_OTRO) or (not seleccion and bool(state.medico()))
+    st.session_state["w_medico"] = seleccion[0] if seleccion else (OTRO if otro else None)
+    st.session_state["w_medico_otro"] = "" if seleccion else state.medico()
+    elegido = st.selectbox(
+        "Médico que realiza el estudio",
+        options=[*registrados, OTRO],
+        format_func=lambda i: registrados.get(i, "Otro (escribir el nombre)"),
+        key="w_medico",
         on_change=_guardar_seleccion,
-        placeholder="Ninguno: se identificará al médico por orden de aparición",
-        help="Su voz se reconocerá en la grabación y aparecerá con su nombre.",
+        args=(registrados,),
+        placeholder="Elige al médico",
+        help="Aparece en la línea MÉDICO del informe. Si registró su voz, se reconoce en la grabación.",
     )
+    if elegido == OTRO:
+        st.text_input(
+            "Nombre del médico", key="w_medico_otro", on_change=_guardar_otro,
+            placeholder="Ej: Dr. Hurtado", label_visibility="collapsed",
+        )
 
 
 def _eliminar(medico_id: str) -> None:
     voces.eliminar(medico_id)
-    st.session_state[state.CLAVE_MEDICOS] = [i for i in state.medicos_consulta() if i != medico_id]
+    if medico_id in state.medicos_consulta():
+        _elegir(None, "")
 
 
 def gestion_voces() -> None:
@@ -104,8 +131,6 @@ def gestion_voces() -> None:
                 st.session_state.pop("voz_pendiente", None)
                 for clave in ("voz_nombre", "voz_consentimiento", "voz_archivo"):
                     st.session_state.pop(clave, None)
-                seleccion = state.medicos_consulta()
-                if len(seleccion) < voces.MAX_CONOCIDOS:
-                    st.session_state[state.CLAVE_MEDICOS] = [*seleccion, medico["id"]]
+                _elegir(medico["id"], medico["nombre"])
                 st.toast(f"Voz de {medico['nombre']} registrada.")
                 st.rerun()

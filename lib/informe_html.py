@@ -83,7 +83,7 @@ def html_informe(informe: dict[str, Any], dictadas: set[str] | frozenset[str] = 
         f'<div class="tit">{escape(plantilla.examen)}</div>',
         _cabecera("NOMBRES", pac.get("nombre")),
         _cabecera("EDAD", edad, " AÑOS"),
-        _cabecera("MÉDICO", informe.get("medico") or "PARTICULAR"),
+        _cabecera("MÉDICO", informe.get("medico")),
         f'<div class="cab"><span class="r">EXAMEN</span>:  {escape(plantilla.examen)}</div>',
         _cabecera("FECHA", fecha.strftime("%d/%m/%Y")),
         '<div class="sec-cab"></div>',

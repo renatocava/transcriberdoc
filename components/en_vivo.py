@@ -198,12 +198,13 @@ def _informe_en_vivo() -> None:
         if es_ecografia(formato):
             from components.informe_eco import dictadas, vista_informe  # import local: evita el ciclo
 
-            informe = historia or normalizar_informe(formato, {})
+            informe = state.con_medico(historia or normalizar_informe(formato, {}))
             marcadas = dictadas(informe, s.fuentes) if historia else set()
             vista_informe(informe, marcadas, f"{PLANTILLAS[formato].nombre} · en vivo")
         else:
             _vista_historia(historia)
-        st.caption(_estado(s) + " · Al detener, se revisa todo con el modelo principal.")
+        st.caption(_estado(s) + (" · Para cambiar un dato registrado, di «modificar»." if es_ecografia(formato) else "")
+                   + " · Al detener, se revisa todo con el modelo principal.")
 
 
 def informe() -> bool:

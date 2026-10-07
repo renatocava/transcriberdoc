@@ -36,7 +36,6 @@ CLAVE_EDITAR = "f_eco_editar"
 ETIQUETAS_PACIENTE = {
     "paciente.nombre": "Nombre",
     "paciente.edad": "Edad",
-    "medico": "Médico solicitante",
 }
 
 
@@ -51,7 +50,6 @@ def _seccion_paciente(informe: dict) -> None:
             [
                 ("paciente.nombre", _valor("f_eco_nombre", pac.get("nombre"))),
                 ("paciente.edad", _valor("f_eco_edad", pac.get("edad"))),
-                ("medico", _valor("f_eco_medico", informe.get("medico"))),
             ],
             "f_eco_src_pac",
             ETIQUETAS_PACIENTE,
@@ -67,9 +65,8 @@ def _seccion_paciente(informe: dict) -> None:
         )
         c3, c4 = st.columns([3, 1])
         informe["medico"] = c3.text_input(
-            "Médico solicitante", value=informe.get("medico") or "", key="f_eco_medico",
-            placeholder="PARTICULAR",
-            help=_ayuda(_fuente("medico"), _valor("f_eco_medico", informe.get("medico"))),
+            "Médico que realiza el estudio", value=informe.get("medico") or "", key="f_eco_medico",
+            help="Se eligió antes de grabar; puedes corregirlo aquí.",
         )
         fecha = c4.date_input(
             "Fecha", value=dt.date.fromisoformat(informe["fecha"]), key="f_eco_fecha", format="DD/MM/YYYY",

@@ -7,10 +7,9 @@ from pathlib import Path
 import streamlit as st
 
 from components import en_vivo
-from components.medicos import gestion_voces, selector_medicos
+from components.medicos import gestion_voces, selector_medico
 from lib import state
 from lib.ecografias import FORMATOS, PLANTILLAS, es_ecografia, normalizar_informe
-from lib.hablantes import AYUDA_MODOS, MODOS
 
 AUDIO_DEMO = Path(__file__).resolve().parent.parent / "assets" / "demo-consulta.mp3"
 
@@ -24,16 +23,13 @@ def _arrancar(audio_bytes: bytes, filename: str, audio_id: str | None = None) ->
     st.rerun()
 
 
-def _guardar_modo() -> None:
-    st.session_state[state.CLAVE_MODO] = st.session_state["w_modo"]
-
-
 def _guardar_formato() -> None:
     st.session_state[state.CLAVE_FORMATO] = st.session_state["w_formato"]
 
 
 def _selector_formato() -> None:
-    # Misma copia a clave propia que el modo (ver _selector_modo).
+    # El widget se copia a una clave propia porque Streamlit olvida el valor de
+    # los widgets que no se dibujan, y este solo existe en la pantalla inicial.
     st.session_state["w_formato"] = state.formato()
     st.selectbox(
         "Formato de salida",
@@ -45,22 +41,6 @@ def _selector_formato() -> None:
     )
 
 
-def _selector_modo() -> None:
-    # El widget se copia a una clave propia porque Streamlit olvida el valor de
-    # los widgets que no se dibujan, y este solo existe en la pantalla inicial.
-    st.session_state["w_modo"] = state.modo_hablantes()
-    modo = st.segmented_control(
-        "Participantes",
-        options=list(MODOS),
-        format_func=MODOS.get,
-        key="w_modo",
-        required=True,
-        on_change=_guardar_modo,
-        width="stretch",
-    )
-    st.caption(AYUDA_MODOS[modo])
-
-
 def _vista_previa() -> None:
     """El formato elegido, vacío: cambia en cuanto se elige otro en el selector."""
     formato = state.formato()
@@ -68,8 +48,9 @@ def _vista_previa() -> None:
         if es_ecografia(formato):
             from components.informe_eco import vista_informe  # import local: evita el ciclo
 
-            vista_informe(normalizar_informe(formato, {}), set(), f"{PLANTILLAS[formato].nombre} · vista previa")
-            st.caption("Mientras se graba, lo dictado va reemplazando los espacios en ámbar.")
+            vista_informe(state.con_medico(normalizar_informe(formato, {})), set(), f"{PLANTILLAS[formato].nombre} · vista previa")
+            st.caption("Mientras se graba, lo dictado va reemplazando los espacios en ámbar. "
+                       "Un dato ya registrado solo cambia si dices «modificar», por ejemplo: «modificar colédoco cinco».")
         else:
             st.markdown("**📄 Historia clínica · vista previa**")
             st.markdown(
@@ -88,9 +69,8 @@ def render_idle() -> None:
             "🩺 Presiona el micrófono para grabar la consulta o el dictado de la ecografía.</p>",
             unsafe_allow_html=True,
         )
-        selector_medicos()
+        selector_medico()
         _selector_formato()
-        _selector_modo()
         en_vivo.grabador()
         if en_vivo.sesion() is None:
             st.markdown(

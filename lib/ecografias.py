@@ -13,12 +13,12 @@ Un informe es un dict:
 
     {"plantilla": "abdomen",
      "paciente": {"nombre": str, "edad": int | None},
-     "medico": str,               # médico solicitante; vacío = PARTICULAR
+     "medico": str,               # médico que realiza el estudio (se elige, no se dicta)
      "fecha": "2026-10-04",
      "secciones": {"higado": "línea 1\\nlínea 2", ...},
      "conclusion": [str, ...]}
 
-Las fuentes usan las rutas `paciente.nombre`, `medico`, `secciones.higado`,
+Las fuentes usan las rutas `paciente.nombre`, `secciones.higado`,
 `conclusion[0]`, igual que en la historia clínica (ver lib/fuentes.py).
 Sin dependencias de Streamlit: lo usan también las pruebas.
 """
@@ -305,8 +305,33 @@ def _rellenar(texto: str, valores: dict[str, str]) -> str:
     return _MARCADOR.sub(lambda m: valores.get(m[1]) or PENDIENTE, texto)
 
 
-def aplicar_cambios(formato: str, estado: dict[str, Any], cambios: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+def registrados(estado: dict[str, Any]) -> dict[str, Any]:
+    """Cada dato ya registrado por su clave: 'paciente.nombre', 'medidas.bazo.longitud',
+    'hallazgos.higado', 'conclusion'. Son las claves que acepta `aplicar_cambios(fijos=...)`."""
+    pac = estado.get("paciente") or {}
+    datos = {
+        "paciente.nombre": pac.get("nombre"),
+        "paciente.edad": pac.get("edad"),
+        **{f"medidas.{k}": v for k, v in (estado.get("medidas") or {}).items()},
+        **{f"hallazgos.{k}": v for k, v in (estado.get("hallazgos") or {}).items()},
+        "conclusion": tuple(estado.get("conclusion") or ()),
+    }
+    return {k: v for k, v in datos.items() if v not in (None, "", ())}
+
+
+def aplicar_cambios(
+    formato: str,
+    estado: dict[str, Any],
+    cambios: dict[str, Any],
+    fijos: set[str] | frozenset[str] = frozenset(),
+    ignorados: list[str] | None = None,
+) -> tuple[dict[str, Any], list[str]]:
     """Aplica lo que devolvió el modelo al estado del informe.
+
+    Args:
+        fijos: claves de `registrados` que no se pueden cambiar ni borrar (en
+            vivo, un dato ya registrado solo cambia si el médico dice
+            «modificar»). Lo que se intentó cambiar se anota en `ignorados`.
 
     Returns:
         (estado nuevo, rutas que tocó), con las rutas de las fuentes:
@@ -319,27 +344,38 @@ def aplicar_cambios(formato: str, estado: dict[str, Any], cambios: dict[str, Any
     cambios = cambios if isinstance(cambios, dict) else {}
     nuevo = copy.deepcopy(estado)
     tocadas: list[str] = []
+    antes = registrados(estado)
+    ignorados = [] if ignorados is None else ignorados
+
+    def bloqueado(clave: str, valor: Any) -> bool:
+        if clave in fijos and valor != antes.get(clave):
+            ignorados.append(clave)
+            return True
+        return False
 
     pac = cambios.get("paciente") if isinstance(cambios.get("paciente"), dict) else {}
-    if str(pac.get("nombre") or "").strip():
-        nuevo["paciente"]["nombre"] = str(pac["nombre"]).strip()
+    nombre = str(pac.get("nombre") or "").strip()
+    if nombre and not bloqueado("paciente.nombre", nombre):
+        nuevo["paciente"]["nombre"] = nombre
         tocadas.append("paciente.nombre")
     try:
-        if pac.get("edad") not in (None, ""):
-            nuevo["paciente"]["edad"] = int(pac["edad"])
-            tocadas.append("paciente.edad")
+        edad = int(pac["edad"]) if pac.get("edad") not in (None, "") else None
     except (TypeError, ValueError):
-        pass
-    if str(cambios.get("medico") or "").strip():
-        nuevo["medico"] = str(cambios["medico"]).strip()
-        tocadas.append("medico")
+        edad = None
+    if edad is not None and not bloqueado("paciente.edad", edad):
+        nuevo["paciente"]["edad"] = edad
+        tocadas.append("paciente.edad")
 
     medidas = cambios.get("medidas") if isinstance(cambios.get("medidas"), dict) else {}
     for ruta, valor in medidas.items():
         if ruta not in rutas_espacio:
             continue
         valor = _UNIDAD_FINAL.sub("", str(valor or "").strip()).strip()
-        if valor and valor != PENDIENTE:
+        if valor == PENDIENTE:
+            valor = ""
+        if bloqueado(f"medidas.{ruta}", valor or None):
+            continue
+        if valor:
             nuevo["medidas"][ruta] = valor
         else:  # "" borra una medida (el médico se corrigió)
             nuevo["medidas"].pop(ruta, None)
@@ -351,7 +387,11 @@ def aplicar_cambios(formato: str, estado: dict[str, Any], cambios: dict[str, Any
             continue
         seccion, normal = por_parrafo[clave]
         texto = _texto_seccion(texto, seccion)
-        if texto and texto != normal:
+        if texto == normal:
+            texto = ""
+        if bloqueado(f"hallazgos.{clave}", texto or None):
+            continue
+        if texto:
             nuevo["hallazgos"][clave] = texto
         else:  # "" o el texto normal: el párrafo vuelve a lo normal
             nuevo["hallazgos"].pop(clave, None)
@@ -362,7 +402,7 @@ def aplicar_cambios(formato: str, estado: dict[str, Any], cambios: dict[str, Any
             tocadas.append(f"secciones.{clave}")
 
     conclusion = [str(c).strip() for c in cambios.get("conclusion") or [] if str(c).strip()]
-    if conclusion:
+    if conclusion and not bloqueado("conclusion", tuple(conclusion)):
         nuevo["conclusion"] = conclusion
         tocadas += [f"conclusion[{i}]" for i in range(len(conclusion))]
     return nuevo, list(dict.fromkeys(tocadas))
@@ -409,10 +449,6 @@ def esquema_cambios(formato: str, conclusion_propuesta: bool) -> dict[str, Any]:
                     "nombre": {"type": "string", "description": "Nombre completo del paciente, si se dicta."},
                     "edad": {"anyOf": [{"type": "integer"}, {"type": "null"}], "description": "Edad en años."},
                 },
-            },
-            "medico": {
-                "type": "string",
-                "description": "Médico que solicita el examen, solo si se menciona, con su título (Dr., Dra.).",
             },
             "medidas": {
                 "type": "object",

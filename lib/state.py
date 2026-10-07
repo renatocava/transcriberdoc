@@ -9,8 +9,8 @@ from typing import Any
 
 import streamlit as st
 
-from lib.ecografias import FORMATO_INICIAL
-from lib.hablantes import UNO
+from lib.ecografias import FORMATO_INICIAL, es_ecografia
+from lib.hablantes import AUTO, UNO
 
 IDLE = "idle"
 PROCESSING = "processing"
@@ -63,30 +63,36 @@ _DEFECTOS: dict[str, Any] = {
 }
 
 
-#: Modo de hablantes elegido antes de grabar. Vive fuera de `_DEFECTOS` para
-#: que se mantenga entre una consulta y la siguiente.
-CLAVE_MODO = "modo_hablantes"
-
-
 def init_state() -> None:
     for clave, valor in _DEFECTOS.items():
         st.session_state.setdefault(clave, copy.deepcopy(valor))
-    st.session_state.setdefault(CLAVE_MODO, UNO)
     st.session_state.setdefault(CLAVE_MEDICOS, [])
+    st.session_state.setdefault(CLAVE_MEDICO, "")
     st.session_state.setdefault(CLAVE_FORMATO, FORMATO_INICIAL)
 
 
 def modo_hablantes() -> str:
-    return st.session_state.get(CLAVE_MODO, UNO)
+    """Quién habla, según el formato: la ecografía se dicta (todo es del médico);
+    en la consulta se detectan las voces al procesar el audio."""
+    return UNO if es_ecografia(formato()) else AUTO
 
 
-#: Ids de los médicos (voces registradas) presentes en la consulta. Como el
-#: modo, se mantiene entre consultas.
+#: Ids de los médicos (voces registradas) presentes en la consulta, para
+#: reconocerlos por su voz. Se mantiene entre consultas.
 CLAVE_MEDICOS = "medicos_consulta"
 
 
 def medicos_consulta() -> list[str]:
     return list(st.session_state.get(CLAVE_MEDICOS, []))
+
+
+#: Nombre del médico que realiza el estudio: va en la línea MÉDICO del informe
+#: ecográfico. Se elige antes de grabar y se mantiene entre consultas.
+CLAVE_MEDICO = "medico_estudio"
+
+
+def medico() -> str:
+    return st.session_state.get(CLAVE_MEDICO, "")
 
 
 #: Formato de salida elegido antes de grabar: historia clínica o una de las
@@ -141,9 +147,21 @@ def ensure_uids(historia: dict[str, Any]) -> dict[str, Any]:
     return historia
 
 
+def con_medico(informe: dict[str, Any]) -> dict[str, Any]:
+    """El informe ecográfico con el médico elegido en la línea MÉDICO.
+
+    El médico no se dicta: si ya hay un informe en revisión (se re-extrae), se
+    conserva el que tenga, que pudo corregirse a mano.
+    """
+    if not es_ecografia((informe or {}).get("plantilla")):
+        return informe
+    anterior = (st.session_state.get("historia") or {}).get("medico")
+    return {**informe, "medico": anterior or medico()}
+
+
 def recien_extraida(historia: dict[str, Any]) -> None:
     """Guarda la historia recién extraída y su copia, para detectar ediciones manuales."""
-    st.session_state["historia"] = ensure_uids(historia)
+    st.session_state["historia"] = ensure_uids(con_medico(historia))
     st.session_state["historia_extraida"] = strip_uids(st.session_state["historia"])
 
 

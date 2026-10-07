@@ -44,11 +44,12 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
 
 ## Uso en la demo
 
-1. **Grabar** — antes de empezar, elige el **Formato de salida** (por defecto,
-   ecografía de abdomen completo) y **Participantes**: *Solo el médico* (dictado,
-   el valor por defecto), *Automático* (detecta cuántas voces hay), *Médico y
-   paciente* o *Con acompañante*. Si hay voces registradas, elige también **Médico(s) en la
-   consulta** (hasta 4). Las elecciones se recuerdan entre consultas. Luego
+1. **Grabar** — antes de empezar, elige el **Médico que realiza el estudio** (un
+   médico con voz registrada u *Otro*, escribiendo su nombre; va en la línea MÉDICO
+   del informe) y el **Formato de salida** (por defecto, ecografía de abdomen
+   completo). Las elecciones se recuerdan entre consultas. Los participantes no se
+   eligen: la ecografía se toma como dictado del médico y, en la consulta, las
+   voces se detectan solas al procesar el audio. Luego
    "Iniciar grabación" / "Detener grabación".
 
    **En vivo:** mientras se graba, el navegador transcribe en tiempo real con
@@ -60,10 +61,14 @@ También se puede activar con la variable de entorno `USE_MOCK=true`.
    cierra y el informe se actualiza a la derecha con un modelo rápido
    (`claude-haiku-4-5`). En ecografía la actualización es incremental: Haiku recibe
    lo ya registrado y solo las frases nuevas, y devuelve solo lo que cambia (1–2 s
-   por frase). La historia clínica se vuelve a llenar entera. Al detener, con *Solo el médico* se hace
-   una última extracción con el modelo principal y se pasa directo a revisar
-   (unos 11 s). La transcripción en tiempo real no separa voces: con varias, o si
-   faltó alguna frase, se transcribe el audio completo con diarización como antes.
+   por frase). Un dato ya registrado queda fijo: solo cambia si el médico dice
+   *modificar* (o corregir, cambiar), por ejemplo «modificar colédoco cinco». Si una
+   pausa corta una medida («cuatro punto» … «cinco»), el trozo se une a la frase
+   anterior. La historia clínica se vuelve a llenar entera. Al detener una
+   ecografía, el modelo principal revisa todo el dictado y solo completa lo que
+   falte (la conclusión propuesta, alguna medida no registrada) sin cambiar lo ya
+   registrado, y se pasa directo a revisar (unos 11 s). En la consulta, o si faltó
+   alguna frase, se transcribe el audio completo con diarización para separar las voces.
    Con `USE_MOCK` el texto en vivo se simula.
 
    **Voces de médicos:** en el expander del mismo nombre se graba (o sube en WAV)

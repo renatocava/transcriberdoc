@@ -103,7 +103,7 @@ def generar_docx(informe: dict[str, Any]) -> bytes:
     fecha = dt.date.fromisoformat(informe["fecha"]) if informe.get("fecha") else dt.date.today()
     _rellenar(parrafos, "NOMBRES", (pac.get("nombre") or "").upper())
     _rellenar(parrafos, "EDAD", f"{edad} AÑOS" if edad not in (None, "") else "AÑOS")
-    _rellenar(parrafos, "MEDICO", (informe.get("medico") or "").upper() or "PARTICULAR")
+    _rellenar(parrafos, "MEDICO", (informe.get("medico") or "").upper())
     _rellenar(parrafos, "EXAMEN", plantilla.examen)
     _rellenar(parrafos, "FECHA", fecha_larga(fecha))
 

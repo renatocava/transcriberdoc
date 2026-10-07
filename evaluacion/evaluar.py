@@ -276,8 +276,7 @@ def calificar(caso: dict, informe: dict, fuentes: dict, cliente_juez, dictado: s
     paciente_ok = (
         _norm(pac.get("nombre")) == _norm(caso["paciente"]["nombre"])
         and pac.get("edad") == caso["paciente"]["edad"]
-        and all(t in _norm(informe.get("medico")) for t in _norm(caso["medico_solicitante"]).split())
-    )
+    )  # el médico ya no se dicta: se elige antes de grabar
     grade: dict[str, Any] = {
         "sin_invento": float(inventadas == 0 and not cambios_malos),
         "medidas": acertadas / esperadas_total if esperadas_total else 1.0,

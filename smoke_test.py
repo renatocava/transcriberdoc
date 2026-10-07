@@ -159,6 +159,24 @@ def probar_en_vivo() -> None:
     s.agregar_turnos([turno(0, "Uno."), turno(2, "Tres.")])  # la 1 nunca llegó: hay que procesar el audio
     assert s.utterances()[0]["speaker"] == "Dr. Cava"
     assert s.terminar(3) is None
+
+    # Una pausa en medio de una medida corta la frase: el trozo se une a la anterior.
+    from lib.en_vivo import unir_cortes
+
+    def u(texto: str, inicio: float, fin: float) -> dict:
+        return {"speaker": "A", "text": texto, "start": inicio, "end": fin}
+
+    unidas = unir_cortes([
+        u("Colédoco mide 4.", 0, 2), u("5 milímetros.", 2.5, 3.5),  # número cortado
+        u("Vesícula mide 78 por", 5, 7), u("32.", 7.6, 8),  # conector al final
+        u("Bazo 98.", 9, 10), u("Páncreas 18.", 10.5, 11.5),  # frase nueva: no se une
+        u("Riñón derecho 102", 12, 13), u("por 45", 20, 21),  # pausa larga: no se une
+    ])
+    assert [x["text"] for x in unidas] == [
+        "Colédoco mide 4. 5 milímetros.", "Vesícula mide 78 por 32.", "Bazo 98.", "Páncreas 18.",
+        "Riñón derecho 102", "por 45",
+    ], unidas
+    assert unidas[0]["end"] == 3.5
     print("[7/7] Grabación en vivo OK")
 
 
@@ -202,7 +220,16 @@ def probar_ecografias() -> None:
     # Correcciones: "" borra la medida y devuelve el párrafo a lo normal.
     estado, _ = eco.aplicar_cambios("mama", estado, {"medidas": {"mama_izq.conductos": ""}, "hallazgos": {"mama_izq.1": ""}})
     assert eco.componer("mama", estado)["secciones"]["mama_izq"] == eco.PLANTILLAS["mama"].secciones[1].normal
-    vp = eco.componer("vesicoprostatica", {**eco.estado_vacio(), "medidas": {"volumenes.rpm": "12"}})
+    # Datos fijos (en vivo, sin «modificar»): no se cambian ni se borran; lo nuevo sí se registra.
+    estado, _ = eco.aplicar_cambios("abdomen", eco.estado_vacio(), {"medidas": {"coledoco.calibre": "4.5"}})
+    assert eco.registrados(estado) == {"medidas.coledoco.calibre": "4.5"}
+    ignorados: list[str] = []
+    estado, tocadas = eco.aplicar_cambios("abdomen", estado, {
+        "medidas": {"coledoco.calibre": "", "bazo.longitud": "98"}, "hallazgos": {"higado.1": "HÍGADO GRASO."},
+    }, fijos={"medidas.coledoco.calibre"}, ignorados=ignorados)
+    assert ignorados == ["medidas.coledoco.calibre"] and estado["medidas"] == {"coledoco.calibre": "4.5", "bazo.longitud": "98"}
+    assert tocadas == ["secciones.bazo", "secciones.higado"], tocadas
+    vp =eco.componer("vesicoprostatica", {**eco.estado_vacio(), "medidas": {"volumenes.rpm": "12"}})
     assert vp["conclusion"][1] == "VEJIGA CON RPM DE 12 %"  # el RPM dictado completa la conclusión normal
     claves = eco.esquema_cambios("mama", False)["properties"]["hallazgos"]["properties"]
     assert list(claves) == ["mama_der.1", "mama_der.2", "mama_der.3", "mama_izq.1", "mama_izq.2", "mama_izq.3"]
