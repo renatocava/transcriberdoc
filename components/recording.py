@@ -2,16 +2,12 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 import streamlit as st
 
 from components import en_vivo
 from components.medicos import gestion_voces, selector_medico
 from lib import state
 from lib.ecografias import FORMATOS, PLANTILLAS, es_ecografia, normalizar_informe
-
-AUDIO_DEMO = Path(__file__).resolve().parent.parent / "assets" / "demo-consulta.mp3"
 
 
 def _arrancar(audio_bytes: bytes, filename: str, audio_id: str | None = None) -> None:
@@ -86,17 +82,9 @@ def render_idle() -> None:
 
         gestion_voces()
 
-        with st.expander("Opciones de demo"):
-            if AUDIO_DEMO.exists():
-                st.audio(str(AUDIO_DEMO), format="audio/mpeg")
-            if st.button("Usar audio pre-grabado", use_container_width=True):
-                if AUDIO_DEMO.exists():
-                    _arrancar(AUDIO_DEMO.read_bytes(), AUDIO_DEMO.name, f"demo::{AUDIO_DEMO.name}")
-                else:
-                    st.error(f"No se encontró el archivo `assets/{AUDIO_DEMO.name}`.")
-
+        with st.expander("Subir un archivo de audio"):
             subido = st.file_uploader(
-                "O sube un archivo de audio",
+                "Sube un archivo de audio",
                 type=["mp3", "wav", "m4a", "webm", "mp4", "ogg"],
                 label_visibility="collapsed",
             )
