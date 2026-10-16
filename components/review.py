@@ -10,7 +10,7 @@ import streamlit as st
 from lib import cie10, state
 from lib.ecografias import CONSULTA, FORMATOS, es_ecografia
 from lib.extraction import extraer
-from lib.fuentes import SEP, de_texto, editado
+from lib.fuentes import DESCARTADAS, MOTIVOS, SEP, de_texto, descartadas_de, editado
 from lib.hablantes import ROLES, aviso, etiqueta, hablantes
 
 TIPOS_DX = ["presuntivo", "definitivo", "diferencial"]
@@ -138,6 +138,8 @@ def _indice_inverso(
             inverso.setdefault(i, []).append(nombre)
 
     for ruta, fuente in st.session_state.get("fuentes", {}).items():
+        if ruta == DESCARTADAS:
+            continue
         if SEP in ruta:
             base, texto = ruta.split(SEP, 1)
             anotar(fuente["ids"], f"{listas.get(base, base)}: {texto}")
@@ -317,6 +319,7 @@ def render_transcript(
     mapping = st.session_state["speaker_mapping"]
     foco = set(st.session_state.get("foco", []))
     usos = _indice_inverso(historia, etiquetas, listas)
+    ajenas = descartadas_de(st.session_state.get("fuentes", {}))
     with st.container(height=560, border=False):
         for i, u in enumerate(utterances):
             voz = u.get("speaker", "")
@@ -335,10 +338,14 @@ def render_transcript(
                 )
                 if i in foco:
                     st.info(texto)
+                elif i in ajenas:
+                    st.markdown(f":gray[{texto}]")
                 else:
                     st.markdown(texto)
                 if usos.get(i):
                     st.caption("📎 " + " · ".join(usos[i]))
+                elif i in ajenas:
+                    st.caption(f"🚫 No se usó en el informe: {MOTIVOS.get(ajenas[i], MOTIVOS['otro'])}")
 
 
 def seccion_transcripcion(

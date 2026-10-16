@@ -106,6 +106,67 @@ def vincular(
     return mapa
 
 
+#: Clave del mapa con las intervenciones que no se usaron en el informe:
+#: `{"ids": [índices 0-based], "motivos": [motivo de cada una]}`.
+DESCARTADAS = "_descartadas"
+
+#: Por qué una intervención no va al informe -> cómo se muestra en la revisión.
+MOTIVOS = {
+    "indicacion_paciente": "indicación al paciente",
+    "conversacion": "conversación ajena al estudio",
+    "otra_persona": "habla de otra persona",
+    "duda_descartada": "duda que el médico descartó",
+    "otro": "ajeno al informe",
+}
+
+
+def esquema_descartadas() -> dict[str, Any]:
+    """Propiedad `descartadas` que se agrega al input_schema del tool."""
+    return {
+        "type": "array",
+        "description": (
+            "Intervenciones que NO aportan nada al informe porque no describen el estudio de este "
+            "paciente (vacío si todas aportan). No incluyas las que solo ordenan el dictado "
+            "(«ahora el riñón»)."
+        ),
+        "items": {
+            "type": "object",
+            "properties": {
+                "intervencion": {"type": "integer", "description": "Número [n] de la intervención."},
+                "motivo": {"type": "string", "enum": list(MOTIVOS)},
+            },
+            "required": ["intervencion", "motivo"],
+        },
+    }
+
+
+def anotar_descartadas(
+    mapa: dict[str, dict[str, Any]], descartadas: list[dict[str, Any]], n_utterances: int
+) -> None:
+    """Agrega al mapa de fuentes las intervenciones descartadas por el modelo.
+
+    Una intervención que respalda algún dato no se marca como descartada:
+    si el modelo la usó, cuenta lo que quedó en el informe.
+    """
+    usadas = {i for ruta, f in mapa.items() if ruta != DESCARTADAS for i in f.get("ids", [])}
+    motivos: dict[int, str] = {}
+    for d in descartadas or []:
+        n = d.get("intervencion") if isinstance(d, dict) else None
+        if isinstance(n, int) and 1 <= n <= n_utterances and n - 1 not in usadas:
+            motivo = d.get("motivo")
+            motivos[n - 1] = motivo if motivo in MOTIVOS else "otro"
+    mapa.pop(DESCARTADAS, None)
+    if motivos:
+        ids = sorted(motivos)
+        mapa[DESCARTADAS] = {"ids": ids, "motivos": [motivos[i] for i in ids]}
+
+
+def descartadas_de(mapa: dict[str, dict[str, Any]]) -> dict[int, str]:
+    """Intervención (0-based) -> motivo, de las que no se usaron en el informe."""
+    d = mapa.get(DESCARTADAS) or {}
+    return dict(zip(d.get("ids", []), d.get("motivos", [])))
+
+
 def de_texto(mapa: dict[str, dict[str, Any]], base: str, texto: str) -> dict[str, Any] | None:
     """Fuente de un ítem de lista de texto (se busca por su contenido)."""
     return mapa.get(f"{base}{SEP}{texto}")

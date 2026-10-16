@@ -7,7 +7,7 @@ from typing import Any
 
 from lib import cie10, ecografias
 from lib.config import api_key, usar_mock
-from lib.fuentes import esquema_fuentes, vincular
+from lib.fuentes import anotar_descartadas, esquema_descartadas, esquema_fuentes, vincular
 from lib.hablantes import es_dictado, etiqueta
 from lib.mock_data import fuentes_mock, historia_mock, informe_mock
 from lib.schema import historia_input_schema, normalizar_historia
@@ -58,11 +58,18 @@ SYSTEM_ECO = (
     "seguidos sin nada entre ellos («5 2», «cinco dos», «11 4»), es un decimal (5.2, 11.4): 52 "
     "se dictaría «cincuenta y dos». (6) Los hallazgos los da el Doctor; lo que "
     "pregunta o repite el asistente solo vale si el Doctor lo confirma. (7) Paciente: nombre y "
-    "edad en años si se dictan.{fuentes}"
+    "edad en años si se dictan. (8) Durante el estudio el médico también habla de cosas que NO "
+    "van al informe: indicaciones al paciente («respire hondo y aguante cinco segundos», «gírese "
+    "a la izquierda»), conversación con el paciente o el personal, llamadas, comentarios sobre "
+    "otras personas (familiares, otros pacientes) y dudas que él mismo descarta («¿será un "
+    "quiste?… no, es un vaso»). De ellas no sale ningún dato: ni medidas (un número de una "
+    "indicación no es una medida), ni hallazgos, ni nombre o edad, ni conclusión, ni nota. "
+    "Anótalas en `descartadas` con su motivo. La `nota` solo se llena si el médico la dicta "
+    "como nota o comentario del informe.{fuentes}"
 )
 
 FUENTES_ECO = (
-    " (8) Cada intervención lleva un número [n]. En `fuentes` registra, para cada dato que "
+    " (9) Cada intervención lleva un número [n]. En `fuentes` registra, para cada dato que "
     "llenes, los números de las intervenciones de donde sale. Rutas: 'paciente.nombre', "
     "'paciente.edad', 'nota', 'secciones.<clave>' (la sección de la medida, del hallazgo o de "
     "la mención como normal; por ejemplo 'secciones.{ejemplo}') y 'conclusion[0]'. Si el "
@@ -186,6 +193,8 @@ def extraer_cambios_ecografia(
 
     Returns:
         (cambios para `ecografias.aplicar_cambios`, fuentes como las da el modelo).
+        Los cambios traen en `descartadas` las intervenciones ajenas al
+        informe, con su número [n] (ver `fuentes.anotar_descartadas`).
     """
     plantilla = ecografias.PLANTILLAS[formato]
     dialogo = formatear_dialogo(nuevas, mapping, numerar=True, desde=inicio + 1)
@@ -201,6 +210,9 @@ def extraer_cambios_ecografia(
     partes.append(f"Intervenciones nuevas (regístralas):\n{dialogo}" if partes else f"Transcripción del estudio:\n\n{dialogo}")
 
     esquema = ecografias.esquema_cambios(formato, conclusion_propuesta)
+    # Primero las descartadas: el modelo separa lo ajeno antes de registrar.
+    esquema["properties"] = {"descartadas": esquema_descartadas(), **esquema["properties"]}
+    esquema["required"] = ["descartadas", *esquema["required"]]
     if con_fuentes:
         esquema["properties"]["fuentes"] = esquema_fuentes()
         esquema["required"] = [*esquema["required"], "fuentes"]
@@ -231,6 +243,7 @@ def extraer_informe_ecografico(
     utterances: list[dict[str, Any]], mapping: dict[str, str], formato: str, modelo: str | None = None
 ) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
     """Informe ecográfico del formato dado y el mapa de fuentes de cada dato."""
+    descartadas: list[dict[str, Any]] = []
     if usar_mock():
         datos, fuentes = informe_mock(formato)
         informe = ecografias.normalizar_informe(formato, datos)
@@ -238,9 +251,12 @@ def extraer_informe_ecografico(
         cambios, fuentes = extraer_cambios_ecografia(
             formato, ecografias.estado_vacio(), [], utterances, mapping, 0, modelo
         )
+        descartadas = cambios.get("descartadas") or []
         estado, _ = ecografias.aplicar_cambios(formato, ecografias.estado_vacio(), cambios)
         informe = ecografias.componer(formato, estado)
-    return informe, vincular(informe, fuentes, len(utterances))
+    mapa = vincular(informe, fuentes, len(utterances))
+    anotar_descartadas(mapa, descartadas, len(utterances))
+    return informe, mapa
 
 
 def extraer_historia_clinica(

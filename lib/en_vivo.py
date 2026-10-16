@@ -29,7 +29,7 @@ from typing import Any
 from lib import extraction
 from lib.config import usar_mock
 from lib.ecografias import PLANTILLAS, aplicar_cambios, componer, es_ecografia, estado_vacio, registrados
-from lib.fuentes import vincular
+from lib.fuentes import anotar_descartadas, vincular
 from lib.hablantes import mapping_inicial
 
 #: Frases ya registradas que acompañan a las nuevas, para entender referencias
@@ -142,6 +142,7 @@ class SesionEnVivo:
         self._estado = estado_vacio()
         self._fuentes: dict[str, set[int]] = {}  # ruta -> números [n] (desde 1)
         self._origen: dict[str, int] = {}  # clave de `registrados` -> frase (desde 0) que lo dio
+        self._descartadas: dict[int, str] = {}  # número [n] (desde 1) -> motivo: frases ajenas al informe
 
         threading.Thread(target=self._bucle, daemon=True, name="en-vivo-extrae").start()
 
@@ -237,6 +238,7 @@ class SesionEnVivo:
             formato, modo, nombres = self.formato, self.modo, self.conocidos[0]
         if formato != self.formato_extraido:  # formato nuevo: se registra todo de cero
             self._estado, self._fuentes, self._origen, self._textos = estado_vacio(), {}, {}, []
+            self._descartadas = {}
         textos = [u["text"] for u in utterances]
         # Desde la primera frase distinta de lo ya registrado: una nueva, o la
         # última si se le unió un trozo («mide 4.» + «5 milímetros»).
@@ -263,7 +265,8 @@ class SesionEnVivo:
         )
         _log(f"{self.id[:8]} informe +{len(nuevas)} frase(s) en {time.monotonic() - t0:.1f} s (incremental) · "
              f"{len(tocadas)} dato(s)" + (" · modificar" if modificar else "")
-             + (f" · sin cambiar (no se dijo «modificar»): {', '.join(ignorados)}" if ignorados else ""))
+             + (f" · sin cambiar (no se dijo «modificar»): {', '.join(ignorados)}" if ignorados else "")
+             + (f" · ajenas al informe: {len(cambios['descartadas'])}" if cambios.get("descartadas") else ""))
 
     def _registrar(
         self,
@@ -296,8 +299,14 @@ class SesionEnVivo:
             if sin_cita and not any(f.get("campo") == ruta for f in citadas):
                 self._fuentes.setdefault(ruta, set()).update(sin_cita)
         informe = componer(formato, estado)
+        for d in cambios.get("descartadas") or []:
+            if isinstance(d, dict) and isinstance(d.get("intervencion"), int):
+                self._descartadas[d["intervencion"]] = str(d.get("motivo") or "")
         fuentes = vincular(
             informe, [{"campo": c, "fragmentos": sorted(ids)} for c, ids in self._fuentes.items()], len(utterances)
+        )
+        anotar_descartadas(
+            fuentes, [{"intervencion": n, "motivo": m} for n, m in self._descartadas.items()], len(utterances)
         )
         with self._lock:
             self._estado = estado
