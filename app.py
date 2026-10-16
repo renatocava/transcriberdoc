@@ -43,7 +43,12 @@ def render_saved() -> None:
             st.success(f"✓ Consulta guardada en la historia clínica de {paciente}")
         st.caption("El registro quedó disponible para el equipo asistencial.")
         st.write("")
-        if st.button("Nueva consulta", type="secondary" if eco else "primary", use_container_width=True):
+        c_atras, c_nueva = st.columns(2)
+        # El informe sigue en session_state: se vuelve a la revisión con lo editado.
+        if c_atras.button("← Volver a editar", use_container_width=True):
+            state.set_stage(state.REVIEW)
+            st.rerun()
+        if c_nueva.button("Nueva consulta", type="secondary" if eco else "primary", use_container_width=True):
             state.reset()
             st.rerun()
 

@@ -147,6 +147,19 @@ def _conclusion(informe: dict) -> None:
             )
 
 
+def _nota(informe: dict) -> None:
+    with st.container(border=True):
+        c_tit, c_src = st.columns([12, 1], vertical_alignment="center")
+        c_tit.markdown("**NOTA** &nbsp; :gray[opcional · texto libre tras la conclusión]")
+        nota = _valor("f_eco_nota", informe.get("nota"))
+        _boton_fuente(c_src, _fuente("nota"), nota or None, "f_eco_src_nota")
+        informe["nota"] = st.text_area(
+            "Nota", value=informe.get("nota") or "", key="f_eco_nota", label_visibility="collapsed",
+            placeholder="Ej: Se sugiere control ecográfico en 6 meses.",
+            help="Sale en el informe después de la conclusión, sin viñeta. También se puede dictar: «nota: …».",
+        ).strip()
+
+
 def boton_descarga(informe: dict, key: str, primario: bool = False, texto: str = "⬇️ Descargar informe (.docx)") -> None:
     try:
         datos = generar_docx(informe)
@@ -207,6 +220,7 @@ def _render_formulario(informe: dict, plantilla: Plantilla) -> None:
     _seccion_paciente(informe)
     _secciones(informe, plantilla)
     _conclusion(informe)
+    _nota(informe)
     st.button("✓ Ver informe", key="f_eco_ver", type="primary", use_container_width=True,
               on_click=st.session_state.update, kwargs={CLAVE_EDITAR: False})
 
@@ -214,7 +228,7 @@ def _render_formulario(informe: dict, plantilla: Plantilla) -> None:
 def _render_conversacion(informe: dict, plantilla: Plantilla) -> None:
     dictado = es_dictado(st.session_state["speaker_mapping"])
     st.markdown(f"**💬 {'Dictado del médico' if dictado else 'Conversación'}**")
-    render_transcript(informe, _etiquetas(plantilla), {"conclusion": "Conclusión"})
+    render_transcript(informe, _etiquetas(plantilla), {"conclusion": "Conclusión", "nota": "Nota"})
 
 
 def render_informe(informe: dict) -> None:

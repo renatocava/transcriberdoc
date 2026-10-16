@@ -54,7 +54,9 @@ SYSTEM_ECO = (
     "(«modificar colédoco cinco»), o se corrige en la misma frase («no, perdón, ciento dos»), "
     "registra el valor nuevo. Copia cada número tal como se dictó, con sus decimales: «cuatro "
     "punto cinco» es 4.5, y un número cortado por una pausa («4. 5», «cuatro punto, cinco») es "
-    "un solo número (4.5). (6) Los hallazgos los da el Doctor; lo que "
+    "un solo número (4.5). Si la transcripción perdió el «punto» y quedan dos números "
+    "seguidos sin nada entre ellos («5 2», «cinco dos», «11 4»), es un decimal (5.2, 11.4): 52 "
+    "se dictaría «cincuenta y dos». (6) Los hallazgos los da el Doctor; lo que "
     "pregunta o repite el asistente solo vale si el Doctor lo confirma. (7) Paciente: nombre y "
     "edad en años si se dictan.{fuentes}"
 )
@@ -62,7 +64,7 @@ SYSTEM_ECO = (
 FUENTES_ECO = (
     " (8) Cada intervención lleva un número [n]. En `fuentes` registra, para cada dato que "
     "llenes, los números de las intervenciones de donde sale. Rutas: 'paciente.nombre', "
-    "'paciente.edad', 'secciones.<clave>' (la sección de la medida, del hallazgo o de "
+    "'paciente.edad', 'nota', 'secciones.<clave>' (la sección de la medida, del hallazgo o de "
     "la mención como normal; por ejemplo 'secciones.{ejemplo}') y 'conclusion[0]'. Si el "
     "médico dice algo general («el resto normal»), esa intervención es la fuente de las "
     "secciones que abarca. No pongas fuente a una conclusión que propusiste tú."

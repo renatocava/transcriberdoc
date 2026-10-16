@@ -135,6 +135,13 @@ def generar_docx(informe: dict[str, Any]) -> bytes:
         estilo = _Estilo(primero, None, _rpr(con_texto))
         for texto in informe.get("conclusion") or []:
             estilo.parrafo(primero, [(estilo.texto, sangria + texto.strip())])
+        # La nota va tras la conclusión, sin viñeta, con el formato de un órgano.
+        lineas = [l.strip() for l in (informe.get("nota") or "").split("\n") if l.strip()]
+        if lineas:
+            vacio.parrafo(primero, [])
+            organo.parrafo(primero, [(organo.rotulo, "NOTA: "), (organo.texto, lineas.pop(0))])
+            for texto in lineas:
+                linea.parrafo(primero, [(linea.texto, texto)])
         for p in items:
             _quitar(p)
 

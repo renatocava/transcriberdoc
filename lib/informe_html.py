@@ -98,6 +98,9 @@ def html_informe(informe: dict[str, Any], dictadas: set[str] | frozenset[str] = 
     items = _trozos(base, "\n".join(conclusion)).split("\n")
     partes.append(f"<p{gris}><b>CONCLUSIÓN:</b></p>")
     partes.append(f"<ul{gris}>" + "".join(f"<li>{i}</li>" for i in items if i.strip()) + "</ul>")
+    nota = (informe.get("nota") or "").strip()
+    if nota:
+        partes.append("<p><b>NOTA:</b> " + "<br>".join(_marca(l, "ok") for l in nota.split("\n") if l.strip()) + "</p>")
     partes.append("</div>")
     return ESTILOS + "".join(partes)
 

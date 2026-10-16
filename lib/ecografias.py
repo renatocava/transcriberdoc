@@ -16,10 +16,11 @@ Un informe es un dict:
      "medico": str,               # médico que realiza el estudio (se elige, no se dicta)
      "fecha": "2026-10-04",
      "secciones": {"higado": "línea 1\\nlínea 2", ...},
-     "conclusion": [str, ...]}
+     "conclusion": [str, ...],
+     "nota": str}                 # nota o comentario libre tras la conclusión ("" si no hay)
 
 Las fuentes usan las rutas `paciente.nombre`, `secciones.higado`,
-`conclusion[0]`, igual que en la historia clínica (ver lib/fuentes.py).
+`conclusion[0]`, `nota`, igual que en la historia clínica (ver lib/fuentes.py).
 Sin dependencias de Streamlit: lo usan también las pruebas.
 """
 
@@ -268,6 +269,7 @@ def normalizar_informe(formato: str, datos: dict[str, Any] | None, fecha: dt.dat
             s.clave: _texto_seccion(recibidas.get(s.clave), s) or s.normal for s in plantilla.secciones
         },
         "conclusion": conclusion or list(plantilla.conclusion),
+        "nota": str(datos.get("nota") or "").strip(),
     }
 
 
@@ -298,7 +300,7 @@ def parrafos(seccion: Seccion) -> dict[str, str]:
 
 def estado_vacio() -> dict[str, Any]:
     """Lo registrado de un informe antes de armarlo: aún nada dictado."""
-    return {"paciente": {"nombre": "", "edad": None}, "medico": "", "medidas": {}, "hallazgos": {}, "conclusion": []}
+    return {"paciente": {"nombre": "", "edad": None}, "medico": "", "medidas": {}, "hallazgos": {}, "conclusion": [], "nota": ""}
 
 
 def _rellenar(texto: str, valores: dict[str, str]) -> str:
@@ -307,7 +309,7 @@ def _rellenar(texto: str, valores: dict[str, str]) -> str:
 
 def registrados(estado: dict[str, Any]) -> dict[str, Any]:
     """Cada dato ya registrado por su clave: 'paciente.nombre', 'medidas.bazo.longitud',
-    'hallazgos.higado', 'conclusion'. Son las claves que acepta `aplicar_cambios(fijos=...)`."""
+    'hallazgos.higado', 'conclusion', 'nota'. Son las claves que acepta `aplicar_cambios(fijos=...)`."""
     pac = estado.get("paciente") or {}
     datos = {
         "paciente.nombre": pac.get("nombre"),
@@ -315,6 +317,7 @@ def registrados(estado: dict[str, Any]) -> dict[str, Any]:
         **{f"medidas.{k}": v for k, v in (estado.get("medidas") or {}).items()},
         **{f"hallazgos.{k}": v for k, v in (estado.get("hallazgos") or {}).items()},
         "conclusion": tuple(estado.get("conclusion") or ()),
+        "nota": estado.get("nota"),
     }
     return {k: v for k, v in datos.items() if v not in (None, "", ())}
 
@@ -405,6 +408,11 @@ def aplicar_cambios(
     if conclusion and not bloqueado("conclusion", tuple(conclusion)):
         nuevo["conclusion"] = conclusion
         tocadas += [f"conclusion[{i}]" for i in range(len(conclusion))]
+
+    nota = str(cambios.get("nota") or "").strip()
+    if nota and not bloqueado("nota", nota):
+        nuevo["nota"] = nota
+        tocadas.append("nota")
     return nuevo, list(dict.fromkeys(tocadas))
 
 
@@ -424,7 +432,7 @@ def componer(formato: str, estado: dict[str, Any], fecha: dt.date | None = None)
     rpm = medidas.get("volumenes.rpm")
     conclusion = estado.get("conclusion") or [c.replace(PENDIENTE, rpm) if rpm else c for c in plantilla.conclusion]
     datos = {"paciente": estado.get("paciente"), "medico": estado.get("medico"), "secciones": secciones,
-             "conclusion": conclusion}
+             "conclusion": conclusion, "nota": estado.get("nota")}
     return normalizar_informe(formato, datos, fecha)
 
 
@@ -507,6 +515,14 @@ def esquema_cambios(formato: str, conclusion_propuesta: bool) -> dict[str, Any]:
                         else "Solo si el médico la dicta; si no, omítela. Conclusión normal: "
                     )
                     + " / ".join(plantilla.conclusion)
+                ),
+            },
+            "nota": {
+                "type": "string",
+                "description": (
+                    "Nota o comentario libre que el médico pide agregar al final del informe, aparte de la "
+                    "conclusión («nota: se sugiere control en seis meses», «comentario: estudio limitado por "
+                    "meteorismo»). Solo si la dicta; nunca la propongas tú."
                 ),
             },
         },

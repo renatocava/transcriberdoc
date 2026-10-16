@@ -12,6 +12,9 @@
   - En cada pausa de la voz cierra la frase (input_audio_buffer.commit); la
     transcripción terminada de cada frase va a Python como un turno.
   - Graba además el audio completo (MediaRecorder), que se envía al detener.
+  - «Pausar» cierra la frase en curso y deja de grabar y transcribir hasta
+    «Reanudar», sin terminar el informe: lo pausado no queda en el audio ni
+    cuenta en los tiempos de las frases.
 
   Mensajes a Python (setComponentValue):
     {evento: "inicio", sesion}
@@ -34,6 +37,9 @@
   button:hover:not(:disabled) { border-color: #0EA5E9; color: #0369A1; }
   button:disabled { opacity: 0.6; cursor: default; }
   button.grabando { background: #FEF2F2; border-color: #F87171; color: #991B1B; }
+  .botones { display: flex; gap: 0.5rem; }
+  .botones #pausa { flex: 0 0 38%; }
+  .pausado .punto { background: #94A3B8; animation: none; }
   .fila { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; font-size: 0.85rem; color: #475569; }
   .punto { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: #DC2626; animation: latido 1.2s infinite; }
   @keyframes latido { 50% { opacity: 0.25; } }
@@ -54,7 +60,10 @@
 </style>
 </head>
 <body>
-<button id="boton">🎙️&nbsp; Iniciar grabación</button>
+<div class="botones">
+  <button id="boton">🎙️&nbsp; Iniciar grabación</button>
+  <button id="pausa" hidden>⏸️&nbsp; Pausar</button>
+</div>
 <div class="fila" id="info" hidden>
   <span class="punto"></span><span id="reloj">00:00</span>
   <div class="nivel"><div id="barra"></div></div>
@@ -78,6 +87,7 @@ let g = null;                    // grabación en curso
 
 const $ = (id) => document.getElementById(id);
 const boton = $("boton");
+const botonPausa = $("pausa");
 
 // ---- Protocolo de componentes de Streamlit (v1), sin dependencias -------------
 function enviar(type, datos) {
@@ -221,6 +231,7 @@ function cerrarFrase() {
 
 // ---- Audio --------------------------------------------------------------------
 function procesar(x, tasaEntrada) {
+  if (g.pausado) return;
   let suma = 0;
   for (let i = 0; i < x.length; i++) suma += x[i] * x[i];
   const rms = Math.sqrt(suma / x.length);
@@ -257,11 +268,13 @@ function simular(textos) {
   let i = 0;
   const siguiente = () => {
     if (!g || g.terminando || i >= textos.length) return;
+    if (g.pausado) { g.simulacion = setTimeout(siguiente, 300); return; }
     const id = "sim" + i, palabras = textos[i].split(" "), f = frase(id), inicio = (Date.now() - g.comienzo) / 1000;
     i++;
     let k = 0;
     const escribir = setInterval(() => {
       if (!g || g.terminando) return clearInterval(escribir);
+      if (g.pausado) return;
       f.texto = palabras.slice(0, ++k).join(" ");
       pintar();
       if (k >= palabras.length) {
@@ -310,6 +323,7 @@ async function iniciar() {
   g = {
     sesion: idSesion(), stream, ctx, proc, rec, trozos: [], comienzo: Date.now(), ws: null, cola: [],
     pos: 0, muestras: 0, inicioFrase: 0, ultimaVoz: 0, huboVoz: false, piso: 0.002, bloques: 0,
+    pausado: false, enPausa: 0, desdePausa: 0,  // ms pausados en total y comienzo de la pausa actual
     frases: new Map(), orden: [], pendientes: [], cerradas: 0, fallidas: 0, terminando: false,
   };
   rec.ondataavailable = (e) => { if (e.data && e.data.size) g.trozos.push(e.data); };
@@ -321,12 +335,14 @@ async function iniciar() {
   else $("estado").textContent = "sin transcripción en vivo";
 
   g.reloj = setInterval(() => {
-    const s = Math.floor((Date.now() - g.comienzo) / 1000);
+    if (g.pausado) return;
+    const s = Math.floor((Date.now() - g.comienzo - g.enPausa) / 1000);
     $("reloj").textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
   }, 500);
 
   boton.textContent = "⏹️  Detener grabación";
   boton.classList.add("grabando");
+  botonPausa.hidden = false;
   $("info").hidden = false;
   $("vivo").hidden = !(opciones.clave || opciones.simulado);
   // Si el audio no llega al procesador, se graba igual, pero no habrá texto en vivo.
@@ -342,8 +358,31 @@ async function iniciar() {
   valor({ evento: "inicio", sesion: g.sesion });
 }
 
+function pausar() {
+  g.pausado = true;
+  g.desdePausa = Date.now();
+  if (g.huboVoz) cerrarFrase();      // lo dicho hasta aquí entra al informe
+  if (g.rec.state === "recording") g.rec.pause();
+  botonPausa.textContent = "▶️  Reanudar";
+  $("info").classList.add("pausado");
+  g.estadoAntes = $("estado").textContent;
+  $("estado").textContent = "en pausa";
+}
+
+function reanudar() {
+  g.enPausa += Date.now() - g.desdePausa;
+  g.ultimaVoz = g.inicioFrase = g.muestras;
+  g.huboVoz = false;
+  if (g.rec.state === "paused") g.rec.resume();
+  g.pausado = false;
+  botonPausa.textContent = "⏸️  Pausar";
+  $("info").classList.remove("pausado");
+  $("estado").textContent = g.estadoAntes || "";
+}
+
 function detener() {
   const actual = g;
+  actual.pausado = false;              // rec.stop() también funciona desde la pausa
   actual.proc.onaudioprocess = null;
   actual.proc.disconnect();
   clearInterval(actual.reloj);
@@ -353,6 +392,7 @@ function detener() {
   boton.disabled = true;
   boton.classList.remove("grabando");
   boton.textContent = "Terminando el informe…";
+  botonPausa.hidden = true;
   $("info").hidden = true;
 
   // Espera a que lleguen las últimas frases, con un tope.
@@ -382,6 +422,10 @@ function detener() {
 boton.addEventListener("click", () => {
   if (!g) iniciar();
   else if (!boton.disabled) detener();
+});
+botonPausa.addEventListener("click", () => {
+  if (!g || g.terminando) return;
+  if (g.pausado) reanudar(); else pausar();
 });
 altura();
 </script>
