@@ -1,0 +1,123 @@
+{
+  "id": "mama-11",
+  "formato": "mama",
+  "escenario": "ruido",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, ecografía de mamas. Paciente Zoila Marleni Ancco Huarhua, 41 años. La manda el doctor Percy Valdivia Zegarra."
+    },
+    {
+      "rol": "medico",
+      "texto": "Señora, levante el brazo derecho detrás de la cabeza. Así, tranquila."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama derecha. Parénquima homogéneo, ecoestructura conservada."
+    },
+    {
+      "rol": "medico",
+      "texto": "A ver acá, hora 10… ¿será un quiste? No, no, es un vaso, tiene flujo. Nada."
+    },
+    {
+      "rol": "medico",
+      "texto": "Sin lesiones focales. Conductos galactóforos normales, mide 2 mm. Axila derecha libre."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Doctor, llamaron de recepción, que el de las 11 ya llegó."
+    },
+    {
+      "rol": "medico",
+      "texto": "Que espere nomás. Con este tráfico en la Javier Prado yo llegué a las 8 y media, imagínate."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ahora gírese un poquito a la derecha, el brazo izquierdo arriba. Respire normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "¿Su hermana es la que se operó? Ah, la de 52 años, que tenía un quiste de 3 centímetros. Ya, eso fue otra cosa, no se preocupe."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mama izquierda. Parénquima homogéneo. En cuadrante superoexterno, hora 2, a 3 cm del pezón, nódulo sólido ovalado, hipoecoico, de márgenes circunscritos, orientación paralela a la piel, sin sombra acústica posterior."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mide 14 por 8 mm. Doppler sin vascularización interna significativa."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conductos de calibre normal, 2 mm. Axila izquierda sin adenopatías."
+    },
+    {
+      "rol": "medico",
+      "texto": "Aguante la respiración cinco segundos… ya, puede respirar. Listo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión: nódulo sólido en mama izquierda de características probablemente benignas, sugestivo de fibroadenoma. BI-RADS 3."
+    },
+    {
+      "rol": "medico",
+      "texto": "Nota: se sugiere control ecográfico en 6 meses."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya señora, puede limpiarse y vestirse."
+    }
+  ],
+  "paciente": {
+    "nombre": "Zoila Marleni Ancco Huarhua",
+    "edad": 41
+  },
+  "medico_solicitante": "Percy Valdivia Zegarra",
+  "secciones": [
+    {
+      "clave": "mama_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "mama_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 14,
+          "unidad": "mm"
+        },
+        {
+          "valor": 8,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Nódulo sólido ovalado, hipoecoico, de márgenes circunscritos, paralelo a la piel, sin sombra posterior ni vascularización interna significativa, en cuadrante superoexterno hora 2 a 30 mm del pezón, de 14 x 8 mm."
+    }
+  ],
+  "conclusion_dictada": [
+    "Nódulo sólido en mama izquierda de características probablemente benignas, sugestivo de fibroadenoma.",
+    "BI-RADS 3."
+  ],
+  "nota_dictada": "Se sugiere control ecográfico en 6 meses.",
+  "dificultad": "Escenario con ruido: indicaciones a la paciente con números (cinco segundos), conversación ajena (tráfico, llamada de recepción), enfermedad de la hermana con edad y medida (52 años, quiste de 3 cm) y duda descartada (¿quiste? no, vaso en mama derecha), que no deben pasar al informe. Hay que convertir 3 cm a 30 mm y no confundir la medida del quiste de la hermana con hallazgos de la paciente.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3297,
+    "output_tokens": 2013
+  }
+}

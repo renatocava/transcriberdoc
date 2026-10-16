@@ -1,0 +1,224 @@
+{
+  "id": "abdomen-11",
+  "formato": "abdomen",
+  "escenario": "ruido",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, paciente Rosalía Esther Chanduví Ipanaqué, 46 años. La manda el doctor Raúl Espinoza Carhuamaca. Abdomen completo."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo doctor, ya está registrada."
+    },
+    {
+      "rol": "medico",
+      "texto": "Señora, échese boca arriba. Respire hondo y aguante cinco segundos. Eso."
+    },
+    {
+      "rol": "medico",
+      "texto": "Hígado de ecogenicidad conservada, homogéneo. Sin dilatación de vías biliares intrahepáticas. Lóbulo hepático derecho 13.8 centímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "A ver acá, ¿eso será un quiste? No, no, es la suprahepática, tiene flujo. Normal, sigue."
+    },
+    {
+      "rol": "medico",
+      "texto": "Uf, la Javier Prado estaba imposible hoy, cuarenta minutos para llegar."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Sí doctor, por el desvío de la obra."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vesícula. Mide 78 por 32 milímetros. Pared delgada de 2 milímetros. En su interior imagen hiperecogénica con sombra acústica posterior, móvil, de 12 milímetros. Litiasis."
+    },
+    {
+      "rol": "medico",
+      "texto": "Gírese a la izquierda, señora. Ya, mírela cómo se mueve el cálculo."
+    },
+    {
+      "rol": "medico",
+      "texto": "¿Su mamá también tenía piedras, me dijo? ¿De 3 centímetros? Ah, la operaron a los 62. Ya, es frecuente en familia."
+    },
+    {
+      "rol": "medico",
+      "texto": "Colédoco permeable, 4 milímetros. Porta 10 milímetros."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Doctor, lo llaman de emergencia."
+    },
+    {
+      "rol": "medico",
+      "texto": "Diles que en diez minutos los llamo. Seguimos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Bazo 102 milímetros, ecoestructura normal. Páncreas sin alteraciones, cabeza 22 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal, 102 por 45. Respire y aguante dos segundos. Riñón izquierdo normal, 108 por 48."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga con poca repleción, paredes delgadas, sin imágenes en su interior. Útero y anexos normales para la edad. No hay líquido libre en cavidad, no masas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión: litiasis vesicular. Nota: se sugiere evaluación por cirugía general. Ya señora, puede limpiarse."
+    }
+  ],
+  "paciente": {
+    "nombre": "Rosalía Esther Chanduví Ipanaqué",
+    "edad": 46
+  },
+  "medico_solicitante": "Raúl Espinoza Carhuamaca",
+  "secciones": [
+    {
+      "clave": "higado",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 138,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vesicula",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 32,
+          "unidad": "mm"
+        },
+        {
+          "valor": 2,
+          "unidad": "mm"
+        },
+        {
+          "valor": 12,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Imagen hiperecogénica móvil con sombra acústica posterior de 12 mm en su interior, compatible con litiasis vesicular."
+    },
+    {
+      "clave": "coledoco",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 4,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "porta",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 10,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "bazo",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "pancreas",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 22,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 102,
+          "unidad": "mm"
+        },
+        {
+          "valor": 45,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "genitales",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "douglas",
+      "estado": "no_mencionado",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cavidad",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Litiasis vesicular."
+  ],
+  "nota_dictada": "Se sugiere evaluación por cirugía general.",
+  "dificultad": "Ruido: indicaciones con números (cinco segundos, dos segundos), charla del tráfico, llamada de emergencia (diez minutos), antecedente de la madre con cálculo de 3 cm operada a los 62 años, y duda descartada de quiste hepático que resultó ser la vena suprahepática; nada de eso debe ir al informe. El hígado se dicta en cm (13.8 cm = 138 mm). Las medidas renales se dan sin unidad. El Douglas no se menciona.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3925,
+    "output_tokens": 2747
+  }
+}

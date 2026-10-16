@@ -1,6 +1,6 @@
 """Genera dictados sintéticos de ecografía con su respuesta esperada.
 
-    python evaluacion/generar_casos.py                # los 50 casos (10 por formato)
+    python evaluacion/generar_casos.py                # los 55 casos (11 por formato)
     python evaluacion/generar_casos.py --formato mama # solo un formato
     python evaluacion/generar_casos.py --rehacer abdomen-03
 
@@ -63,6 +63,13 @@ ESCENARIOS = [
     ("coloquial",
      "Dictado coloquial, con muletillas y en un orden distinto al de la plantilla. Menciona al "
      "médico que solicitó el examen por su nombre."),
+    ("ruido",
+     "Dictado del médico con el paciente en la camilla. Entre las frases del informe el médico "
+     "también: da indicaciones al paciente con números («respire hondo y aguante cinco "
+     "segundos», «gírese a la izquierda»), conversa un momento de algo ajeno (el tráfico, una "
+     "llamada), comenta la enfermedad de otra persona (un familiar del paciente u otro "
+     "paciente, con alguna medida o edad) y duda de algo que él mismo descarta («¿será un "
+     "quiste?… no, es un vaso»). Un hallazgo real. Nada de eso va en la respuesta esperada."),
 ]
 
 SISTEMA = """\
@@ -87,6 +94,8 @@ hallazgos. Nada que el médico no haya dicho: no calcules volúmenes ni porcenta
 - hallazgo: en una frase, qué debe decir el informe de distinto a lo normal; vacío si el \
 estado no es «hallazgo».
 - conclusion_dictada: los ítems de conclusión que dictó el médico; vacía si no dictó ninguna.
+- nota_dictada: la nota o comentario que el médico pide agregar al informe; vacía si no \
+dicta ninguna.
 - Paciente: nombre y edad solo si se dicen; médico solicitante solo si se nombra.
 
 Usa nombres peruanos variados y verosímiles (ficticios). Hallazgos clínicamente coherentes \
@@ -141,9 +150,13 @@ def _esquema(plantilla: Plantilla) -> dict:
                 },
             },
             "conclusion_dictada": {"type": "array", "items": {"type": "string"}},
+            "nota_dictada": {"type": "string"},
             "dificultad": {"type": "string"},
         },
-        "required": ["dictado", "paciente", "medico_solicitante", "secciones", "conclusion_dictada", "dificultad"],
+        "required": [
+            "dictado", "paciente", "medico_solicitante", "secciones", "conclusion_dictada", "nota_dictada",
+            "dificultad",
+        ],
         "additionalProperties": False,
     }
 

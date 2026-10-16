@@ -1,0 +1,181 @@
+{
+  "id": "transvaginal-11",
+  "formato": "transvaginal",
+  "escenario": "ruido",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, transvaginal. Paciente Giovanna Pilar Arévalo Tuesta, 38 años. La manda el doctor Renzo Chávez Lozada, de gineco."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Listo doctor, ya está en pantalla."
+    },
+    {
+      "rol": "medico",
+      "texto": "Señora, relájese, respire hondo y bote el aire despacio. Eso. Ahora quédese quietita unos cinco segundos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Útero en AVF. Mide 78 por 42 por 50 milímetros. Miometrio homogéneo, sin lesiones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Uf, hoy la Javier Prado estaba imposible, hora y media desde Ate. ¿Tú cómo llegaste?"
+    },
+    {
+      "rol": "asistente",
+      "texto": "Igual doctor, por la Vía Expresa tampoco avanzaba."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya. Cérvix canal no dilatado, 28 mm."
+    },
+    {
+      "rol": "medico",
+      "texto": "Endometrio homogéneo, ocho milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario derecho 30 por 22. Acá hay una imagen anecoica… ¿será un quiste? No, no, con Doppler es vaso. Ovario derecho normal."
+    },
+    {
+      "rol": "medico",
+      "texto": "Señora, gírese un poquito hacia la izquierda. Eso, gracias."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Doctor, la señora dice que su mamá tiene un mioma."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ah ya. ¿Cuántos años tiene su mamá? ¿67? Y el mioma de cuánto, ¿de 6 centímetros? Que la controle su ginecólogo nomás, a esa edad suelen achicarse."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ovario izquierdo mide 45 por 30. Con imagen quística de paredes finas, contenido anecoico, sin tabiques ni papilas, de 32 por 28 milímetros."
+    },
+    {
+      "rol": "medico",
+      "texto": "Douglas libre."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión: quiste simple de ovario izquierdo."
+    },
+    {
+      "rol": "medico",
+      "texto": "Pon nota: se sugiere control ecográfico en 3 meses, en fase postmenstrual."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Anotado doctor."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya señora, terminamos, puede vestirse."
+    }
+  ],
+  "paciente": {
+    "nombre": "Giovanna Pilar Arévalo Tuesta",
+    "edad": 38
+  },
+  "medico_solicitante": "Renzo Chávez Lozada",
+  "secciones": [
+    {
+      "clave": "utero",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 78,
+          "unidad": "mm"
+        },
+        {
+          "valor": 42,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "cervix",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 28,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "endometrio",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 8,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 22,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "ovario_izq",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 45,
+          "unidad": "mm"
+        },
+        {
+          "valor": 30,
+          "unidad": "mm"
+        },
+        {
+          "valor": 32,
+          "unidad": "mm"
+        },
+        {
+          "valor": 28,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": "Ovario izquierdo con imagen quística simple de paredes finas, contenido anecoico, sin tabiques ni papilas, de 32 x 28 mm."
+    },
+    {
+      "clave": "douglas",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Quiste simple de ovario izquierdo."
+  ],
+  "nota_dictada": "Se sugiere control ecográfico en 3 meses, en fase postmenstrual.",
+  "dificultad": "Ruido: indicaciones a la paciente con números (cinco segundos, gírese a la izquierda), charla sobre el tráfico, comentario del mioma de 6 cm de la madre de 67 años de la paciente, y duda descartada de quiste en ovario derecho que resultó ser un vaso. El útero no se dicta lateralizado; la plantilla lo trae pero el médico solo dice AVF y sin lesiones, se considera normal. Endometrio dictado en palabras («ocho milímetros»). Ovario derecho dictado sin unidad (30 por 22), asumir mm. Ninguno de estos elementos de ruido debe aparecer en la respuesta.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3371,
+    "output_tokens": 2204
+  }
+}

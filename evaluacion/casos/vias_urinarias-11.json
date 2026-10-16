@@ -1,0 +1,196 @@
+{
+  "id": "vias_urinarias-11",
+  "formato": "vias_urinarias",
+  "escenario": "ruido",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, ecografía de vías urinarias. Paciente Benigno Huaylinos Chuquillanqui, 67 años."
+    },
+    {
+      "rol": "asistente",
+      "texto": "¿Quién lo manda, doctor?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Doctor Ramiro Salcedo, urología."
+    },
+    {
+      "rol": "medico",
+      "texto": "Señor, súbase la camisa. Respire hondo y aguante cinco segundos. Ya, bote."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón derecho normal. Mide 105 por 48 milímetros. Cortical 16."
+    },
+    {
+      "rol": "medico",
+      "texto": "Uf, hoy la Javier Prado estaba imposible, una hora y media desde Ate."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Igual yo, doctor, todo el Óvalo Santa Anita parado."
+    },
+    {
+      "rol": "medico",
+      "texto": "Gírese a la izquierda, señor. No, a su izquierda. Eso."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo. A ver... ¿será un quiste en el polo superior? No, es un vaso, con doppler fluye. Nada."
+    },
+    {
+      "rol": "medico",
+      "texto": "Riñón izquierdo normal, 108 por 50 milímetros, cortical 17."
+    },
+    {
+      "rol": "medico",
+      "texto": "¿Su hermano era el que tuvo el cálculo, no? ¿El de 8 milímetros?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Ah, ya, a los 52 años lo operaron. Bueno, usted no tiene nada en los riñones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Un momentito. Aló, sí, en diez minutos te llamo. Ya, chau."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga normal, distendida, paredes delgadas."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional 380 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata aumentada de tamaño, ecogenicidad homogénea, sin calcificaciones."
+    },
+    {
+      "rol": "medico",
+      "texto": "Mide longitudinal 52, anteroposterior 41, transverso 49 milímetros. Volumen aproximado cincuenta y cuatro cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ya señor, vaya al baño a orinar y regresa."
+    },
+    {
+      "rol": "medico",
+      "texto": "Post miccional 30 cc. RPM 8 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, riñones de caracteres morfológicos normales para la edad. Dos, hipertrofia prostática, volumen 54 cc. Tres, vejiga normal con RPM de 8 por ciento."
+    },
+    {
+      "rol": "medico",
+      "texto": "Nota: se sugiere correlacionar con PSA."
+    }
+  ],
+  "paciente": {
+    "nombre": "Benigno Huaylinos Chuquillanqui",
+    "edad": 67
+  },
+  "medico_solicitante": "Ramiro Salcedo",
+  "secciones": [
+    {
+      "clave": "rinon_der",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 105,
+          "unidad": "mm"
+        },
+        {
+          "valor": 48,
+          "unidad": "mm"
+        },
+        {
+          "valor": 16,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "rinon_izq",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 108,
+          "unidad": "mm"
+        },
+        {
+          "valor": 50,
+          "unidad": "mm"
+        },
+        {
+          "valor": 17,
+          "unidad": "mm"
+        }
+      ],
+      "hallazgo": ""
+    },
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 41,
+          "unidad": "mm"
+        },
+        {
+          "valor": 49,
+          "unidad": "mm"
+        },
+        {
+          "valor": 54,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de ecogenicidad homogénea y sin calcificaciones, con volumen aproximado de 54 cc."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 380,
+          "unidad": "cc"
+        },
+        {
+          "valor": 30,
+          "unidad": "cc"
+        },
+        {
+          "valor": 8,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Riñones de caracteres morfológicos normales para la edad.",
+    "Hipertrofia prostática, volumen 54 cc.",
+    "Vejiga normal con RPM de 8%."
+  ],
+  "nota_dictada": "Se sugiere correlacionar con PSA.",
+  "dificultad": "Ruido: indicaciones al paciente con números (cinco segundos), conversación sobre el tráfico y una llamada telefónica, antecedente del hermano con cálculo de 8 mm a los 52 años, y duda de quiste renal izquierdo descartada como vaso. Volumen prostático dictado en palabras. Único hallazgo real: hipertrofia prostática.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3652,
+    "output_tokens": 2408
+  }
+}

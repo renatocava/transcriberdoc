@@ -2,7 +2,7 @@
 
 Dictados sintéticos (Claude Opus 5.5) con la respuesta esperada. **Revisa sobre todo la columna «esperado»**: el puntaje solo vale si eso es lo que un ecografista escribiría.
 
-50 casos · secciones: 187 normales, 81 con hallazgo, 12 no mencionadas · 0 casos con avisos ⚠️
+55 casos · secciones: 209 normales, 86 con hallazgo, 13 no mencionadas · 0 casos con avisos ⚠️
 
 | id | escenario | paciente | hallazgos esperados | ⚠️ |
 |---|---|---|---|---|
@@ -16,6 +16,7 @@ Dictados sintéticos (Claude Opus 5.5) con la respuesta esperada. **Revisa sobre
 | [abdomen-08](#abdomen-08) | multiples_hallazgos | Silvia Patricia Mendoza Alvarado, 54 | higado: Ecogenicidad aumentada en forma difusa compatible con esteatosis hepática leve.; vesicula: Cálculo único de 14 mm móvil con sombra acústica posterior en su interior.; rinon_izq: Quiste cortical simple de 18 mm en polo superior, anecoico y de paredes finas. |  |
 | [abdomen-09](#abdomen-09) | asistente_trampa | Maritza Soledad Apaza Choque, 52 | vesicula: Cálculo único móvil de 14 mm con sombra acústica posterior en su interior. |  |
 | [abdomen-10](#abdomen-10) | coloquial | Teresa Jesús Llanos Palomino, 48 | higado: Parénquima con aumento difuso leve de la ecogenicidad, compatible con esteatosis hepática leve.; vesicula: Imagen ecogénica móvil con sombra acústica posterior de 12 mm en su interior, compatible con cálculo.; rinon_izq: Quiste cortical simple anecoico de 14 mm en el polo superior. |  |
+| [abdomen-11](#abdomen-11) | ruido | Rosalía Esther Chanduví Ipanaqué, 46 | vesicula: Imagen hiperecogénica móvil con sombra acústica posterior de 12 mm en su interior, compatible con litiasis vesicular. |  |
 | [mama-01](#mama-01) | normal_completo | Jesica Marleny Huamán Cutipa, 34 | — |  |
 | [mama-02](#mama-02) | hallazgo_simple | Roxana Elizabeth Quispe Huarachi, 29 | mama_izq: Nódulo sólido hipoecoico ovalado de bordes circunscritos, paralelo a la piel, en cuadrante superoexterno (hora 2, a 30 mm del pezón), de 14 x 9 mm, sin sombra acústica ni vascularidad interna significativa. |  |
 | [mama-03](#mama-03) | asistente | Lucía Mercedes Paredes Ticona, 38 | mama_izq: Imagen anecoica ovalada de bordes lisos con refuerzo acústico posterior, sin vascularidad al Doppler, en radio de las 2 a 3 cm del pezón, de 12 x 8 mm, compatible con quiste simple. |  |
@@ -26,6 +27,7 @@ Dictados sintéticos (Claude Opus 5.5) con la respuesta esperada. **Revisa sobre
 | [mama-08](#mama-08) | multiples_hallazgos | Rocío Esperanza Llerena Condori, 41 | mama_der: Quiste simple anecoico de 12 x 9 mm en cuadrante superoexterno, radio 10, a 3 cm del pezón, con bordes finos y refuerzo posterior.; mama_izq: Nódulo sólido hipoecoico ovalado, circunscrito, paralelo a la piel, de 15 x 8 mm en cuadrante superointerno, radio 2, sin vascularidad al Doppler ni sombra posterior. |  |
 | [mama-09](#mama-09) | asistente_trampa | Yesenia Patricia Mendoza Chuquimia, 42 | mama_der: Quiste simple en radio de las 10, a 30 mm del pezón, anecoico, bordes lisos, paredes finas y refuerzo acústico posterior, de 8 x 6 mm. |  |
 | [mama-10](#mama-10) | coloquial | Nelly Margarita Huanca Sulca, 46 | mama_izq: Imagen quística simple anecoica de bordes bien definidos con refuerzo posterior, sin tabiques, en cuadrante superoexterno (hora 2) de 14 x 9 mm. |  |
+| [mama-11](#mama-11) | ruido | Zoila Marleni Ancco Huarhua, 41 | mama_izq: Nódulo sólido ovalado, hipoecoico, de márgenes circunscritos, paralelo a la piel, sin sombra posterior ni vascularización interna significativa, en cuadrante superoexterno hora 2 a 30 mm del pezón, de 14 x 8 mm. |  |
 | [transvaginal-01](#transvaginal-01) | normal_completo | Kelly Vanessa Oblitas Chumbe, 34 | — |  |
 | [transvaginal-02](#transvaginal-02) | hallazgo_simple | Brenda Lizbeth Saldaña Inuma, 41 | utero: Imagen nodular hipoecoica bien delimitada, intramural en pared posterior, de 18 x 15 mm, compatible con mioma; resto del miometrio homogéneo. |  |
 | [transvaginal-03](#transvaginal-03) | asistente | Luz Marina Ccahuana Tito, 34 | ovario_izq: Ovario izquierdo aumentado de tamaño con imagen quística anecoica de pared fina, sin tabiques ni papilas, de 27 x 24 mm, sin flujo interno al Doppler. |  |
@@ -36,6 +38,7 @@ Dictados sintéticos (Claude Opus 5.5) con la respuesta esperada. **Revisa sobre
 | [transvaginal-08](#transvaginal-08) | multiples_hallazgos | Silvia Roxana Mendoza Taipe, 41 | utero: Imagen nodular hipoecoica intramural bien delimitada en pared posterior de 24 x 21 mm, sugestiva de mioma; resto del miometrio homogéneo.; ovario_izq: Imagen quística anecoica de pared fina, sin septos ni flujo al doppler, de 26 mm, compatible con quiste simple.; douglas: Escasa cantidad de líquido libre en fondo de saco de Douglas. |  |
 | [transvaginal-09](#transvaginal-09) | asistente_trampa | Deysi Carolina Huamaní Llacsa, 41 | utero: Imagen nodular hipoecoica intramural de bordes definidos en cara anterior de 18 x 15 mm, compatible con mioma; resto del miometrio homogéneo. |  |
 | [transvaginal-10](#transvaginal-10) | coloquial | Erika Soledad Cárdenas Yupanqui, 34 | ovario_der: Imagen quística anecoica de pared delgada, sin tabiques ni papilas, de 26 x 22 mm, sin flujo interno al Doppler, compatible con quiste simple. |  |
+| [transvaginal-11](#transvaginal-11) | ruido | Giovanna Pilar Arévalo Tuesta, 38 | ovario_izq: Ovario izquierdo con imagen quística simple de paredes finas, contenido anecoico, sin tabiques ni papilas, de 32 x 28 mm. |  |
 | [vesicoprostatica-01](#vesicoprostatica-01) | normal_completo | Abelardo Ccopa Huamaní, 58 | — |  |
 | [vesicoprostatica-02](#vesicoprostatica-02) | hallazgo_simple | Wenceslao Huamanchumo Sandoval, 67 | prostata: Próstata aumentada de tamaño, de contornos regulares, ecogenicidad homogénea y sin calcificaciones, con volumen aproximado de 65 cc (prostatomegalia). |  |
 | [vesicoprostatica-03](#vesicoprostatica-03) | asistente | Aurelio Condori Paucar, 68 | prostata: Próstata aumentada de tamaño, de ecogenicidad heterogénea, con lóbulo medio que protruye 11 mm hacia la luz vesical, sin calcificaciones. |  |
@@ -46,6 +49,7 @@ Dictados sintéticos (Claude Opus 5.5) con la respuesta esperada. **Revisa sobre
 | [vesicoprostatica-08](#vesicoprostatica-08) | multiples_hallazgos | Hipólito Mendoza Chumpitaz, 71 | prostata: Próstata aumentada de tamaño, de ecogenicidad heterogénea, con calcificaciones groseras centrales, la mayor de 6 mm.; vejiga: Paredes vesicales engrosadas y trabeculadas, de 7 mm en la pared posterior, con contenido anecoico sin cálculos ni masas. |  |
 | [vesicoprostatica-09](#vesicoprostatica-09) | asistente_trampa | Saturnino Alarcón Vilca, 71 | prostata: Próstata aumentada de tamaño, de ecogenicidad heterogénea con calcificaciones groseras en zona central.; vejiga: Vejiga a mediana repleción con paredes engrosadas y trabeculadas de 6 mm, sin cálculos ni masas. |  |
 | [vesicoprostatica-10](#vesicoprostatica-10) | coloquial | Clemente Gutiérrez Ayala, 67 | prostata: Próstata aumentada de tamaño, de parénquima heterogéneo, con una calcificación de 4 mm en la zona central.; vejiga: Vejiga con paredes engrosadas y trabeculadas de 6 mm, contenido anecoico sin cálculos ni masas.; volumenes: Residuo postmiccional significativo de 30 %. |  |
+| [vesicoprostatica-11](#vesicoprostatica-11) | ruido | Teodoro Valdivia Choquehuanca, 67 | prostata: Próstata aumentada de tamaño, de ecogenicidad homogénea y sin calcificaciones, con volumen aproximado de 56 cc. |  |
 | [vias_urinarias-01](#vias_urinarias-01) | normal_completo | Demetrio Sullca Taype, 58 | — |  |
 | [vias_urinarias-02](#vias_urinarias-02) | hallazgo_simple | Leoncio Gamarra Huillca, 52 | rinon_izq: Litiasis de 7 mm en el cáliz inferior (imagen hiperecogénica con sombra acústica posterior), sin dilatación pielocalicial. |  |
 | [vias_urinarias-03](#vias_urinarias-03) | asistente | Félix Alberto Chumpitaz Rojas, 67 | prostata: Próstata aumentada de tamaño con calcificaciones groseras en la zona central. |  |
@@ -56,6 +60,7 @@ Dictados sintéticos (Claude Opus 5.5) con la respuesta esperada. **Revisa sobre
 | [vias_urinarias-08](#vias_urinarias-08) | multiples_hallazgos | Wilfredo Alarcón Ticona, 67 | rinon_der: Quiste simple cortical en polo superior de 22 x 19 mm, anecoico, de bordes lisos y pared fina con refuerzo posterior.; rinon_izq: Litiasis de 7 mm en cáliz inferior con sombra acústica posterior, sin hidronefrosis.; prostata: Próstata aumentada de tamaño (volumen 58 cc), de ecogenicidad homogénea y sin calcificaciones. |  |
 | [vias_urinarias-09](#vias_urinarias-09) | asistente_trampa | Gregorio Mendoza Apaza, 67 | rinon_izq: Quiste cortical simple de 18 mm en polo superior, sin ectasia.; prostata: Próstata aumentada de tamaño, homogénea, sin calcificaciones, volumen 54 cc.; vejiga: Paredes vesicales engrosadas de 6 mm y trabeculadas, sin cálculos.; volumenes: Residuo postmiccional significativo de 95 cc; RPM en porcentaje no dictado. |  |
 | [vias_urinarias-10](#vias_urinarias-10) | coloquial | Cirilo Yupanqui Ventura, 67 | rinon_izq: Quiste cortical simple, anecoico y de pared fina, en el polo superior de 18 mm.; prostata: Próstata aumentada de tamaño, de ecogenicidad heterogénea con pequeñas calcificaciones centrales.; vejiga: Paredes engrosadas y trabeculadas de 6 mm de espesor. |  |
+| [vias_urinarias-11](#vias_urinarias-11) | ruido | Benigno Huaylinos Chuquillanqui, 67 | prostata: Próstata aumentada de tamaño, de ecogenicidad homogénea y sin calcificaciones, con volumen aproximado de 54 cc. |  |
 
 ## abdomen-01
 
@@ -452,6 +457,51 @@ Esperado:
 - Cavidad abdominal: **normal** · sin medidas
 - Conclusión dictada: Esteatosis hepática leve. / Colelitiasis. / Quiste renal simple izquierdo.
 
+## abdomen-11
+
+**Ecografía de abdomen completo** · escenario `ruido`  
+Dificultad: Ruido: indicaciones con números (cinco segundos, dos segundos), charla del tráfico, llamada de emergencia (diez minutos), antecedente de la madre con cálculo de 3 cm operada a los 62 años, y duda descartada de quiste hepático que resultó ser la vena suprahepática; nada de eso debe ir al informe. El hígado se dicta en cm (13.8 cm = 138 mm). Las medidas renales se dan sin unidad. El Douglas no se menciona.
+
+Dictado:
+
+````text
+Médico: Ya, paciente Rosalía Esther Chanduví Ipanaqué, 46 años. La manda el doctor Raúl Espinoza Carhuamaca. Abdomen completo.
+Asistente: Listo doctor, ya está registrada.
+Médico: Señora, échese boca arriba. Respire hondo y aguante cinco segundos. Eso.
+Médico: Hígado de ecogenicidad conservada, homogéneo. Sin dilatación de vías biliares intrahepáticas. Lóbulo hepático derecho 13.8 centímetros.
+Médico: A ver acá, ¿eso será un quiste? No, no, es la suprahepática, tiene flujo. Normal, sigue.
+Médico: Uf, la Javier Prado estaba imposible hoy, cuarenta minutos para llegar.
+Asistente: Sí doctor, por el desvío de la obra.
+Médico: Vesícula. Mide 78 por 32 milímetros. Pared delgada de 2 milímetros. En su interior imagen hiperecogénica con sombra acústica posterior, móvil, de 12 milímetros. Litiasis.
+Médico: Gírese a la izquierda, señora. Ya, mírela cómo se mueve el cálculo.
+Médico: ¿Su mamá también tenía piedras, me dijo? ¿De 3 centímetros? Ah, la operaron a los 62. Ya, es frecuente en familia.
+Médico: Colédoco permeable, 4 milímetros. Porta 10 milímetros.
+Asistente: Doctor, lo llaman de emergencia.
+Médico: Diles que en diez minutos los llamo. Seguimos.
+Médico: Bazo 102 milímetros, ecoestructura normal. Páncreas sin alteraciones, cabeza 22 milímetros.
+Médico: Riñón derecho normal, 102 por 45. Respire y aguante dos segundos. Riñón izquierdo normal, 108 por 48.
+Médico: Vejiga con poca repleción, paredes delgadas, sin imágenes en su interior. Útero y anexos normales para la edad. No hay líquido libre en cavidad, no masas.
+Médico: Conclusión: litiasis vesicular. Nota: se sugiere evaluación por cirugía general. Ya señora, puede limpiarse.
+````
+
+Esperado:
+
+- Paciente: Rosalía Esther Chanduví Ipanaqué, edad 46; solicitante: Raúl Espinoza Carhuamaca
+- Hígado: **normal** · 138 mm
+- Vesícula biliar: **hallazgo** · 78 mm, 32 mm, 2 mm, 12 mm — Imagen hiperecogénica móvil con sombra acústica posterior de 12 mm en su interior, compatible con litiasis vesicular.
+- Colédoco: **normal** · 4 mm
+- Vena porta: **normal** · 10 mm
+- Bazo: **normal** · 102 mm
+- Páncreas: **normal** · 22 mm
+- Riñón derecho: **normal** · 102 mm, 45 mm
+- Riñón izquierdo: **normal** · 108 mm, 48 mm
+- Vejiga: **normal** · sin medidas
+- Genitales internos: **normal** · sin medidas
+- Fondo de saco douglas: **no_mencionado** · sin medidas
+- Cavidad abdominal: **normal** · sin medidas
+- Conclusión dictada: Litiasis vesicular.
+- Nota dictada: Se sugiere evaluación por cirugía general.
+
 ## mama-01
 
 **Ecografía de mamas** · escenario `normal_completo`  
@@ -707,6 +757,40 @@ Esperado:
 - Mama derecha: **normal** · 1.8 mm
 - Mama izquierda: **hallazgo** · 14 mm, 9 mm, 2 mm — Imagen quística simple anecoica de bordes bien definidos con refuerzo posterior, sin tabiques, en cuadrante superoexterno (hora 2) de 14 x 9 mm.
 - Conclusión dictada: Quiste simple en mama izquierda, BIRADS 2. / Mama derecha sin alteraciones.
+
+## mama-11
+
+**Ecografía de mamas** · escenario `ruido`  
+Dificultad: Escenario con ruido: indicaciones a la paciente con números (cinco segundos), conversación ajena (tráfico, llamada de recepción), enfermedad de la hermana con edad y medida (52 años, quiste de 3 cm) y duda descartada (¿quiste? no, vaso en mama derecha), que no deben pasar al informe. Hay que convertir 3 cm a 30 mm y no confundir la medida del quiste de la hermana con hallazgos de la paciente.
+
+Dictado:
+
+````text
+Médico: Ya, ecografía de mamas. Paciente Zoila Marleni Ancco Huarhua, 41 años. La manda el doctor Percy Valdivia Zegarra.
+Médico: Señora, levante el brazo derecho detrás de la cabeza. Así, tranquila.
+Médico: Mama derecha. Parénquima homogéneo, ecoestructura conservada.
+Médico: A ver acá, hora 10… ¿será un quiste? No, no, es un vaso, tiene flujo. Nada.
+Médico: Sin lesiones focales. Conductos galactóforos normales, mide 2 mm. Axila derecha libre.
+Asistente: Doctor, llamaron de recepción, que el de las 11 ya llegó.
+Médico: Que espere nomás. Con este tráfico en la Javier Prado yo llegué a las 8 y media, imagínate.
+Médico: Ahora gírese un poquito a la derecha, el brazo izquierdo arriba. Respire normal.
+Médico: ¿Su hermana es la que se operó? Ah, la de 52 años, que tenía un quiste de 3 centímetros. Ya, eso fue otra cosa, no se preocupe.
+Médico: Mama izquierda. Parénquima homogéneo. En cuadrante superoexterno, hora 2, a 3 cm del pezón, nódulo sólido ovalado, hipoecoico, de márgenes circunscritos, orientación paralela a la piel, sin sombra acústica posterior.
+Médico: Mide 14 por 8 mm. Doppler sin vascularización interna significativa.
+Médico: Conductos de calibre normal, 2 mm. Axila izquierda sin adenopatías.
+Médico: Aguante la respiración cinco segundos… ya, puede respirar. Listo.
+Médico: Conclusión: nódulo sólido en mama izquierda de características probablemente benignas, sugestivo de fibroadenoma. BI-RADS 3.
+Médico: Nota: se sugiere control ecográfico en 6 meses.
+Médico: Ya señora, puede limpiarse y vestirse.
+````
+
+Esperado:
+
+- Paciente: Zoila Marleni Ancco Huarhua, edad 41; solicitante: Percy Valdivia Zegarra
+- Mama derecha: **normal** · 2 mm
+- Mama izquierda: **hallazgo** · 30 mm, 14 mm, 8 mm, 2 mm — Nódulo sólido ovalado, hipoecoico, de márgenes circunscritos, paralelo a la piel, sin sombra posterior ni vascularización interna significativa, en cuadrante superoexterno hora 2 a 30 mm del pezón, de 14 x 8 mm.
+- Conclusión dictada: Nódulo sólido en mama izquierda de características probablemente benignas, sugestivo de fibroadenoma. / BI-RADS 3.
+- Nota dictada: Se sugiere control ecográfico en 6 meses.
 
 ## transvaginal-01
 
@@ -1021,6 +1105,46 @@ Esperado:
 - Fondo de saco de douglas: **normal** · sin medidas
 - Conclusión dictada: Quiste simple de ovario derecho. / Se sugiere control ecográfico en 6 a 8 semanas, post menstrual.
 
+## transvaginal-11
+
+**Ecografía transvaginal** · escenario `ruido`  
+Dificultad: Ruido: indicaciones a la paciente con números (cinco segundos, gírese a la izquierda), charla sobre el tráfico, comentario del mioma de 6 cm de la madre de 67 años de la paciente, y duda descartada de quiste en ovario derecho que resultó ser un vaso. El útero no se dicta lateralizado; la plantilla lo trae pero el médico solo dice AVF y sin lesiones, se considera normal. Endometrio dictado en palabras («ocho milímetros»). Ovario derecho dictado sin unidad (30 por 22), asumir mm. Ninguno de estos elementos de ruido debe aparecer en la respuesta.
+
+Dictado:
+
+````text
+Médico: Ya, transvaginal. Paciente Giovanna Pilar Arévalo Tuesta, 38 años. La manda el doctor Renzo Chávez Lozada, de gineco.
+Asistente: Listo doctor, ya está en pantalla.
+Médico: Señora, relájese, respire hondo y bote el aire despacio. Eso. Ahora quédese quietita unos cinco segundos.
+Médico: Útero en AVF. Mide 78 por 42 por 50 milímetros. Miometrio homogéneo, sin lesiones.
+Médico: Uf, hoy la Javier Prado estaba imposible, hora y media desde Ate. ¿Tú cómo llegaste?
+Asistente: Igual doctor, por la Vía Expresa tampoco avanzaba.
+Médico: Ya. Cérvix canal no dilatado, 28 mm.
+Médico: Endometrio homogéneo, ocho milímetros.
+Médico: Ovario derecho 30 por 22. Acá hay una imagen anecoica… ¿será un quiste? No, no, con Doppler es vaso. Ovario derecho normal.
+Médico: Señora, gírese un poquito hacia la izquierda. Eso, gracias.
+Asistente: Doctor, la señora dice que su mamá tiene un mioma.
+Médico: Ah ya. ¿Cuántos años tiene su mamá? ¿67? Y el mioma de cuánto, ¿de 6 centímetros? Que la controle su ginecólogo nomás, a esa edad suelen achicarse.
+Médico: Ovario izquierdo mide 45 por 30. Con imagen quística de paredes finas, contenido anecoico, sin tabiques ni papilas, de 32 por 28 milímetros.
+Médico: Douglas libre.
+Médico: Conclusión: quiste simple de ovario izquierdo.
+Médico: Pon nota: se sugiere control ecográfico en 3 meses, en fase postmenstrual.
+Asistente: Anotado doctor.
+Médico: Ya señora, terminamos, puede vestirse.
+````
+
+Esperado:
+
+- Paciente: Giovanna Pilar Arévalo Tuesta, edad 38; solicitante: Renzo Chávez Lozada
+- Útero: **normal** · 78 mm, 42 mm, 50 mm
+- Cérvix: **normal** · 28 mm
+- Endometrio: **normal** · 8 mm
+- Ovario derecho: **normal** · 30 mm, 22 mm
+- Ovario izquierdo: **hallazgo** · 45 mm, 30 mm, 32 mm, 28 mm — Ovario izquierdo con imagen quística simple de paredes finas, contenido anecoico, sin tabiques ni papilas, de 32 x 28 mm.
+- Fondo de saco de douglas: **normal** · sin medidas
+- Conclusión dictada: Quiste simple de ovario izquierdo.
+- Nota dictada: Se sugiere control ecográfico en 3 meses, en fase postmenstrual.
+
 ## vesicoprostatica-01
 
 **Ecografía vésico-prostática** · escenario `normal_completo`  
@@ -1300,6 +1424,40 @@ Esperado:
 - Vejiga: **hallazgo** · 6 mm — Vejiga con paredes engrosadas y trabeculadas de 6 mm, contenido anecoico sin cálculos ni masas.
 - Volúmenes vesicales: **hallazgo** · 320 cc, 95 cc, 30 % — Residuo postmiccional significativo de 30 %.
 - Conclusión dictada: Prostatomegalia grado II con calcificación intraparenquimal. / Vejiga de esfuerzo. / Residuo postmiccional significativo de 30 %.
+
+## vesicoprostatica-11
+
+**Ecografía vésico-prostática** · escenario `ruido`  
+Dificultad: Ruido: indicaciones al paciente con números (cinco segundos), charla del tráfico y del celular, enfermedad del hermano del paciente con edad y peso prostático (72 años, 80 gramos) que no deben registrarse, duda descartada de cálculo vesical (artefacto), medidas prostáticas dictadas en cm que deben convertirse a mm, secciones dictadas en orden distinto a la plantilla.
+
+Dictado:
+
+````text
+Médico: Ya, buenos días. Paciente Teodoro Valdivia Choquehuanca. 67 años. Lo manda el doctor Renzo Málaga, urología.
+Asistente: Doctor, ¿la vésico-prostática nomás o también renal?
+Médico: Vésico-prostática nomás. Señor, échese boca arriba. Súbase el polo un poquito. Va a sentir frío el gel.
+Médico: Uf, el tráfico en la Vía Expresa hoy, una hora me demoré. Ya, empezamos.
+Médico: Vejiga. A mediana repleción. Paredes delgadas. Contenido... a ver, ¿eso es un cálculo? No, no, es artefacto de reverberación, se mueve con el transductor. Contenido líquido homogéneo, sin cálculos ni procesos expansivos.
+Médico: Respire hondo y aguante cinco segundos. Ya, bote el aire.
+Médico: Volumen premiccional 280 cc.
+Médico: ¿Su hermano también se trató de la próstata, me dijo? Ah, 72 años tiene, y le salió de 80 gramos, lo operaron. Ya, normal a esa edad.
+Médico: Próstata. Aumentada de tamaño. Ecogenicidad homogénea, sin calcificaciones. Mide 5.2 por 4.7 por 4.4 centímetros. Volumen aproximado 56 cc.
+Médico: Gírese un poquito a la izquierda. Así. Ya, vuelva.
+Médico: Ahora vaya a orinar, señor, y regresa.
+Asistente: Doctor, le está sonando el celular.
+Médico: Déjalo, después devuelvo. Ya, regresó. Posmiccional 40 cc. RPM 14 %.
+Médico: Conclusión. Uno, hipertrofia prostática, volumen 56 cc. Dos, vejiga con RPM de 14 %.
+Médico: Nota: se sugiere correlacionar con PSA y evaluación urológica.
+````
+
+Esperado:
+
+- Paciente: Teodoro Valdivia Choquehuanca, edad 67; solicitante: Renzo Málaga
+- Próstata: **hallazgo** · 52 mm, 47 mm, 44 mm, 56 cc — Próstata aumentada de tamaño, de ecogenicidad homogénea y sin calcificaciones, con volumen aproximado de 56 cc.
+- Vejiga: **normal** · sin medidas
+- Volúmenes vesicales: **normal** · 280 cc, 40 cc, 14 %
+- Conclusión dictada: Hipertrofia prostática, volumen 56 cc. / Vejiga con RPM de 14 %.
+- Nota dictada: Se sugiere correlacionar con PSA y evaluación urológica.
 
 ## vias_urinarias-01
 
@@ -1621,3 +1779,45 @@ Esperado:
 - Vejiga: **hallazgo** · 6 mm — Paredes engrosadas y trabeculadas de 6 mm de espesor.
 - Volúmenes vesicales: **normal** · 420 cc, 95 cc, 23 %
 - Conclusión dictada: Hipertrofia prostática, volumen aproximado 65 cc. / Vejiga de esfuerzo con residuo postmiccional significativo de 23 %. / Quiste cortical simple en riñón izquierdo.
+
+## vias_urinarias-11
+
+**Ecografía de vías urinarias** · escenario `ruido`  
+Dificultad: Ruido: indicaciones al paciente con números (cinco segundos), conversación sobre el tráfico y una llamada telefónica, antecedente del hermano con cálculo de 8 mm a los 52 años, y duda de quiste renal izquierdo descartada como vaso. Volumen prostático dictado en palabras. Único hallazgo real: hipertrofia prostática.
+
+Dictado:
+
+````text
+Médico: Ya, ecografía de vías urinarias. Paciente Benigno Huaylinos Chuquillanqui, 67 años.
+Asistente: ¿Quién lo manda, doctor?
+Médico: Doctor Ramiro Salcedo, urología.
+Médico: Señor, súbase la camisa. Respire hondo y aguante cinco segundos. Ya, bote.
+Médico: Riñón derecho normal. Mide 105 por 48 milímetros. Cortical 16.
+Médico: Uf, hoy la Javier Prado estaba imposible, una hora y media desde Ate.
+Asistente: Igual yo, doctor, todo el Óvalo Santa Anita parado.
+Médico: Gírese a la izquierda, señor. No, a su izquierda. Eso.
+Médico: Riñón izquierdo. A ver... ¿será un quiste en el polo superior? No, es un vaso, con doppler fluye. Nada.
+Médico: Riñón izquierdo normal, 108 por 50 milímetros, cortical 17.
+Médico: ¿Su hermano era el que tuvo el cálculo, no? ¿El de 8 milímetros?
+Médico: Ah, ya, a los 52 años lo operaron. Bueno, usted no tiene nada en los riñones.
+Médico: Un momentito. Aló, sí, en diez minutos te llamo. Ya, chau.
+Médico: Vejiga normal, distendida, paredes delgadas.
+Médico: Volumen premiccional 380 cc.
+Médico: Próstata aumentada de tamaño, ecogenicidad homogénea, sin calcificaciones.
+Médico: Mide longitudinal 52, anteroposterior 41, transverso 49 milímetros. Volumen aproximado cincuenta y cuatro cc.
+Médico: Ya señor, vaya al baño a orinar y regresa.
+Médico: Post miccional 30 cc. RPM 8 por ciento.
+Médico: Conclusión. Uno, riñones de caracteres morfológicos normales para la edad. Dos, hipertrofia prostática, volumen 54 cc. Tres, vejiga normal con RPM de 8 por ciento.
+Médico: Nota: se sugiere correlacionar con PSA.
+````
+
+Esperado:
+
+- Paciente: Benigno Huaylinos Chuquillanqui, edad 67; solicitante: Ramiro Salcedo
+- Riñón derecho: **normal** · 105 mm, 48 mm, 16 mm
+- Riñón izquierdo: **normal** · 108 mm, 50 mm, 17 mm
+- Próstata: **hallazgo** · 52 mm, 41 mm, 49 mm, 54 cc — Próstata aumentada de tamaño, de ecogenicidad homogénea y sin calcificaciones, con volumen aproximado de 54 cc.
+- Vejiga: **normal** · sin medidas
+- Volúmenes vesicales: **normal** · 380 cc, 30 cc, 8 %
+- Conclusión dictada: Riñones de caracteres morfológicos normales para la edad. / Hipertrofia prostática, volumen 54 cc. / Vejiga normal con RPM de 8%.
+- Nota dictada: Se sugiere correlacionar con PSA.

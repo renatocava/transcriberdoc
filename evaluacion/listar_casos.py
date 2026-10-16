@@ -119,6 +119,8 @@ def main() -> int:
             lineas.append(f"- {etiquetas[s['clave']]}: **{s['estado']}** · {medidas}{extra}")
         if c["conclusion_dictada"]:
             lineas.append("- Conclusión dictada: " + " / ".join(c["conclusion_dictada"]))
+        if c.get("nota_dictada"):
+            lineas.append(f"- Nota dictada: {c['nota_dictada']}")
         for aviso in con_avisos[c["id"]]:
             lineas.append(f"- ⚠️ {aviso}")
     SALIDA.write_text("\n".join(lineas) + "\n")

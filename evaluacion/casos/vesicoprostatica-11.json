@@ -1,0 +1,133 @@
+{
+  "id": "vesicoprostatica-11",
+  "formato": "vesicoprostatica",
+  "escenario": "ruido",
+  "dictado": [
+    {
+      "rol": "medico",
+      "texto": "Ya, buenos días. Paciente Teodoro Valdivia Choquehuanca. 67 años. Lo manda el doctor Renzo Málaga, urología."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Doctor, ¿la vésico-prostática nomás o también renal?"
+    },
+    {
+      "rol": "medico",
+      "texto": "Vésico-prostática nomás. Señor, échese boca arriba. Súbase el polo un poquito. Va a sentir frío el gel."
+    },
+    {
+      "rol": "medico",
+      "texto": "Uf, el tráfico en la Vía Expresa hoy, una hora me demoré. Ya, empezamos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Vejiga. A mediana repleción. Paredes delgadas. Contenido... a ver, ¿eso es un cálculo? No, no, es artefacto de reverberación, se mueve con el transductor. Contenido líquido homogéneo, sin cálculos ni procesos expansivos."
+    },
+    {
+      "rol": "medico",
+      "texto": "Respire hondo y aguante cinco segundos. Ya, bote el aire."
+    },
+    {
+      "rol": "medico",
+      "texto": "Volumen premiccional 280 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "¿Su hermano también se trató de la próstata, me dijo? Ah, 72 años tiene, y le salió de 80 gramos, lo operaron. Ya, normal a esa edad."
+    },
+    {
+      "rol": "medico",
+      "texto": "Próstata. Aumentada de tamaño. Ecogenicidad homogénea, sin calcificaciones. Mide 5.2 por 4.7 por 4.4 centímetros. Volumen aproximado 56 cc."
+    },
+    {
+      "rol": "medico",
+      "texto": "Gírese un poquito a la izquierda. Así. Ya, vuelva."
+    },
+    {
+      "rol": "medico",
+      "texto": "Ahora vaya a orinar, señor, y regresa."
+    },
+    {
+      "rol": "asistente",
+      "texto": "Doctor, le está sonando el celular."
+    },
+    {
+      "rol": "medico",
+      "texto": "Déjalo, después devuelvo. Ya, regresó. Posmiccional 40 cc. RPM 14 %."
+    },
+    {
+      "rol": "medico",
+      "texto": "Conclusión. Uno, hipertrofia prostática, volumen 56 cc. Dos, vejiga con RPM de 14 %."
+    },
+    {
+      "rol": "medico",
+      "texto": "Nota: se sugiere correlacionar con PSA y evaluación urológica."
+    }
+  ],
+  "paciente": {
+    "nombre": "Teodoro Valdivia Choquehuanca",
+    "edad": 67
+  },
+  "medico_solicitante": "Renzo Málaga",
+  "secciones": [
+    {
+      "clave": "prostata",
+      "estado": "hallazgo",
+      "medidas": [
+        {
+          "valor": 52,
+          "unidad": "mm"
+        },
+        {
+          "valor": 47,
+          "unidad": "mm"
+        },
+        {
+          "valor": 44,
+          "unidad": "mm"
+        },
+        {
+          "valor": 56,
+          "unidad": "cc"
+        }
+      ],
+      "hallazgo": "Próstata aumentada de tamaño, de ecogenicidad homogénea y sin calcificaciones, con volumen aproximado de 56 cc."
+    },
+    {
+      "clave": "vejiga",
+      "estado": "normal",
+      "medidas": [],
+      "hallazgo": ""
+    },
+    {
+      "clave": "volumenes",
+      "estado": "normal",
+      "medidas": [
+        {
+          "valor": 280,
+          "unidad": "cc"
+        },
+        {
+          "valor": 40,
+          "unidad": "cc"
+        },
+        {
+          "valor": 14,
+          "unidad": "%"
+        }
+      ],
+      "hallazgo": ""
+    }
+  ],
+  "conclusion_dictada": [
+    "Hipertrofia prostática, volumen 56 cc.",
+    "Vejiga con RPM de 14 %."
+  ],
+  "nota_dictada": "Se sugiere correlacionar con PSA y evaluación urológica.",
+  "dificultad": "Ruido: indicaciones al paciente con números (cinco segundos), charla del tráfico y del celular, enfermedad del hermano del paciente con edad y peso prostático (72 años, 80 gramos) que no deben registrarse, duda descartada de cálculo vesical (artefacto), medidas prostáticas dictadas en cm que deben convertirse a mm, secciones dictadas en orden distinto a la plantilla.",
+  "_generacion": {
+    "modelo": "claude-opus-5-5",
+    "input_tokens": 3188,
+    "output_tokens": 2061
+  }
+}

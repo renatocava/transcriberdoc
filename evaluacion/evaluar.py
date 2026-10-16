@@ -272,13 +272,15 @@ def calificar(caso: dict, informe: dict, fuentes: dict, cliente_juez, dictado: s
     hallazgos_ok = [k for k in hallazgo_ids if k not in perdidos and veredictos[k]["ok"]]
     cambios_malos = [p["id"] for p in puntos if p["tipo"] == "cambio_en_normal" and not veredictos[p["id"]]["ok"]]
 
+    # Una nota que el médico no dictó (por ejemplo, charla que se coló) es un invento.
+    nota_inventada = bool(str(informe.get("nota") or "").strip()) and not str(caso.get("nota_dictada") or "").strip()
     pac = informe["paciente"]
     paciente_ok = (
         _norm(pac.get("nombre")) == _norm(caso["paciente"]["nombre"])
         and pac.get("edad") == caso["paciente"]["edad"]
     )  # el médico ya no se dicta: se elige antes de grabar
     grade: dict[str, Any] = {
-        "sin_invento": float(inventadas == 0 and not cambios_malos),
+        "sin_invento": float(inventadas == 0 and not cambios_malos and not nota_inventada),
         "medidas": acertadas / esperadas_total if esperadas_total else 1.0,
         "conclusion": float(veredictos["conclusion"]["ok"]),
         "paciente": float(paciente_ok),
@@ -296,7 +298,9 @@ def calificar(caso: dict, informe: dict, fuentes: dict, cliente_juez, dictado: s
     explicacion = {
         "medidas": f"{acertadas}/{esperadas_total} medidas; {inventadas} sin respaldo",
         "sin_invento": "; ".join(
-            [f"{k}: {veredictos[k]['razon']}" for k in cambios_malos] + ([f"{inventadas} medida(s) de más"] if inventadas else [])
+            [f"{k}: {veredictos[k]['razon']}" for k in cambios_malos]
+            + ([f"{inventadas} medida(s) de más"] if inventadas else [])
+            + ([f"nota no dictada: {informe['nota']!r}"] if nota_inventada else [])
         ) or "ok",
         "hallazgos": "; ".join(
             [f"{k}: no se describió" for k in perdidos]
