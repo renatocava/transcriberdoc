@@ -11,6 +11,7 @@ from __future__ import annotations
 import copy
 import datetime as dt
 import io
+import unicodedata
 from typing import Any
 
 from lib.ecografias import PLANTILLAS, fecha_larga
@@ -154,6 +155,8 @@ def nombre_archivo(informe: dict[str, Any]) -> str:
     """«ECO ABDOMEN COMPLETO - MENDOZA HUAMAN CARLOS - 2026-10-04.docx»."""
     base = PLANTILLAS[informe["plantilla"]].archivo.removesuffix(" NORMAL.docx")
     nombre = ((informe.get("paciente") or {}).get("nombre") or "").strip().upper()
-    nombre = "".join(c for c in nombre if c.isalnum() or c in " -")
+    # Sin tildes: Streamlit manda el nombre en latin-1 y Chrome descarta la palabra acentuada.
+    nombre = unicodedata.normalize("NFKD", nombre).encode("ascii", "ignore").decode()
+    nombre = " ".join("".join(c for c in nombre if c.isalnum() or c in " -").split())
     partes = [base, nombre, informe.get("fecha") or ""]
     return " - ".join(p for p in partes if p) + ".docx"

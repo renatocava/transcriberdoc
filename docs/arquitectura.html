@@ -283,7 +283,7 @@ por HTTPS. Las dependencias detalladas entre módulos están en la tabla de la s
 <h3>Punto de entrada</h3>
 <div class="table-wrap"><table>
   <tr><th>Archivo</th><th>Responsabilidad</th><th>Depende de</th></tr>
-  <tr><td><code>app.py</code></td><td>Configura la página, inicializa el estado, dibuja el encabezado (con el badge <code>DEMO · SIMULADO</code>) y despacha a la pantalla que corresponde a la etapa actual. Contiene la pantalla de confirmación «guardado».</td><td><code>components.*</code>, <code>state</code>, <code>config</code></td></tr>
+  <tr><td><code>app.py</code></td><td>Configura la página, inicializa el estado, dibuja el encabezado (con el badge <code>DEMO · SIMULADO</code>) y despacha a la pantalla que corresponde a la etapa actual. </td><td><code>components.*</code>, <code>state</code>, <code>config</code></td></tr>
 </table></div>
 
 <h3>Pantallas — <code>components/</code></h3>
@@ -326,15 +326,15 @@ por HTTPS. Las dependencias detalladas entre módulos están en la tabla de la s
   <li><b>Extracción estructurada</b><span><code>extraction</code> envía a Claude el diálogo numerado con roles y el JSON Schema de <code>schema</code> + <code>fuentes</code>. Claude responde obligatoriamente con el tool.</span></li>
   <li><b>Validación</b><span><code>schema.normalizar_historia</code> completa la estructura, <code>cie10.validar</code> descarta códigos inexistentes o dados de baja y <code>fuentes.vincular</code> ancla cada dato a sus intervenciones.</span></li>
   <li><b>Revisión</b><span><code>review</code> muestra transcripción y formulario. Si el médico corrige roles, se repite el paso 4 (se pierden las ediciones). Editar el formulario no vuelve a llamar a las APIs.</span></li>
-  <li><b>Guardado</b><span>Se quitan las claves internas (<code>_uid</code>, <code>_fuentes</code>) y el JSON final se imprime en la consola del servidor. No se escribe en ninguna base de datos.</span></li>
+  <li><b>Guardado</b><span>Sin salir de la revisión: se quitan las claves internas (<code>_uid</code>, <code>_fuentes</code>) y el JSON final se imprime en la consola del servidor. No se escribe en ninguna base de datos. Se puede seguir editando y volver a guardar; en la ecografía, el documento se abre en una ventana y el Word se descarga tras confirmar que terminó la edición.</span></li>
 </ol>
 
 <h2 id="estados">5. Máquina de estados</h2>
 <p>La etapa vive en <code>st.session_state["stage"]</code>. Solo hay <code>st.rerun()</code> al cambiar de etapa,
-al re-extraer y al guardar o descartar.</p>
+al re-extraer y al descartar; guardar no cambia de etapa.</p>
 <figure>
 <svg viewBox="0 0 900 230" role="img" aria-labelledby="est-t">
-  <title id="est-t">Estados idle, processing, review y saved</title>
+  <title id="est-t">Estados idle, processing y review, y la ventana del documento</title>
   <defs>
     <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="arrowhead"/></marker>
   </defs>
@@ -348,8 +348,8 @@ al re-extraer y al guardar o descartar.</p>
   <text class="lbl" x="575" y="104" text-anchor="middle">review</text>
   <text class="sub" x="575" y="122" text-anchor="middle">review</text>
   <rect class="box b-sop" x="735" y="80" width="140" height="56"/>
-  <text class="lbl" x="805" y="104" text-anchor="middle">saved</text>
-  <text class="sub" x="805" y="122" text-anchor="middle">app.render_saved</text>
+  <text class="lbl" x="805" y="104" text-anchor="middle">documento</text>
+  <text class="sub" x="805" y="122" text-anchor="middle">ventana en review</text>
 
   <path class="edge" d="M180,108 H261" marker-end="url(#ah2)"/>
   <text class="edge-lbl" x="220" y="100" text-anchor="middle">audio recibido</text>
@@ -357,6 +357,8 @@ al re-extraer y al guardar o descartar.</p>
   <text class="edge-lbl" x="455" y="100" text-anchor="middle">historia lista</text>
   <path class="edge" d="M650,108 H731" marker-end="url(#ah2)"/>
   <text class="edge-lbl" x="690" y="100" text-anchor="middle">Guardar</text>
+  <path class="edge" d="M731,124 H654" marker-end="url(#ah2)"/>
+  <text class="edge-lbl" x="692" y="148" text-anchor="middle">Seguir editando</text>
 
   <path class="edge" d="M555,80 C555,30 600,30 600,76" marker-end="url(#ah2)"/>
   <text class="edge-lbl" x="577" y="26" text-anchor="middle">corregir roles → re-extraer</text>
@@ -368,7 +370,7 @@ al re-extraer y al guardar o descartar.</p>
   <path class="edge" d="M805,136 C805,226 105,226 105,140" marker-end="url(#ah2)"/>
   <text class="edge-lbl" x="455" y="208" text-anchor="middle">Nueva consulta</text>
 </svg>
-<figcaption>Debajo de cada estado, el componente que lo dibuja.</figcaption>
+<figcaption>Debajo de cada estado, el componente que lo dibuja. El documento no es una etapa: es una ventana sobre la revisión (Guardar o Vista previa).</figcaption>
 </figure>
 
 <h2 id="datos">6. Datos y persistencia</h2>

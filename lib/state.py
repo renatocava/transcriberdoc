@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import datetime as dt
 import uuid
 from pathlib import Path
 from typing import Any
@@ -15,7 +16,6 @@ from lib.hablantes import AUTO, UNO
 IDLE = "idle"
 PROCESSING = "processing"
 REVIEW = "review"
-SAVED = "saved"
 
 #: Claves propias de la app en session_state (todo lo demás es de los widgets).
 CLAVES_CORE = (
@@ -30,6 +30,7 @@ CLAVES_CORE = (
     "foco",
     "error",
     "last_audio_id",
+    "guardado",
 )
 
 #: Todos los widgets del formulario y del transcript usan este prefijo,
@@ -60,6 +61,8 @@ _DEFECTOS: dict[str, Any] = {
     "foco": [],  # intervenciones resaltadas en la transcripción
     "error": None,
     "last_audio_id": None,
+    # Último guardado: {"hora", "datos"}; se guarda sin salir de la revisión.
+    "guardado": None,
 }
 
 
@@ -163,6 +166,16 @@ def recien_extraida(historia: dict[str, Any]) -> None:
     """Guarda la historia recién extraída y su copia, para detectar ediciones manuales."""
     st.session_state["historia"] = ensure_uids(con_medico(historia))
     st.session_state["historia_extraida"] = strip_uids(st.session_state["historia"])
+
+
+def marcar_guardado(historia: dict[str, Any]) -> None:
+    st.session_state["guardado"] = {"hora": dt.datetime.now().strftime("%H:%M"), "datos": strip_uids(historia)}
+
+
+def sin_guardar(historia: dict[str, Any]) -> bool:
+    """True si hay cambios desde el último guardado (o nunca se guardó)."""
+    guardado = st.session_state.get("guardado")
+    return not guardado or guardado["datos"] != strip_uids(historia)
 
 
 def hay_ediciones() -> bool:

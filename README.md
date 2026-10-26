@@ -127,7 +127,10 @@ dicta queda como `___`; Claude no calcula volúmenes ni porcentajes. En la revis
   (texto normal sin respaldo en el dictado), con su 📎 como en la historia clínica;
 - la app **sugiere** el volumen prostático (L×AP×T×0,52) y el RPM (post/pre), y
   avisa si no cuadran con lo escrito, pero nunca los escribe sola;
-- antes de descargar avisa qué secciones aún tienen medidas `___`;
+- todo pasa en la misma vista: "💾 Guardar" guarda sin salir (se puede seguir
+  editando y volver a guardar) y abre el documento en una ventana, igual que
+  "👁️ Vista previa"; ahí avisa qué falta (médico, medidas `___`) y la descarga se
+  habilita al marcar "Terminé la edición";
 - "⬇️ Descargar informe (.docx)" genera el Word **sobre la plantilla original**:
   conserva membrete, pie, márgenes y viñetas; llena nombres, edad, médico
   (PARTICULAR si no se dicta), examen y fecha, y reescribe cuerpo y conclusión.
@@ -234,9 +237,10 @@ components/informe_eco.py revisión del informe ecográfico y descarga en Word
 
 ### Notas de implementación
 
-- **Estados:** `idle → processing → review → saved`, en
-  `st.session_state["stage"]`. Solo hay `st.rerun()` al cambiar de estado, al
-  re-extraer y al guardar/descartar; editar el formulario nunca fuerza un rerun
+- **Estados:** `idle → processing → review`, en `st.session_state["stage"]`.
+  Guardar no cambia de estado: queda en `st.session_state["guardado"]` para
+  avisar si hay cambios sin guardar. Solo hay `st.rerun()` al cambiar de estado,
+  al re-extraer y al descartar; editar el formulario nunca fuerza un rerun
   ni vuelve a llamar a las APIs.
 - **Ids estables en las listas:** cada diagnóstico y medicamento lleva un `_uid`
   interno, y las keys de los widgets se derivan de él, no del índice. Sin eso,

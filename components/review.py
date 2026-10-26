@@ -11,7 +11,7 @@ from lib import cie10, state
 from lib.ecografias import CONSULTA, FORMATOS, es_ecografia
 from lib.extraction import extraer
 from lib.fuentes import DESCARTADAS, MOTIVOS, SEP, de_texto, descartadas_de, editado
-from lib.hablantes import ROLES, aviso, etiqueta, hablantes
+from lib.hablantes import ROLES, aviso, es_dictado, etiqueta, hablantes
 
 TIPOS_DX = ["presuntivo", "definitivo", "diferencial"]
 SEXOS = ["", "M", "F", "Otro"]
@@ -88,10 +88,6 @@ def _ayuda(fuente: dict[str, Any] | None, valor: Any) -> str | None:
     return "\n\n".join(citas)
 
 
-def _numeros(fuente: dict[str, Any]) -> str:
-    return ", ".join(f"#{i + 1}" for i in fuente["ids"])
-
-
 def _boton_fuente(contenedor: Any, fuente: dict[str, Any] | None, valor: Any, key: str) -> None:
     """📎 que muestra la cita al pasar el mouse y al hacer clic la abre en la transcripción."""
     if fuente:
@@ -104,7 +100,7 @@ def _boton_fuente(contenedor: Any, fuente: dict[str, Any] | None, valor: Any, ke
 
 
 def _fila_fuentes(campos: list[tuple[str, Any]], prefijo: str, etiquetas: dict[str, str] = ETIQUETAS) -> None:
-    """Botones «📎 Campo · #n» para los campos simples de una sección."""
+    """Botones «📎 Campo» para los campos simples de una sección; la cita va en el tooltip."""
     con_fuente = [(ruta, valor, _fuente(ruta)) for ruta, valor in campos]
     con_fuente = [c for c in con_fuente if c[2]]
     if not con_fuente:
@@ -113,7 +109,7 @@ def _fila_fuentes(campos: list[tuple[str, Any]], prefijo: str, etiquetas: dict[s
         for ruta, valor, fuente in con_fuente:
             marca = " ✏️" if editado(fuente, valor) else ""
             st.button(
-                f"📎 {etiquetas[ruta]} · {_numeros(fuente)}{marca}",
+                f"📎 {etiquetas[ruta]}{marca}",
                 key=f"{prefijo}_{ruta}",
                 help=_ayuda(fuente, valor),
                 type="tertiary",
@@ -252,6 +248,9 @@ def _render_roles(utterances: list[dict[str, Any]]) -> None:
     mensaje = aviso(len(voces), state.modo_hablantes())
     if mensaje:
         st.info(mensaje)
+    # Un dictado de una sola voz no tiene roles que elegir: todo es del médico.
+    if len(voces) == 1 and es_dictado(mapping):
+        return
 
     st.caption(f"{len(voces)} {'voz detectada' if len(voces) == 1 else 'voces detectadas'} · rol de cada una:")
     nuevo: dict[str, str] = {}
@@ -586,7 +585,17 @@ def _guardar(historia: dict) -> None:
     print("\n===== HISTORIA CLÍNICA GUARDADA =====")
     print(json.dumps(final, indent=2, ensure_ascii=False))
     print("=====================================\n", flush=True)
-    state.set_stage(state.SAVED)
+    state.marcar_guardado(historia)
+
+
+def aviso_guardado(historia: dict) -> str:
+    """Rótulo del último guardado, para mostrarlo junto a los botones."""
+    guardado = st.session_state.get("guardado")
+    if not guardado:
+        return ":gray[Aún no se guardó.]"
+    if state.sin_guardar(historia):
+        return f":orange[Cambios sin guardar · último guardado {guardado['hora']}]"
+    return f":green[✓ Guardado a las {guardado['hora']}]"
 
 
 def _render_formulario(historia: dict) -> None:
@@ -603,12 +612,33 @@ def _render_formulario(historia: dict) -> None:
 
     st.write("")
     c_ok, c_no = st.columns(2)
+    # Se guarda sin salir de la vista: se puede seguir editando y volver a guardar.
     if c_ok.button("Guardar en Historia Clínica", type="primary", use_container_width=True):
         _guardar(historia)
-        st.rerun()
-    if c_no.button("Descartar", use_container_width=True):
-        state.reset()
-        st.rerun()
+        st.toast(f"Consulta guardada en la historia clínica de {_paciente(historia)}", icon="✅")
+    with c_no:
+        boton_nueva(historia)
+    st.caption(aviso_guardado(historia))
+
+
+def boton_nueva(historia: dict) -> None:
+    """«Nueva consulta»; si queda algo sin guardar, pide confirmarlo antes de borrarlo."""
+    if not state.sin_guardar(historia):
+        if st.button("Nueva consulta", key="f_nueva", use_container_width=True):
+            state.reset()
+            st.rerun()
+        return
+    guardada = st.session_state.get("guardado") is not None
+    with st.popover("Descartar cambios" if guardada else "Descartar", use_container_width=True):
+        st.markdown("Se perderán los cambios desde el último guardado." if guardada else "Aún no se guardó: se perderá todo.")
+        if st.button("Sí, empezar una nueva consulta", key="f_nueva_si", type="primary", use_container_width=True):
+            state.reset()
+            st.rerun()
+
+
+def _paciente(historia: dict) -> str:
+    nombre = (historia.get("paciente") or {}).get("nombre")
+    return nombre.strip() if isinstance(nombre, str) and nombre.strip() else "el paciente"
 
 
 def render_review() -> None:

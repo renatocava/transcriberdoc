@@ -33,6 +33,8 @@ ESTILOS = """
 .inf mark { border-radius: 4px; padding: 0 0.2rem; color: inherit; }
 .inf mark.ok { background: #BBF7D0; color: #14532D; }
 .inf mark.falta { background: #FDE68A; color: #78350F; }
+.inf.limpio mark.ok { background: none; color: inherit; padding: 0; }
+.inf.limpio .gris { color: inherit; }
 .inf-ley { font-size: 0.78rem; color: #64748B; margin-top: 0.6rem; }
 .inf-ley mark { border-radius: 4px; padding: 0 0.3rem; }
 .inf-ley mark.ok { background: #BBF7D0; color: #14532D; }
@@ -71,15 +73,20 @@ def _cabecera(rotulo: str, valor: Any, sufijo: str = "") -> str:
     return f'<div class="cab"><span class="r">{rotulo}</span>:  {dato}{sufijo}</div>'
 
 
-def html_informe(informe: dict[str, Any], dictadas: set[str] | frozenset[str] = frozenset()) -> str:
-    """HTML del informe. `dictadas`: claves de sección (y "conclusion") que el médico mencionó."""
+def html_informe(
+    informe: dict[str, Any], dictadas: set[str] | frozenset[str] = frozenset(), limpio: bool = False
+) -> str:
+    """HTML del informe. `dictadas`: claves de sección (y "conclusion") que el médico mencionó.
+
+    `limpio`: como se imprimirá, sin el verde ni el gris; lo que falta sigue en ámbar.
+    """
     plantilla = PLANTILLAS[informe["plantilla"]]
     pac = informe.get("paciente") or {}
     edad = pac.get("edad")
     fecha = dt.date.fromisoformat(informe["fecha"]) if informe.get("fecha") else dt.date.today()
 
     partes = [
-        '<div class="inf">',
+        f'<div class="inf{" limpio" if limpio else ""}">',
         f'<div class="tit">{escape(plantilla.examen)}</div>',
         _cabecera("NOMBRES", pac.get("nombre")),
         _cabecera("EDAD", edad, " AÑOS"),
