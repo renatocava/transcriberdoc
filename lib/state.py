@@ -139,6 +139,8 @@ def ensure_uids(historia: dict[str, Any]) -> dict[str, Any]:
     un ítem del medio no hace que el siguiente herede sus valores.
     """
     historia = copy.deepcopy(historia or {})
+    if es_ecografia(historia.get("plantilla")):
+        return historia  # el informe ecográfico no tiene esas listas
     listas = [
         historia.setdefault("diagnosticos", []),
         historia.setdefault("plan", {}).setdefault("medicamentos", []),

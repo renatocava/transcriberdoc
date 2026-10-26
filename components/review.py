@@ -7,11 +7,11 @@ from typing import Any
 
 import streamlit as st
 
-from lib import cie10, state
+from lib import cie10, state, voces
 from lib.ecografias import CONSULTA, FORMATOS, es_ecografia
 from lib.extraction import extraer
 from lib.fuentes import DESCARTADAS, MOTIVOS, SEP, de_texto, descartadas_de, editado
-from lib.hablantes import ROLES, aviso, es_dictado, etiqueta, hablantes
+from lib.hablantes import ROLES, aviso, es_dictado, etiqueta, hablantes, mapping_inicial
 
 TIPOS_DX = ["presuntivo", "definitivo", "diferencial"]
 SEXOS = ["", "M", "F", "Otro"]
@@ -190,11 +190,22 @@ def _reextraer(utterances: list[dict[str, Any]], mapping: dict[str, str], format
         state.recien_extraida(historia)
         st.session_state["fuentes"] = fuentes
         st.session_state["foco"] = []
-        for clave in [k for k in st.session_state if str(k).startswith("f_") and not str(k).startswith(PREFIJO_ROL)]:
+        # También los selectores de rol: se vuelven a llenar con el mapping nuevo.
+        for clave in [k for k in st.session_state if str(k).startswith("f_")]:
             del st.session_state[clave]
         st.rerun()
     except Exception as exc:
         st.error(f"No se pudo re-extraer la información: {exc}")
+
+
+def _roles_para_formato() -> dict[str, str]:
+    """Roles por defecto para el formato elegido: la ecografía es un dictado; en la
+    consulta, el médico y el paciente. Los de un formato no sirven para el otro."""
+    eco = es_ecografia(state.formato())
+    return mapping_inicial(
+        _utterances(), state.modo_hablantes(), voces.referencias(state.medicos_consulta())[0],
+        interlocutor="Asistente" if eco else "Paciente",
+    )
 
 
 def _cancelar_cambio_roles() -> None:
@@ -245,7 +256,8 @@ def _render_roles(utterances: list[dict[str, Any]]) -> None:
     mapping = st.session_state["speaker_mapping"]
     voces = hablantes(utterances)
 
-    mensaje = aviso(len(voces), state.modo_hablantes())
+    # El aviso de la ecografía dice que todo es del médico: no si ya se cambió un rol.
+    mensaje = aviso(len(voces), state.modo_hablantes()) if es_dictado(mapping) else None
     if mensaje:
         st.info(mensaje)
     # Un dictado de una sola voz no tiene roles que elegir: todo es del médico.
@@ -280,13 +292,13 @@ def selector_formato() -> None:
     if nuevo != actual and not state.hay_ediciones():
         # Sin cambios manuales que perder, el informe cambia de formato al instante.
         st.session_state[state.CLAVE_FORMATO] = nuevo
-        _reextraer(_utterances(), st.session_state["speaker_mapping"], nuevo)
+        _reextraer(_utterances(), _roles_para_formato(), nuevo)
     elif nuevo != actual:
         st.warning("Se volverá a extraer todo con el nuevo formato; los cambios manuales se perderán.")
         c_ok, c_no = st.columns(2)
         if c_ok.button("Cambiar formato", type="primary", use_container_width=True):
             st.session_state[state.CLAVE_FORMATO] = nuevo
-            _reextraer(_utterances(), st.session_state["speaker_mapping"], nuevo)
+            _reextraer(_utterances(), _roles_para_formato(), nuevo)
         c_no.button("Cancelar", key="w_formato_no", use_container_width=True,
                     on_click=st.session_state.update, kwargs={"w_formato_rev": actual})
 

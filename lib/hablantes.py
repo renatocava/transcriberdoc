@@ -87,8 +87,8 @@ def aviso(n_voces: int, modo: str) -> str | None:
     """Mensaje si las voces detectadas no cuadran con el modo elegido."""
     if modo == UNO and n_voces > 1:
         return (
-            f"Se detectaron {n_voces} voces, pero elegiste «Solo el médico»: "
-            "todo se atribuyó al médico."
+            f"Se detectaron {n_voces} voces: en la ecografía todo se toma como dictado del médico. "
+            "Si otra persona habló (p. ej. el asistente), cambia aquí el rol de su voz."
         )
     if modo == DOS and n_voces > 2:
         return (

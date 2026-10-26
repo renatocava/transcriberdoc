@@ -135,8 +135,9 @@ dicta queda como `___`; Claude no calcula volúmenes ni porcentajes. En la revis
   conserva membrete, pie, márgenes y viñetas; llena nombres, edad, médico
   (PARTICULAR si no se dicta), examen y fecha, y reescribe cuerpo y conclusión.
 
-Con un formato de ecografía, la segunda voz se asigna como **Asistente** (el
-transcriptor), no como paciente. Si se grabó con el formato equivocado, se puede
+La ecografía se trata como un dictado: todas las voces se toman como del médico.
+Si el asistente (el transcriptor) también habló, se cambia el rol de su voz en la
+revisión y se vuelve a extraer. Si se grabó con el formato equivocado, se puede
 cambiar en la revisión y se vuelve a extraer.
 
 Los textos normales viven en `lib/ecografias.py`. Si cambia una plantilla, hay
